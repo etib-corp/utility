@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
+include(FetchContent)
+
 project(utility
     VERSION 1.0.0
     DESCRIPTION "Utility"
@@ -35,6 +37,18 @@ endif()
 set(HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/headers")
 set(SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sources")
 
+# Fetch GLM library
+set(GLM_BUILD_TESTS OFF)
+add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
+
+FetchContent_Declare(glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG 1.0.2
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(glm)
+
 # Add the headers directories
 include_directories(
     ${HEADERS_DIR}
@@ -47,6 +61,12 @@ file(GLOB_RECURSE SOURCES
 
 # Create the main library
 add_library(${PROJECT_NAME} ${SOURCES})
+
+# Link dependencies
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+    glm::glm 
+)
 
 # Set common target properties
 set_utility_target_properties(${PROJECT_NAME})
