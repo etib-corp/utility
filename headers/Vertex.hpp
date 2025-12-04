@@ -31,6 +31,12 @@
 
 namespace utility {
 
+/**
+ * @brief Represents a 3D vertex with position, color, and texture coordinates
+ *
+ * A vertex is the fundamental building block for 3D graphics, containing spatial position,
+ * color information, and texture mapping coordinates.
+ */
 class Vertex {
 
 private:
@@ -40,6 +46,13 @@ private:
 
 protected:
 public:
+  /**
+   * @brief Construct a vertex with position, color, and texture coordinates
+   *
+   * @param position The 3D position of the vertex
+   * @param color The color of the vertex
+   * @param textureCoordinates The 2D texture coordinates (UV mapping)
+   */
   Vertex(const Vector<float, 3> &position, const Color &color,
          const Vector<float, 2> &textureCoordinates);
 

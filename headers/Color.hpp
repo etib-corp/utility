@@ -30,6 +30,12 @@
 
 namespace utility {
 
+/**
+ * @brief RGBA color representation with 8-bit channels
+ *
+ * Manages red, green, blue, and alpha color channels with values from 0-255.
+ * Provides conversion to vector and glm::vec formats for graphics operations.
+ */
 class Color {
 private:
   unsigned char _red;

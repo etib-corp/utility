@@ -109,7 +109,13 @@ enum class KeyModifier : uint8_t {
  */
 class Event {
 protected:
+  /**
+   * @brief The type of event
+   */
   EventType _type;
+  /**
+   * @brief Timestamp when the event occurred (milliseconds since epoch)
+   */
   uint64_t _timestamp;
 
 public:
@@ -167,7 +173,17 @@ public:
   KeyboardEvent(EventType type, int keyCode,
                 KeyModifier modifiers = KeyModifier::None);
 
+  /**
+   * @brief Get the key code
+   *
+   * @return int The key code of the pressed/released key
+   */
   int getKeyCode(void) const;
+  /**
+   * @brief Get the keyboard modifiers
+   *
+   * @return KeyModifier The active modifiers (shift, ctrl, alt, etc.)
+   */
   KeyModifier getModifiers(void) const;
 };
 
@@ -196,9 +212,29 @@ public:
              MouseButton button = MouseButton::Left,
              KeyModifier modifiers = KeyModifier::None);
 
+  /**
+   * @brief Get the mouse position
+   *
+   * @return const Vector<float, 2>& The 2D screen position of the mouse
+   */
   const Vector<float, 2> &getPosition(void) const;
+  /**
+   * @brief Get the mouse movement delta
+   *
+   * @return const Vector<float, 2>& The change in position since last event
+   */
   const Vector<float, 2> &getDelta(void) const;
+  /**
+   * @brief Get the mouse button
+   *
+   * @return MouseButton The mouse button associated with this event
+   */
   MouseButton getButton(void) const;
+  /**
+   * @brief Get the keyboard modifiers
+   *
+   * @return KeyModifier The active modifiers (shift, ctrl, alt, etc.)
+   */
   KeyModifier getModifiers(void) const;
 };
 
@@ -225,9 +261,29 @@ public:
   TouchEvent(EventType type, const Vector<float, 2> &position,
              float pressure = 1.0f, uint32_t touchId = 0, int touchCount = 1);
 
+  /**
+   * @brief Get the touch position
+   *
+   * @return const Vector<float, 2>& The 2D screen position of the touch
+   */
   const Vector<float, 2> &getPosition(void) const;
+  /**
+   * @brief Get the touch pressure
+   *
+   * @return float Pressure value from 0.0 (no pressure) to 1.0 (maximum pressure)
+   */
   float getPressure(void) const;
+  /**
+   * @brief Get the unique touch identifier
+   *
+   * @return uint32_t Unique ID for tracking this touch across multiple events
+   */
   uint32_t getTouchId(void) const;
+  /**
+   * @brief Get the total number of active touches
+   *
+   * @return int The count of simultaneous touches
+   */
   int getTouchCount(void) const;
 };
 
@@ -256,9 +312,29 @@ public:
       const Vector<float, 3> &position = Vector<float, 3>(0.0f, 0.0f, 0.0f),
       const Vector<float, 3> &rotation = Vector<float, 3>(0.0f, 0.0f, 0.0f));
 
+  /**
+   * @brief Get the controller index
+   *
+   * @return int The controller number (0 = first controller, 1 = second, etc.)
+   */
   int getControllerIndex(void) const;
+  /**
+   * @brief Get the axis value for analog inputs
+   *
+   * @return float Normalized axis value (-1.0 to 1.0)
+   */
   float getAxisValue(void) const;
+  /**
+   * @brief Get the 3D position of the controller
+   *
+   * @return const Vector<float, 3>& The world-space position of the controller
+   */
   const Vector<float, 3> &getPosition(void) const;
+  /**
+   * @brief Get the 3D rotation of the controller
+   *
+   * @return const Vector<float, 3>& The rotation as Euler angles
+   */
   const Vector<float, 3> &getRotation(void) const;
 };
 
@@ -288,9 +364,29 @@ public:
       const Vector<float, 3> &palmRotation = Vector<float, 3>(0.0f, 0.0f, 0.0f),
       float confidence = 1.0f);
 
+  /**
+   * @brief Get the hand index
+   *
+   * @return int Hand identifier (0 = left hand, 1 = right hand)
+   */
   int getHandIndex(void) const;
+  /**
+   * @brief Get the 3D position of the palm
+   *
+   * @return const Vector<float, 3>& The world-space position of the palm
+   */
   const Vector<float, 3> &getPalmPosition(void) const;
+  /**
+   * @brief Get the 3D rotation of the palm
+   *
+   * @return const Vector<float, 3>& The rotation as Euler angles
+   */
   const Vector<float, 3> &getPalmRotation(void) const;
+  /**
+   * @brief Get the tracking confidence
+   *
+   * @return float Confidence value from 0.0 (not confident) to 1.0 (fully confident)
+   */
   float getConfidence(void) const;
 };
 
@@ -312,7 +408,17 @@ public:
   HeadPoseEvent(const Vector<float, 3> &position,
                 const Vector<float, 3> &rotation);
 
+  /**
+   * @brief Get the 3D position of the head
+   *
+   * @return const Vector<float, 3>& The world-space position of the head
+   */
   const Vector<float, 3> &getPosition(void) const;
+  /**
+   * @brief Get the 3D rotation of the head
+   *
+   * @return const Vector<float, 3>& The rotation as Euler angles (pitch, yaw, roll)
+   */
   const Vector<float, 3> &getRotation(void) const;
 };
 
@@ -337,8 +443,23 @@ public:
   GestureEvent(EventType type, const Vector<float, 2> &startPosition,
                const Vector<float, 2> &endPosition, float intensity = 1.0f);
 
+  /**
+   * @brief Get the starting position of the gesture
+   *
+   * @return const Vector<float, 2>& The 2D screen position where gesture began
+   */
   const Vector<float, 2> &getStartPosition(void) const;
+  /**
+   * @brief Get the ending position of the gesture
+   *
+   * @return const Vector<float, 2>& The 2D screen position where gesture ended
+   */
   const Vector<float, 2> &getEndPosition(void) const;
+  /**
+   * @brief Get the intensity of the gesture
+   *
+   * @return float The gesture intensity (meaning depends on gesture type)
+   */
   float getIntensity(void) const;
 };
 
