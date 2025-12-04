@@ -20,6 +20,8 @@
  SOFTWARE.
  */
 
+#include <ostream>
+
 #include <glm/gtc/matrix_inverse.hpp>
 
 #include "Matrix.hpp"
@@ -30,32 +32,29 @@ Matrix::Matrix(void) : _data(1.0f) {}
 
 Matrix::Matrix(const glm::mat4 &matrix) : _data(matrix) {}
 
-const glm::mat4 &Matrix::getData(void) const {
-  return _data;
-}
+const glm::mat4 &Matrix::getData(void) const { return _data; }
 
-void Matrix::setData(const glm::mat4 &matrix) {
-  _data = matrix;
-}
+void Matrix::setData(const glm::mat4 &matrix) { _data = matrix; }
 
-Matrix Matrix::identity(void) {
-  return Matrix(glm::mat4(1.0f));
-}
+Matrix Matrix::identity(void) { return Matrix(glm::mat4(1.0f)); }
 
 Matrix Matrix::translate(const glm::vec3 &translation) {
   return Matrix(glm::translate(glm::mat4(1.0f), translation));
 }
 
 Matrix Matrix::rotateX(float angle) {
-  return Matrix(glm::rotate(glm::mat4(1.0f), angle, glm::vec3(1.0f, 0.0f, 0.0f)));
+  return Matrix(
+      glm::rotate(glm::mat4(1.0f), angle, glm::vec3(1.0f, 0.0f, 0.0f)));
 }
 
 Matrix Matrix::rotateY(float angle) {
-  return Matrix(glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f)));
+  return Matrix(
+      glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f)));
 }
 
 Matrix Matrix::rotateZ(float angle) {
-  return Matrix(glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f)));
+  return Matrix(
+      glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f)));
 }
 
 Matrix Matrix::rotate(const glm::vec3 &axis, float angle) {
@@ -66,15 +65,18 @@ Matrix Matrix::scale(const glm::vec3 &scale) {
   return Matrix(glm::scale(glm::mat4(1.0f), scale));
 }
 
-Matrix Matrix::perspective(float fov, float aspectRatio, float near, float far) {
+Matrix Matrix::perspective(float fov, float aspectRatio, float near,
+                           float far) {
   return Matrix(glm::perspective(fov, aspectRatio, near, far));
 }
 
-Matrix Matrix::ortho(float left, float right, float bottom, float top, float near, float far) {
+Matrix Matrix::ortho(float left, float right, float bottom, float top,
+                     float near, float far) {
   return Matrix(glm::ortho(left, right, bottom, top, near, far));
 }
 
-Matrix Matrix::lookAt(const glm::vec3 &eye, const glm::vec3 &center, const glm::vec3 &up) {
+Matrix Matrix::lookAt(const glm::vec3 &eye, const glm::vec3 &center,
+                      const glm::vec3 &up) {
   return Matrix(glm::lookAt(eye, center, up));
 }
 
@@ -108,17 +110,11 @@ Matrix &Matrix::scaleBy(const glm::vec3 &scale) {
   return *this;
 }
 
-Matrix Matrix::inverse(void) const {
-  return Matrix(glm::inverse(_data));
-}
+Matrix Matrix::inverse(void) const { return Matrix(glm::inverse(_data)); }
 
-Matrix Matrix::transpose(void) const {
-  return Matrix(glm::transpose(_data));
-}
+Matrix Matrix::transpose(void) const { return Matrix(glm::transpose(_data)); }
 
-glm::mat4 Matrix::toMat4(void) const {
-  return _data;
-}
+glm::mat4 Matrix::toMat4(void) const { return _data; }
 
 Matrix Matrix::operator*(const Matrix &other) const {
   return Matrix(_data * other._data);
@@ -133,9 +129,7 @@ bool Matrix::operator==(const Matrix &other) const {
   return _data == other._data;
 }
 
-bool Matrix::operator!=(const Matrix &other) const {
-  return !(*this == other);
-}
+bool Matrix::operator!=(const Matrix &other) const { return !(*this == other); }
 
 std::ostream &operator<<(std::ostream &os, const Matrix &matrix) {
   const glm::mat4 &m = matrix.getData();
@@ -144,7 +138,8 @@ std::ostream &operator<<(std::ostream &os, const Matrix &matrix) {
     os << "  [";
     for (int j = 0; j < 4; ++j) {
       os << m[j][i];
-      if (j < 3) os << ", ";
+      if (j < 3)
+        os << ", ";
     }
     os << "]\n";
   }
