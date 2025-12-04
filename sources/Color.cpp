@@ -62,7 +62,7 @@ glm::vec4 utility::Color::toVector4(void) const {
 }
 
 std::ostream &utility::operator<<(std::ostream &os, const Color &color) {
-  os << "Color(R:" << static_cast<int>(color.getRed()) 
+  os << "Color(R:" << static_cast<int>(color.getRed())
      << ", G:" << static_cast<int>(color.getGreen())
      << ", B:" << static_cast<int>(color.getBlue())
      << ", A:" << static_cast<int>(color.getAlpha()) << ")";

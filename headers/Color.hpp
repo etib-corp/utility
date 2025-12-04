@@ -22,8 +22,11 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#include <ostream>
+
 #include <glm/glm.hpp>
+
+#include "Vector.hpp"
 
 namespace utility {
 

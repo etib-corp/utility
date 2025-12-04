@@ -26,23 +26,18 @@ namespace utility {
 
 Vertex::Vertex(const Vector<float, 3> &position, const Color &color,
                const Vector<float, 2> &textureCoordinates)
-    : _position(position), _color(color), _textureCoordinates(textureCoordinates) {}
+    : _position(position), _color(color),
+      _textureCoordinates(textureCoordinates) {}
 
 void Vertex::setPosition(const Vector<float, 3> &position) {
   _position = position;
 }
 
-const Vector<float, 3> &Vertex::getPosition(void) const {
-  return _position;
-}
+const Vector<float, 3> &Vertex::getPosition(void) const { return _position; }
 
-void Vertex::setColor(const Color &color) {
-  _color = color;
-}
+void Vertex::setColor(const Color &color) { _color = color; }
 
-const Color &Vertex::getColor(void) const {
-  return _color;
-}
+const Color &Vertex::getColor(void) const { return _color; }
 
 void Vertex::setTextureCoordinates(const Vector<float, 2> &textureCoordinates) {
   _textureCoordinates = textureCoordinates;
@@ -53,8 +48,7 @@ const Vector<float, 2> &Vertex::getTextureCoordinates(void) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Vertex &vertex) {
-  os << "Vertex(Pos:" << vertex.getPosition()
-     << ", Color:" << vertex.getColor()
+  os << "Vertex(Pos:" << vertex.getPosition() << ", Color:" << vertex.getColor()
      << ", TexCoord:" << vertex.getTextureCoordinates() << ")";
   return os;
 }

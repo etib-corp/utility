@@ -25,30 +25,23 @@
 
 namespace utility {
 
-Ray::Ray(void)
-    : _origin(0.0f, 0.0f, 0.0f), _direction(0.0f, 0.0f, 1.0f) {}
+Ray::Ray(void) : _origin(0.0f, 0.0f, 0.0f), _direction(0.0f, 0.0f, 1.0f) {}
 
 Ray::Ray(const Vector<float, 3> &origin, const Vector<float, 3> &direction)
     : _origin(origin), _direction(direction) {
   _direction.normalize();
 }
 
-void Ray::setOrigin(const Vector<float, 3> &origin) {
-  _origin = origin;
-}
+void Ray::setOrigin(const Vector<float, 3> &origin) { _origin = origin; }
 
-const Vector<float, 3> &Ray::getOrigin(void) const {
-  return _origin;
-}
+const Vector<float, 3> &Ray::getOrigin(void) const { return _origin; }
 
 void Ray::setDirection(const Vector<float, 3> &direction) {
   _direction = direction;
   _direction.normalize();
 }
 
-const Vector<float, 3> &Ray::getDirection(void) const {
-  return _direction;
-}
+const Vector<float, 3> &Ray::getDirection(void) const { return _direction; }
 
 Vector<float, 3> Ray::getPointAtDistance(float distance) const {
   Vector<float, 3> result = _origin;
@@ -56,8 +49,8 @@ Vector<float, 3> Ray::getPointAtDistance(float distance) const {
   return result;
 }
 
-bool Ray::intersectSphere(const Vector<float, 3> &sphereCenter, float sphereRadius,
-                          float *outDistance) const {
+bool Ray::intersectSphere(const Vector<float, 3> &sphereCenter,
+                          float sphereRadius, float *outDistance) const {
   Vector<float, 3> oc = _origin - sphereCenter;
 
   float a = _direction.dot(_direction);
@@ -87,7 +80,8 @@ bool Ray::intersectSphere(const Vector<float, 3> &sphereCenter, float sphereRadi
   return true;
 }
 
-bool Ray::intersectPlane(const Vector<float, 3> &planeNormal, const Vector<float, 3> &planePoint,
+bool Ray::intersectPlane(const Vector<float, 3> &planeNormal,
+                         const Vector<float, 3> &planePoint,
                          float *outDistance) const {
   float denom = planeNormal.dot(_direction);
 
@@ -109,8 +103,10 @@ bool Ray::intersectPlane(const Vector<float, 3> &planeNormal, const Vector<float
   return true;
 }
 
-bool Ray::intersectTriangle(const Vector<float, 3> &v1, const Vector<float, 3> &v2,
-                            const Vector<float, 3> &v3, float *outDistance) const {
+bool Ray::intersectTriangle(const Vector<float, 3> &v1,
+                            const Vector<float, 3> &v2,
+                            const Vector<float, 3> &v3,
+                            float *outDistance) const {
   const float EPSILON = 1e-6f;
 
   Vector<float, 3> edge1 = v2 - v1;
@@ -155,13 +151,11 @@ bool Ray::operator==(const Ray &other) const {
   return _origin == other._origin && _direction == other._direction;
 }
 
-bool Ray::operator!=(const Ray &other) const {
-  return !(*this == other);
-}
+bool Ray::operator!=(const Ray &other) const { return !(*this == other); }
 
 std::ostream &operator<<(std::ostream &os, const Ray &ray) {
-  os << "Ray(Origin:" << ray.getOrigin()
-     << ", Direction:" << ray.getDirection() << ")";
+  os << "Ray(Origin:" << ray.getOrigin() << ", Direction:" << ray.getDirection()
+     << ")";
   return os;
 }
 

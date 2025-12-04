@@ -29,7 +29,8 @@ namespace utility {
 
 Quaternion::Quaternion(void) : _data(1.0f, 0.0f, 0.0f, 0.0f) {}
 
-Quaternion::Quaternion(float w, float x, float y, float z) : _data(w, x, y, z) {}
+Quaternion::Quaternion(float w, float x, float y, float z)
+    : _data(w, x, y, z) {}
 
 Quaternion::Quaternion(const glm::vec3 &axis, float angle) {
   _data = glm::angleAxis(angle, glm::normalize(axis));
@@ -37,33 +38,19 @@ Quaternion::Quaternion(const glm::vec3 &axis, float angle) {
 
 Quaternion::Quaternion(const glm::quat &quaternion) : _data(quaternion) {}
 
-const glm::quat &Quaternion::getData(void) const {
-  return _data;
-}
+const glm::quat &Quaternion::getData(void) const { return _data; }
 
-void Quaternion::setData(const glm::quat &quaternion) {
-  _data = quaternion;
-}
+void Quaternion::setData(const glm::quat &quaternion) { _data = quaternion; }
 
-float Quaternion::getW(void) const {
-  return _data.w;
-}
+float Quaternion::getW(void) const { return _data.w; }
 
-float Quaternion::getX(void) const {
-  return _data.x;
-}
+float Quaternion::getX(void) const { return _data.x; }
 
-float Quaternion::getY(void) const {
-  return _data.y;
-}
+float Quaternion::getY(void) const { return _data.y; }
 
-float Quaternion::getZ(void) const {
-  return _data.z;
-}
+float Quaternion::getZ(void) const { return _data.z; }
 
-void Quaternion::normalize(void) {
-  _data = glm::normalize(_data);
-}
+void Quaternion::normalize(void) { _data = glm::normalize(_data); }
 
 Quaternion Quaternion::getNormalized(void) const {
   return Quaternion(glm::normalize(_data));
@@ -77,9 +64,7 @@ Quaternion Quaternion::inverse(void) const {
   return Quaternion(glm::inverse(_data));
 }
 
-glm::mat4 Quaternion::toMatrix(void) const {
-  return glm::toMat4(_data);
-}
+glm::mat4 Quaternion::toMatrix(void) const { return glm::toMat4(_data); }
 
 Quaternion Quaternion::slerp(const Quaternion &other, float t) const {
   return Quaternion(glm::slerp(_data, other._data, t));
@@ -103,10 +88,8 @@ bool Quaternion::operator!=(const Quaternion &other) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Quaternion &quat) {
-  os << "Quaternion(W:" << quat.getW()
-     << ", X:" << quat.getX()
-     << ", Y:" << quat.getY()
-     << ", Z:" << quat.getZ() << ")";
+  os << "Quaternion(W:" << quat.getW() << ", X:" << quat.getX()
+     << ", Y:" << quat.getY() << ", Z:" << quat.getZ() << ")";
   return os;
 }
 

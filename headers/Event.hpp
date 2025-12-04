@@ -22,9 +22,11 @@
 
 #pragma once
 
-#include "Vector.hpp"
 #include <chrono>
 #include <cstdint>
+#include <ostream>
+
+#include "Vector.hpp"
 
 namespace utility {
 

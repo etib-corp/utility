@@ -23,9 +23,10 @@
 #pragma once
 
 #include <cmath>
+#include <ostream>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
-#include <stdexcept>
 
 namespace utility {
 
