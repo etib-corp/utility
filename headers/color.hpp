@@ -20,9 +20,6 @@
  SOFTWARE.
  */
 
-#ifdef __DOXYGEN__
-#endif
-
 /**
  * @file color.hpp
  * @brief RGBA color representation with blending and manipulation operations.
