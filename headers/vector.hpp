@@ -20,6 +20,15 @@
  SOFTWARE.
  */
 
+/**
+ * @file vector.hpp
+ * @brief Fixed-size arithmetic vector template declaration.
+ *
+ * Declares `utility::Vector<Type, Dimension>`, a compile-time sized vector
+ * supporting common linear algebra operations including addition, subtraction,
+ * scaling, dot product, magnitude, normalization, and (for 3D) cross product.
+ */
+
 #pragma once
 
 #include <cmath>
@@ -414,7 +423,14 @@ public:
   }
 };
 
-// Scalar multiplication from left (scalar * vector)
+/**
+ * @brief Scalar multiplication (scalar * vector).
+ * @tparam Type Arithmetic component type
+ * @tparam Dimension Compile-time vector dimension
+ * @param scalar The scalar to multiply by.
+ * @param vector The vector to multiply.
+ * @return Result of scalar multiplication.
+ */
 template <typename Type, size_t Dimension>
 Vector<Type, Dimension> operator*(Type scalar,
                                   const Vector<Type, Dimension> &vector) {
@@ -423,6 +439,11 @@ Vector<Type, Dimension> operator*(Type scalar,
 
 /**
  * @brief Stream output as "(a, b, c)".
+ * @tparam Type Arithmetic component type
+ * @tparam Dimension Compile-time vector dimension
+ * @param outputStream The output stream.
+ * @param vector The vector to output.
+ * @return Reference to the output stream.
  */
 template <typename Type, size_t Dimension>
 std::ostream &operator<<(std::ostream &outputStream,

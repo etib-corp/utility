@@ -20,6 +20,15 @@
  SOFTWARE.
  */
 
+/**
+ * @file rectangle.hpp
+ * @brief Axis-aligned rectangle template declaration.
+ *
+ * Declares `utility::Rectangle<Type>`, an axis-aligned rectangle supporting
+ * geometry operations such as area, perimeter, containment, intersection,
+ * translation, and scaling.
+ */
+
 #pragma once
 
 #include <ostream>
@@ -328,6 +337,10 @@ public:
 
 /**
  * @brief Stream output as "Rectangle(x, y, width, height)".
+ * @tparam Type Arithmetic type of the rectangle.
+ * @param outputStream The output stream.
+ * @param rectangle The rectangle to output.
+ * @return Reference to the output stream.
  */
 template <typename Type>
 std::ostream &operator<<(std::ostream &outputStream,
