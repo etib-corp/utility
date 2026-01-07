@@ -11,7 +11,6 @@ directories=(
     "sources"
 	"headers"
 	"tests"
-	"examples"
 )
 
 # Loop through each directory
