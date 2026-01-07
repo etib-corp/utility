@@ -12,6 +12,7 @@ if(NOT DOT_EXECUTABLE)
 endif()
 
 # Set up doxygen-awesome-css theme (optional styling)
+include(FetchContent)
 FetchContent_Declare(
     doxygen-awesome-css
     GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css.git
