@@ -36,6 +36,8 @@
 #include <type_traits>
 #include <utility>
 
+#include "vector.hpp"
+
 namespace utility {
 
 /**
@@ -46,30 +48,34 @@ template <typename Type> class Rectangle {
 private:
 protected:
   /**
-   * @brief X-coordinate of the top-left corner.
+   * @brief Position vector storing X and Y coordinates of the top-left corner.
    */
-  Type _x;
+  Vector<Type, 2> _position;
 
   /**
-   * @brief Y-coordinate of the top-left corner.
+   * @brief Size vector storing width and height of the rectangle.
    */
-  Type _y;
-
-  /**
-   * @brief Width of the rectangle.
-   */
-  Type _width;
-
-  /**
-   * @brief Height of the rectangle.
-   */
-  Type _height;
+  Vector<Type, 2> _size;
 
 public:
   /**
    * @brief Default constructor initializing rectangle at origin with zero size.
    */
-  Rectangle() : _x(Type{}), _y(Type{}), _width(Type{}), _height(Type{}) {}
+  Rectangle() : _position(), _size() {}
+
+  /**
+   * @brief Construct rectangle with position and size.
+   * @param position Top-left corner position vector (x, y).
+   * @param size Size vector (width, height).
+   * @throws std::invalid_argument if width or height is negative.
+   */
+  Rectangle(Vector<Type, 2> position, Vector<Type, 2> size)
+      : _position(std::move(position)), _size(std::move(size)) {
+    if (_size[0] < Type{} || _size[1] < Type{}) {
+      throw std::invalid_argument(
+          "Rectangle width and height must be non-negative");
+    }
+  }
 
   /**
    * @brief Construct rectangle with position and dimensions.
@@ -80,7 +86,7 @@ public:
    * @throws std::invalid_argument if width or height is negative.
    */
   Rectangle(Type x, Type y, Type width, Type height)
-      : _x(x), _y(y), _width(width), _height(height) {
+      : _position({x, y}), _size({width, height}) {
     if (width < Type{} || height < Type{}) {
       throw std::invalid_argument(
           "Rectangle width and height must be non-negative");
@@ -92,16 +98,14 @@ public:
    * @param other The rectangle to copy from.
    */
   Rectangle(const Rectangle &other)
-      : _x(other._x), _y(other._y), _width(other._width),
-        _height(other._height) {}
+      : _position(other._position), _size(other._size) {}
 
   /**
    * @brief Move constructor.
    * @param other The rectangle to move from.
    */
   Rectangle(Rectangle &&other) noexcept
-      : _x(std::move(other._x)), _y(std::move(other._y)),
-        _width(std::move(other._width)), _height(std::move(other._height)) {}
+      : _position(std::move(other._position)), _size(std::move(other._size)) {}
 
   /**
    * @brief Copy assignment operator.
@@ -110,10 +114,8 @@ public:
    */
   Rectangle &operator=(const Rectangle &other) {
     if (this != &other) {
-      _x = other._x;
-      _y = other._y;
-      _width = other._width;
-      _height = other._height;
+      _position = other._position;
+      _size = other._size;
     }
     return *this;
   }
@@ -125,10 +127,8 @@ public:
    */
   Rectangle &operator=(Rectangle &&other) noexcept {
     if (this != &other) {
-      _x = std::move(other._x);
-      _y = std::move(other._y);
-      _width = std::move(other._width);
-      _height = std::move(other._height);
+      _position = std::move(other._position);
+      _size = std::move(other._size);
     }
     return *this;
   }
@@ -137,40 +137,71 @@ public:
   ~Rectangle() = default;
 
   /**
+   * @brief Get the position of the top-left corner.
+   * @return Position vector (x, y).
+   */
+  Vector<Type, 2> getPosition() const { return _position; }
+
+  /**
+   * @brief Get the size of the rectangle.
+   * @return Size vector (width, height).
+   */
+  Vector<Type, 2> getSize() const { return _size; }
+
+  /**
+   * @brief Set the position of the top-left corner.
+   * @param position New position vector (x, y).
+   */
+  void setPosition(const Vector<Type, 2> &position) { _position = position; }
+
+  /**
    * @brief Get the X-coordinate of the top-left corner.
    * @return X-coordinate.
    */
-  Type x() const { return _x; }
+  Type x() const { return _position[0]; }
 
   /**
    * @brief Get the Y-coordinate of the top-left corner.
    * @return Y-coordinate.
    */
-  Type y() const { return _y; }
+  Type y() const { return _position[1]; }
 
   /**
    * @brief Get the width of the rectangle.
    * @return Width.
    */
-  Type width() const { return _width; }
+  Type width() const { return _size[0]; }
 
   /**
    * @brief Get the height of the rectangle.
    * @return Height.
    */
-  Type height() const { return _height; }
+  Type height() const { return _size[1]; }
+
+  /**
+   * @brief Set the size of the rectangle.
+   * @param size New size vector (width, height).
+   * @throws std::invalid_argument if width or height is negative.
+   */
+  void setSize(const Vector<Type, 2> &size) {
+    if (size[0] < Type{} || size[1] < Type{}) {
+      throw std::invalid_argument(
+          "Rectangle width and height must be non-negative");
+    }
+    _size = size;
+  }
 
   /**
    * @brief Set the X-coordinate of the top-left corner.
    * @param x New X-coordinate.
    */
-  void setX(Type x) { _x = x; }
+  void setX(Type x) { _position[0] = x; }
 
   /**
    * @brief Set the Y-coordinate of the top-left corner.
    * @param y New Y-coordinate.
    */
-  void setY(Type y) { _y = y; }
+  void setY(Type y) { _position[1] = y; }
 
   /**
    * @brief Set the width of the rectangle.
@@ -181,7 +212,7 @@ public:
     if (width < Type{}) {
       throw std::invalid_argument("Rectangle width must be non-negative");
     }
-    _width = width;
+    _size[0] = width;
   }
 
   /**
@@ -193,53 +224,54 @@ public:
     if (height < Type{}) {
       throw std::invalid_argument("Rectangle height must be non-negative");
     }
-    _height = height;
+    _size[1] = height;
   }
 
   /**
    * @brief Get the X-coordinate of the right edge.
    * @return Right edge X-coordinate.
    */
-  Type right() const { return _x + _width; }
+  Type right() const { return _position[0] + _size[0]; }
 
   /**
    * @brief Get the Y-coordinate of the bottom edge.
    * @return Bottom edge Y-coordinate.
    */
-  Type bottom() const { return _y + _height; }
+  Type bottom() const { return _position[1] + _size[1]; }
 
   /**
    * @brief Get the X-coordinate of the center.
    * @return Center X-coordinate.
    */
-  Type centerX() const { return _x + _width / Type{2}; }
+  Type centerX() const { return _position[0] + _size[0] / Type{2}; }
 
   /**
    * @brief Get the Y-coordinate of the center.
    * @return Center Y-coordinate.
    */
-  Type centerY() const { return _y + _height / Type{2}; }
+  Type centerY() const { return _position[1] + _size[1] / Type{2}; }
 
   /**
    * @brief Compute the area of the rectangle.
    * @return Area.
    */
-  Type area() const { return _width * _height; }
+  Type area() const { return _size[0] * _size[1]; }
 
   /**
    * @brief Compute the perimeter of the rectangle.
    * @return Perimeter.
    */
-  Type perimeter() const { return Type{2} * (_width + _height); }
+  Type perimeter() const { return Type{2} * (_size[0] + _size[1]); }
 
   /**
    * @brief Check if a point is contained within the rectangle.
-   * @param px X-coordinate of the point.
-   * @param py Y-coordinate of the point.
-   * @return True if the point is inside or on the boundary, false otherwise.
+   * @param point Point as a vector.
+   * @return True if the point is inside or on the boundary, false
+   * otherwise.
    */
-  bool contains(Type px, Type py) const {
-    return px >= _x && px <= right() && py >= _y && py <= bottom();
+  bool contains(Vector<Type, 2> point) const {
+    return point[0] >= _position[0] && point[0] <= right() &&
+           point[1] >= _position[1] && point[1] <= bottom();
   }
 
   /**
@@ -248,8 +280,8 @@ public:
    * @return True if the rectangles intersect, false otherwise.
    */
   bool intersects(const Rectangle &other) const {
-    return !(_x > other.right() || right() < other._x || _y > other.bottom() ||
-             bottom() < other._y);
+    return !(_position[0] > other.right() || right() < other._position[0] ||
+             _position[1] > other.bottom() || bottom() < other._position[1]);
   }
 
   /**
@@ -258,8 +290,8 @@ public:
    * @return True if this rectangle contains the other, false otherwise.
    */
   bool containsRectangle(const Rectangle &other) const {
-    return other._x >= _x && other.right() <= right() && other._y >= _y &&
-           other.bottom() <= bottom();
+    return other._position[0] >= _position[0] && other.right() <= right() &&
+           other._position[1] >= _position[1] && other.bottom() <= bottom();
   }
 
   /**
@@ -268,8 +300,7 @@ public:
    * @return True if all components are equal, false otherwise.
    */
   bool operator==(const Rectangle &other) const {
-    return _x == other._x && _y == other._y && _width == other._width &&
-           _height == other._height;
+    return _position == other._position && _size == other._size;
   }
 
   /**
@@ -285,8 +316,8 @@ public:
    * @param dy Y-offset.
    */
   void translate(Type dx, Type dy) {
-    _x += dx;
-    _y += dy;
+    _position[0] += dx;
+    _position[1] += dy;
   }
 
   /**
@@ -300,10 +331,10 @@ public:
     }
     Type cx = centerX();
     Type cy = centerY();
-    _width *= factor;
-    _height *= factor;
-    _x = cx - _width / Type{2};
-    _y = cy - _height / Type{2};
+    _size[0] *= factor;
+    _size[1] *= factor;
+    _position[0] = cx - _size[0] / Type{2};
+    _position[1] = cy - _size[1] / Type{2};
   }
 
   /**
@@ -318,20 +349,20 @@ public:
     }
     Type cx = centerX();
     Type cy = centerY();
-    Type newWidth = _width * factor;
-    Type newHeight = _height * factor;
+    Type newWidth = _size[0] * factor;
+    Type newHeight = _size[1] * factor;
     return Rectangle(cx - newWidth / Type{2}, cy - newHeight / Type{2},
                      newWidth, newHeight);
   }
 
   /**
    * @brief Get a translated copy of the rectangle.
-   * @param dx X-offset.
-   * @param dy Y-offset.
+   * @param offset Offset vector (dx, dy).
    * @return Translated rectangle.
    */
-  Rectangle translated(Type dx, Type dy) const {
-    return Rectangle(_x + dx, _y + dy, _width, _height);
+  Rectangle translated(Vector<Type, 2> offset) const {
+    return Rectangle(_position[0] + offset[0], _position[1] + offset[1],
+                     _size[0], _size[1]);
   }
 };
 

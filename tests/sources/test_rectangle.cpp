@@ -22,6 +22,7 @@
 
 #include "test_rectangle.hpp"
 #include "rectangle.hpp"
+#include "vector.hpp"
 #include <gtest/gtest.h>
 #include <sstream>
 
@@ -137,11 +138,11 @@ TEST_F(TestRectangle, Perimeter) {
 // Test contains point
 TEST_F(TestRectangle, ContainsPoint) {
   Rectangle<int> rect(0, 0, 10, 10);
-  EXPECT_TRUE(rect.contains(5, 5));
-  EXPECT_TRUE(rect.contains(0, 0));
-  EXPECT_TRUE(rect.contains(10, 10));
-  EXPECT_FALSE(rect.contains(-1, 5));
-  EXPECT_FALSE(rect.contains(5, 11));
+  EXPECT_TRUE(rect.contains(Vector<int, 2>{5, 5}));
+  EXPECT_TRUE(rect.contains(Vector<int, 2>{0, 0}));
+  EXPECT_TRUE(rect.contains(Vector<int, 2>{10, 10}));
+  EXPECT_FALSE(rect.contains(Vector<int, 2>{-1, 5}));
+  EXPECT_FALSE(rect.contains(Vector<int, 2>{5, 11}));
 }
 
 // Test intersects
@@ -189,7 +190,7 @@ TEST_F(TestRectangle, Translate) {
 // Test translated
 TEST_F(TestRectangle, Translated) {
   Rectangle<int> rect1(10, 20, 30, 40);
-  Rectangle<int> rect2 = rect1.translated(5, -10);
+  Rectangle<int> rect2 = rect1.translated(Vector<int, 2>{5, -10});
   EXPECT_EQ(rect1.x(), 10);
   EXPECT_EQ(rect1.y(), 20);
   EXPECT_EQ(rect2.x(), 15);
@@ -238,6 +239,60 @@ TEST_F(TestRectangle, FloatingPoint) {
   EXPECT_DOUBLE_EQ(rect.width(), 3.5);
   EXPECT_DOUBLE_EQ(rect.height(), 4.5);
   EXPECT_DOUBLE_EQ(rect.area(), 15.75);
+}
+
+// Test position and size vectors
+TEST_F(TestRectangle, PositionAndSizeVectors) {
+  Vector<int, 2> pos{10, 20};
+  Vector<int, 2> size{30, 40};
+  Rectangle<int> rect(pos, size);
+  EXPECT_EQ(rect.x(), 10);
+  EXPECT_EQ(rect.y(), 20);
+  EXPECT_EQ(rect.width(), 30);
+  EXPECT_EQ(rect.height(), 40);
+  EXPECT_EQ(rect.getPosition(), pos);
+  EXPECT_EQ(rect.getSize(), size);
+}
+
+// Test Vector-based equality
+TEST_F(TestRectangle, VectorBasedEquality) {
+  Vector<int, 2> pos{5, 10};
+  Vector<int, 2> size{20, 25};
+  Rectangle<int> rect1(pos, size);
+  Rectangle<int> rect2(pos, size);
+  Vector<int, 2> size3{20, 26};
+  Rectangle<int> rect3(pos, size3);
+  // Vectors should compare equal when positions and sizes match
+  EXPECT_TRUE(rect1 == rect2);
+  EXPECT_FALSE(rect1 == rect3);
+}
+
+// Test that coordinate changes properly update position vector
+TEST_F(TestRectangle, PositionVectorUpdates) {
+  Vector<int, 2> pos{0, 0};
+  Vector<int, 2> size{10, 10};
+  Rectangle<int> rect(pos, size);
+  rect.setX(15);
+  EXPECT_EQ(rect.x(), 15);
+  rect.setY(25);
+  EXPECT_EQ(rect.y(), 25);
+  // Other coordinates should remain unchanged
+  EXPECT_EQ(rect.width(), 10);
+  EXPECT_EQ(rect.height(), 10);
+}
+
+// Test that size changes properly update size vector
+TEST_F(TestRectangle, SizeVectorUpdates) {
+  Vector<int, 2> pos{5, 10};
+  Vector<int, 2> size{20, 30};
+  Rectangle<int> rect(pos, size);
+  rect.setWidth(50);
+  EXPECT_EQ(rect.width(), 50);
+  rect.setHeight(60);
+  EXPECT_EQ(rect.height(), 60);
+  // Other coordinates should remain unchanged
+  EXPECT_EQ(rect.x(), 5);
+  EXPECT_EQ(rect.y(), 10);
 }
 
 } // namespace utility
