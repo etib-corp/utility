@@ -43,12 +43,12 @@ namespace utility {
          * This method returns a shared pointer to the singleton instance.
          * If the instance does not exist, it is created.
          *
-         * @return std::unique_ptr<T> A unique pointer to the singleton instance.
+         * @return A reference to the singleton instance.
          */
         static T& getInstance() {
             static Singleton<T> singleton;
             if (!singleton._instance) {
-                singleton._instance = std::make_unique<T>();
+                singleton._instance = T();
             }
             return singleton._instance;
         }
