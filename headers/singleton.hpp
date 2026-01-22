@@ -56,6 +56,6 @@ namespace utility {
         // Private constructor to prevent direct instantiation
         Singleton() = default;
 
-        T _instance;
+        T _instance;             ///< The singleton instance.
     };
 }
