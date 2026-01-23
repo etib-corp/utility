@@ -41,11 +41,18 @@
 namespace utility {
 
 /**
+ * @brief Concept to ensure the type can be used as a vector component.
+ * @tparam Type The type to check.
+ */
+template <typename Type>
+concept CanBeVectorComponent = std::is_arithmetic<Type>::value;
+
+/**
  * @brief Fixed-size arithmetic vector supporting common linear operations.
  * @tparam Type Arithmetic component type
  * @tparam Dimension Compile-time vector dimension
  */
-template <typename Type, size_t Dimension> class Vector {
+template <CanBeVectorComponent Type, size_t Dimension> class Vector {
 private:
 protected:
   /**

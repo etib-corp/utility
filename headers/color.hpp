@@ -40,6 +40,15 @@
 namespace utility {
 
 /**
+ * @brief Concept to ensure the type can be used as a color component.
+ * @tparam Type The type to check.
+ */
+template <typename Type>
+concept CanBeColorComponent =
+    std::is_arithmetic<Type>::value &&
+    (std::is_floating_point<Type>::value || std::is_integral<Type>::value);
+
+/**
  * @brief RGBA color with arithmetic type components.
  * @tparam Type Arithmetic type for color components (typically float or
  * uint8_t)
@@ -47,7 +56,7 @@ namespace utility {
  * Components are expected to be normalized: [0.0, 1.0] for floating-point types
  * or [0, 255] for integral types.
  */
-template <typename Type> class Color {
+template <CanBeColorComponent Type> class Color {
 private:
 protected:
   /**

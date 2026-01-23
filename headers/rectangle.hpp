@@ -41,10 +41,17 @@
 namespace utility {
 
 /**
+ * @brief Concept to ensure the type can be used as a rectangle component.
+ * @tparam Type The type to check.
+ */
+template <typename Type>
+concept CanBeRectangleComponent = std::is_arithmetic<Type>::value;
+
+/**
  * @brief Axis-aligned rectangle with arithmetic type components.
  * @tparam Type Arithmetic type for position and dimensions
  */
-template <typename Type> class Rectangle {
+template <CanBeRectangleComponent Type> class Rectangle {
 private:
 protected:
   /**
