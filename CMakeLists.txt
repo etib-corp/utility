@@ -7,6 +7,9 @@ project(utility
     LANGUAGES CXX
 )
 
+# Include useful CMake modules
+include(FetchContent)
+
 # Include common functions
 include(cmake/CommonFunctions.cmake)
 
