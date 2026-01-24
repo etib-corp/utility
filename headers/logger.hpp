@@ -112,4 +112,11 @@ protected:
   static std::string formatMessage(LogLevel level, const std::string &message);
 };
 
+/**
+ * @brief Concept to ensure a type inherits from Logger.
+ * @tparam Type The type to check.
+ */
+template <typename Type>
+concept InheritFromLogger = std::is_base_of_v<Logger, Type>;
+
 } // namespace utility
