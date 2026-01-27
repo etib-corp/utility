@@ -55,7 +55,8 @@ std::string Logger::getTimestamp() {
   return ss.str();
 }
 
-std::string Logger::formatMessage(LogLevel level, const std::string &message) const {
+std::string Logger::formatMessage(LogLevel level,
+                                  const std::string &message) const {
   std::stringstream ss;
   ss << "[" << getTimestamp() << "] ";
   if (!_name.empty()) {
@@ -64,7 +65,5 @@ std::string Logger::formatMessage(LogLevel level, const std::string &message) co
   ss << "[" << levelToString(level) << "] " << message;
   return ss.str();
 }
-
-
 
 } // namespace utility

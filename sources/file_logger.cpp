@@ -36,7 +36,8 @@ FileLogger::FileLogger(const std::string &filePath, bool append)
   }
 }
 
-FileLogger::FileLogger(const std::string &filePath, const std::string &name, bool append)
+FileLogger::FileLogger(const std::string &filePath, const std::string &name,
+                       bool append)
     : _filePath(filePath) {
   setName(name);
   auto mode = append ? (std::ios::out | std::ios::app) : std::ios::out;
