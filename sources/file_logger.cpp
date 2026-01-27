@@ -36,6 +36,17 @@ FileLogger::FileLogger(const std::string &filePath, bool append)
   }
 }
 
+FileLogger::FileLogger(const std::string &filePath, const std::string &name, bool append)
+    : _filePath(filePath) {
+  setName(name);
+  auto mode = append ? (std::ios::out | std::ios::app) : std::ios::out;
+  _fileStream.open(_filePath, mode);
+
+  if (!_fileStream.is_open()) {
+    throw std::runtime_error("Failed to open log file: " + _filePath);
+  }
+}
+
 FileLogger::~FileLogger() {
   if (_fileStream.is_open()) {
     _fileStream.flush();

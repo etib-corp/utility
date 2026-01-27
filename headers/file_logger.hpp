@@ -57,9 +57,19 @@ public:
   explicit FileLogger(const std::string &filePath, bool append = true);
 
   /**
+   * @brief Construct a file logger with a name.
+   * @param filePath Path to the log file.
+   * @param name The name of the logger.
+   * @param append If true, append to existing file; otherwise truncate.
+   * @throws std::runtime_error if file cannot be opened.
+   */
+  FileLogger(const std::string &filePath, const std::string &name,
+             bool append = true);
+
+  /**
    * @brief Destructor ensuring file is properly closed.
    */
-  ~FileLogger() override;
+  ~FileLogger(void) override;
 
   /**
    * @brief Disable copy construction and assignment.
@@ -127,7 +137,7 @@ public:
    * @brief Check if the log file is currently open.
    * @return True if file is open, false otherwise.
    */
-  bool isOpen() const;
+  bool isOpen(void) const;
 };
 
 } // namespace utility

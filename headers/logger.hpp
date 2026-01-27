@@ -56,7 +56,7 @@ public:
   /**
    * @brief Virtual destructor for proper cleanup.
    */
-  virtual ~Logger() = default;
+  virtual ~Logger(void) = default;
 
   /**
    * @brief Log a debug message.
@@ -89,6 +89,18 @@ public:
    */
   virtual void log(LogLevel level, const std::string &message) = 0;
 
+  /**
+   * @brief Set the logger name.
+   * @param name The name to assign to this logger.
+   */
+  void setName(const std::string &name) { _name = name; }
+
+  /**
+   * @brief Get the logger name.
+   * @return The name of this logger.
+   */
+  const std::string &getName(void) const { return _name; }
+
 protected:
   /**
    * @brief Get string representation of log level.
@@ -101,15 +113,18 @@ protected:
    * @brief Get current timestamp as formatted string.
    * @return Formatted timestamp string.
    */
-  static std::string getTimestamp();
+  static std::string getTimestamp(void);
 
   /**
-   * @brief Format a log message with timestamp and level.
+   * @brief Format a log message with timestamp, logger name, and level.
    * @param level The log level.
    * @param message The message to format.
    * @return Formatted log message.
    */
-  static std::string formatMessage(LogLevel level, const std::string &message);
+  std::string formatMessage(LogLevel level, const std::string &message) const;
+
+private:
+  std::string _name; ///< Logger name
 };
 
 /**

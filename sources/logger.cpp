@@ -55,11 +55,16 @@ std::string Logger::getTimestamp() {
   return ss.str();
 }
 
-std::string Logger::formatMessage(LogLevel level, const std::string &message) {
+std::string Logger::formatMessage(LogLevel level, const std::string &message) const {
   std::stringstream ss;
-  ss << "[" << getTimestamp() << "] "
-     << "[" << levelToString(level) << "] " << message;
+  ss << "[" << getTimestamp() << "] ";
+  if (!_name.empty()) {
+    ss << "[" << _name << "] ";
+  }
+  ss << "[" << levelToString(level) << "] " << message;
   return ss.str();
 }
+
+
 
 } // namespace utility

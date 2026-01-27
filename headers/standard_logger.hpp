@@ -44,12 +44,18 @@ public:
   /**
    * @brief Default constructor.
    */
-  StandardLogger();
+  StandardLogger(void);
+
+  /**
+   * @brief Constructor with logger name.
+   * @param name The name of the logger.
+   */
+  explicit StandardLogger(const std::string &name);
 
   /**
    * @brief Destructor ensuring output streams are flushed.
    */
-  ~StandardLogger() override;
+  ~StandardLogger(void) override;
 
   /**
    * @brief Log a debug message to stdout.
