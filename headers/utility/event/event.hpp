@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 namespace utility::event {
 
 /**
@@ -41,5 +43,12 @@ public:
    */
   virtual ~Event(void) = default;
 };
+
+/**
+ * @brief Concept to ensure a type inherits from Event.
+ * @tparam Type The type to check.
+ */
+template <typename Type>
+concept InheritFromEvent = std::is_base_of_v<Event, Type>;
 
 } // namespace utility::event
