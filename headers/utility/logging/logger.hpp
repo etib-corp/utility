@@ -33,7 +33,7 @@
 
 #include <string>
 
-namespace utility {
+namespace utility::logging {
 
 /**
  * @brief Log severity levels.
@@ -134,4 +134,4 @@ private:
 template <typename Type>
 concept InheritFromLogger = std::is_base_of_v<Logger, Type>;
 
-} // namespace utility
+} // namespace utility::logging

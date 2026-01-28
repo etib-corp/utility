@@ -36,9 +36,9 @@
 #include <type_traits>
 #include <utility>
 
-#include "vector.hpp"
+#include "utility/math/vector.hpp"
 
-namespace utility {
+namespace utility::math {
 
 /**
  * @brief Concept to ensure the type can be used as a rectangle component.
@@ -388,4 +388,4 @@ std::ostream &operator<<(std::ostream &outputStream,
   return outputStream;
 }
 
-} // namespace utility
+} // namespace utility::math

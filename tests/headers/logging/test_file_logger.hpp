@@ -24,14 +24,10 @@
 
 #include <gtest/gtest.h>
 
-namespace utility {
+#include <utility/logging/file_logger.hpp>
 
-class TestRectangle : public ::testing::Test {
+class TestFileLogger : public ::testing::Test {
 protected:
-  TestRectangle() = default;
-  ~TestRectangle() override = default;
-  void SetUp() override {}
-  void TearDown() override {}
+  void SetUp(void) override {}
+  void TearDown(void) override {}
 };
-
-} // namespace utility

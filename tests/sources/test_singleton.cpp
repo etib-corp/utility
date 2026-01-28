@@ -20,18 +20,6 @@
  SOFTWARE.
  */
 
-#pragma once
+#include "test_singleton.hpp"
 
-#include <gtest/gtest.h>
-
-namespace utility::tests {
-
-class TestVector : public ::testing::Test {
-protected:
-  TestVector() = default;
-  ~TestVector() override = default;
-  void SetUp() override {}
-  void TearDown() override {}
-}; // class TestVector
-
-} // namespace utility::tests
+TEST_F(TestSingleton, _) {}

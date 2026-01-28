@@ -24,11 +24,10 @@
 
 #include <gtest/gtest.h>
 
-namespace utility {
+#include <utility/math/color.hpp>
 
-class TestColor {
-public:
-  static void runTests();
+class TestColor : public ::testing::Test {
+protected:
+  void SetUp(void) override {}
+  void TearDown(void) override {}
 };
-
-} // namespace utility

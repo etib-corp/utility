@@ -31,11 +31,13 @@
 
 #pragma once
 
-#include "logger.hpp"
+
 #include <fstream>
 #include <string>
 
-namespace utility {
+#include "utility/logging/logger.hpp"
+
+namespace utility::logging {
 
 /**
  * @brief File-based logger implementation.
@@ -140,4 +142,4 @@ public:
   bool isOpen(void) const;
 };
 
-} // namespace utility
+} // namespace utility::logging

@@ -20,6 +20,14 @@
  SOFTWARE.
  */
 
-#include "rectangle.hpp"
+#pragma once
 
-namespace utility {} // namespace utility
+#include <gtest/gtest.h>
+
+#include <utility/math/rectangle.hpp>
+
+class TestRectangle : public ::testing::Test {
+protected:
+  void SetUp(void) override {}
+  void TearDown(void) override {}
+};

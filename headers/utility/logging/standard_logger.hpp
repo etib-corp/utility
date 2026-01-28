@@ -30,9 +30,9 @@
 
 #pragma once
 
-#include "logger.hpp"
+#include "utility/logging/logger.hpp"
 
-namespace utility {
+namespace utility::logging {
 
 /**
  * @brief Standard output/error logger implementation.
@@ -91,4 +91,4 @@ public:
   void log(LogLevel level, const std::string &message) override;
 };
 
-} // namespace utility
+} // namespace utility::logging

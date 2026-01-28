@@ -20,12 +20,13 @@
  SOFTWARE.
  */
 
-#include "logger.hpp"
 #include <chrono>
 #include <iomanip>
 #include <sstream>
 
-namespace utility {
+#include "utility/logging/logger.hpp"
+
+namespace utility::logging {
 
 std::string Logger::levelToString(LogLevel level) {
   switch (level) {
@@ -66,4 +67,4 @@ std::string Logger::formatMessage(LogLevel level,
   return ss.str();
 }
 
-} // namespace utility
+} // namespace utility::logging

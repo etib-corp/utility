@@ -20,6 +20,6 @@
  SOFTWARE.
  */
 
-#include "utility/singleton.hpp"
+#include "math/test_vector.hpp"
 
-namespace utility {} // namespace utility
+TEST_F(TestVector, _) {}

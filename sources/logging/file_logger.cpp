@@ -20,11 +20,12 @@
  SOFTWARE.
  */
 
-#include "file_logger.hpp"
 #include <stdexcept>
 #include <utility>
 
-namespace utility {
+#include "utility/logging/file_logger.hpp"
+
+namespace utility::logging {
 
 FileLogger::FileLogger(const std::string &filePath, bool append)
     : _filePath(filePath) {
@@ -97,4 +98,4 @@ const std::string &FileLogger::getFilePath() const { return _filePath; }
 
 bool FileLogger::isOpen() const { return _fileStream.is_open(); }
 
-} // namespace utility
+} // namespace utility::logging

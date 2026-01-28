@@ -20,6 +20,14 @@
  SOFTWARE.
  */
 
-#include "utility/singleton.hpp"
+#pragma once
 
-namespace utility {} // namespace utility
+#include <gtest/gtest.h>
+
+#include <utility/singleton.hpp>
+
+class TestSingleton : public ::testing::Test {
+protected:
+  void SetUp(void) override {}
+  void TearDown(void) override {}
+};

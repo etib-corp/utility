@@ -20,6 +20,6 @@
  SOFTWARE.
  */
 
-#include "vector.hpp"
+#include "math/test_color.hpp"
 
-namespace utility {} // namespace utility
+TEST_F(TestColor, _) {}

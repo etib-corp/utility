@@ -38,7 +38,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace utility {
+namespace utility::math {
 
 /**
  * @brief Concept to ensure the type can be used as a vector component.
@@ -466,4 +466,4 @@ std::ostream &operator<<(std::ostream &outputStream,
   return outputStream;
 }
 
-} // namespace utility
+} // namespace utility::math

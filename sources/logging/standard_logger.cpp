@@ -20,6 +20,45 @@
  SOFTWARE.
  */
 
-#include "utility/singleton.hpp"
+#include <iostream>
 
-namespace utility {} // namespace utility
+#include "utility/logging/standard_logger.hpp"
+
+namespace utility::logging {
+
+StandardLogger::StandardLogger() = default;
+
+StandardLogger::StandardLogger(const std::string &name) { setName(name); }
+
+StandardLogger::~StandardLogger() {
+  std::cout.flush();
+  std::cerr.flush();
+}
+
+void StandardLogger::debug(const std::string &message) {
+  log(LogLevel::DEBUG, message);
+}
+
+void StandardLogger::info(const std::string &message) {
+  log(LogLevel::INFO, message);
+}
+
+void StandardLogger::warning(const std::string &message) {
+  log(LogLevel::WARNING, message);
+}
+
+void StandardLogger::error(const std::string &message) {
+  log(LogLevel::ERROR, message);
+}
+
+void StandardLogger::log(LogLevel level, const std::string &message) {
+  std::string formatted = formatMessage(level, message);
+
+  if (level == LogLevel::WARNING || level == LogLevel::ERROR) {
+    std::cerr << formatted << std::endl;
+  } else {
+    std::cout << formatted << std::endl;
+  }
+}
+
+} // namespace utility::logging

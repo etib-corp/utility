@@ -20,6 +20,6 @@
  SOFTWARE.
  */
 
-#include "color.hpp"
+#include "utility/math/vector.hpp"
 
-namespace utility {} // namespace utility
+namespace utility::math {} // namespace utility::math

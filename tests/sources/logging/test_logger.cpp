@@ -20,6 +20,6 @@
  SOFTWARE.
  */
 
-#include "utility/singleton.hpp"
+#include "logging/test_standard_logger.hpp"
 
-namespace utility {} // namespace utility
+TEST_F(TestStandardLogger, _) {}

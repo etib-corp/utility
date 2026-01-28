@@ -20,6 +20,6 @@
  SOFTWARE.
  */
 
-#include "utility/singleton.hpp"
+#include "utility/math/rectangle.hpp"
 
-namespace utility {} // namespace utility
+namespace utility::math {} // namespace utility::math
