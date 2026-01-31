@@ -52,9 +52,8 @@ protected:
   /**
    * @brief Construct a Loggable with a default StandardLogger.
    */
-  explicit Loggable(void) : _logger(std::make_unique<LoggerType>()) {
-    _logger.setName("Loggable");
-  }
+  explicit Loggable(void)
+      : _logger(std::make_unique<LoggerType>(typeid(*this).name())) {}
 
   /**
    * @brief Get the internal logger.
