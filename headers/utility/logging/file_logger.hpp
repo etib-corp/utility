@@ -52,12 +52,9 @@ public:
   /**
    * @brief Construct a file logger with a name.
    * @param name The name of the logger.
-   * @param filePath Path to the log file.
-   * @param append If true, append to existing file; otherwise truncate.
    * @throws std::runtime_error if file cannot be opened.
    */
-  FileLogger(std::string &name, const std::string &filePath,
-             bool append = true);
+  FileLogger(std::string &name);
 
   /**
    * @brief Destructor ensuring file is properly closed.
