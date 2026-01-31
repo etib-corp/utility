@@ -85,15 +85,15 @@ protected:
 
 public:
   /**
+   * @brief Default constructor.
+   * @param name The name of the logger.
+   */
+  Logger(std::string &name);
+
+  /**
    * @brief Virtual destructor for proper cleanup.
    */
   virtual ~Logger(void) = default;
-
-  /**
-   * @brief Set the logger name.
-   * @param name The name to assign to this logger.
-   */
-  void setName(const std::string &name) { _name = name; }
 
   /**
    * @brief Log a debug message.

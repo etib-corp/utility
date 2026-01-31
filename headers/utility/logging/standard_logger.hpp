@@ -42,15 +42,10 @@ namespace utility::logging {
 class StandardLogger : public Logger {
 public:
   /**
-   * @brief Default constructor.
-   */
-  StandardLogger(void);
-
-  /**
    * @brief Constructor with logger name.
    * @param name The name of the logger.
    */
-  explicit StandardLogger(const std::string &name);
+  StandardLogger(std::string &name);
 
   /**
    * @brief Destructor ensuring output streams are flushed.

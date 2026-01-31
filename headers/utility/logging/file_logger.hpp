@@ -50,21 +50,13 @@ private:
 
 public:
   /**
-   * @brief Construct a file logger.
-   * @param filePath Path to the log file.
-   * @param append If true, append to existing file; otherwise truncate.
-   * @throws std::runtime_error if file cannot be opened.
-   */
-  explicit FileLogger(const std::string &filePath, bool append = true);
-
-  /**
    * @brief Construct a file logger with a name.
-   * @param filePath Path to the log file.
    * @param name The name of the logger.
+   * @param filePath Path to the log file.
    * @param append If true, append to existing file; otherwise truncate.
    * @throws std::runtime_error if file cannot be opened.
    */
-  FileLogger(const std::string &filePath, const std::string &name,
+  FileLogger(std::string &name, const std::string &filePath,
              bool append = true);
 
   /**

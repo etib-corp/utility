@@ -27,20 +27,9 @@
 
 namespace utility::logging {
 
-FileLogger::FileLogger(const std::string &filePath, bool append)
-    : _filePath(filePath) {
-  auto mode = append ? (std::ios::out | std::ios::app) : std::ios::out;
-  _fileStream.open(_filePath, mode);
-
-  if (!_fileStream.is_open()) {
-    throw std::runtime_error("Failed to open log file: " + _filePath);
-  }
-}
-
-FileLogger::FileLogger(const std::string &filePath, const std::string &name,
+FileLogger::FileLogger(std::string &name, const std::string &filePath,
                        bool append)
-    : _filePath(filePath) {
-  setName(name);
+    : Logger(name), _filePath(filePath) {
   auto mode = append ? (std::ios::out | std::ios::app) : std::ios::out;
   _fileStream.open(_filePath, mode);
 
@@ -57,7 +46,7 @@ FileLogger::~FileLogger() {
 }
 
 FileLogger::FileLogger(FileLogger &&other) noexcept
-    : _fileStream(std::move(other._fileStream)),
+    : Logger(std::move(other)), _fileStream(std::move(other._fileStream)),
       _filePath(std::move(other._filePath)) {}
 
 FileLogger &FileLogger::operator=(FileLogger &&other) noexcept {

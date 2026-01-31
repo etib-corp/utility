@@ -60,11 +60,11 @@ std::string Logger::formatMessage(LogLevel level,
                                   const std::string &message) const {
   std::stringstream ss;
   ss << "[" << getTimestamp() << "] ";
-  if (!_name.empty()) {
-    ss << "[" << _name << "] ";
-  }
+  ss << "[" << _name << "] ";
   ss << "[" << levelToString(level) << "] " << message;
   return ss.str();
 }
+
+Logger::Logger(std::string &name) : _name(name) {}
 
 } // namespace utility::logging

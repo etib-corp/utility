@@ -26,9 +26,7 @@
 
 namespace utility::logging {
 
-StandardLogger::StandardLogger() = default;
-
-StandardLogger::StandardLogger(const std::string &name) { setName(name); }
+StandardLogger::StandardLogger(std::string &name) : Logger(name) {}
 
 StandardLogger::~StandardLogger() {
   std::cout.flush();
