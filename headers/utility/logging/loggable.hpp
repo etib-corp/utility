@@ -42,131 +42,31 @@ namespace utility::logging {
  * @brief Mixin base class providing logging capabilities to derived classes.
  *
  * Any class that inherits from `Loggable` can use logging methods to output
- * debug, info, warning, and error messages. The logger is managed internally
- * and can be configured with a specific logger implementation.
- *
- * Example usage:
- * @code
- * class MyClass : public Loggable {
- * public:
- *   void doSomething() {
- *     log(LogLevel::INFO, "Doing something...");
- *   }
- * };
- *
- * StandardLogger logger("MyLogger");
- * MyClass obj;
- * obj.setLogger(&logger);
- * obj.doSomething(); // Outputs: [timestamp] [MyLogger] [INFO] Doing
- * something...
- * @endcode
+ * debug, info, warning, and error messages.
  */
-class Loggable {
-public:
-  /**
-   * @brief Virtual destructor for proper cleanup in derived classes.
-   */
-  virtual ~Loggable(void) = default;
-
-  /**
-   * @brief Set the logger instance for this object.
-   *
-   * Assigns a logger that will be used for all logging operations in this
-   * object. The logger must remain valid for the lifetime of this object.
-   *
-   * @param logger Pointer to a Logger instance. If nullptr, logging operations
-   *               will be no-ops.
-   */
-  void setLogger(Logger *logger) { _logger = logger; }
-
-  /**
-   * @brief Get the current logger instance.
-   *
-   * @return Pointer to the current logger, or nullptr if no logger is set.
-   */
-  Logger *getLogger(void) const { return _logger; }
-
-  /**
-   * @brief Check if a logger is currently set.
-   *
-   * @return True if a logger is set and can be used, false otherwise.
-   */
-  bool hasLogger(void) const { return _logger != nullptr; }
+template <InheritFromLogger LoggerType> class Loggable {
+private:
+  std::unique_ptr<LoggerType> _logger; ///< Internal logger instance
 
 protected:
   /**
-   * @brief Default constructor.
-   *
-   * Initializes a Loggable object with no logger set. Call setLogger() to
-   * assign a logger instance.
+   * @brief Construct a Loggable with a default StandardLogger.
    */
-  Loggable(void) = default;
-
-  /**
-   * @brief Constructor with logger.
-   *
-   * @param logger Pointer to a Logger instance to use for logging.
-   */
-  explicit Loggable(Logger *logger) : _logger(logger) {}
-
-  /**
-   * @brief Log a debug message.
-   *
-   * @param message The message to log.
-   */
-  void debug(const std::string &message) const {
-    if (_logger) {
-      _logger->debug(message);
-    }
+  explicit Loggable(void) : _logger(std::make_unique<LoggerType>()) {
+    _logger.setName("Loggable");
   }
 
   /**
-   * @brief Log an informational message.
-   *
-   * @param message The message to log.
+   * @brief Get the internal logger.
+   * @return Reference to the internal Logger instance.
    */
-  void info(const std::string &message) const {
-    if (_logger) {
-      _logger->info(message);
-    }
-  }
+  LoggerType &getLogger(void) { return *_logger; }
 
+public:
   /**
-   * @brief Log a warning message.
-   *
-   * @param message The message to log.
+   * @brief Virtual destructor for proper cleanup.
    */
-  void warning(const std::string &message) const {
-    if (_logger) {
-      _logger->warning(message);
-    }
-  }
-
-  /**
-   * @brief Log an error message.
-   *
-   * @param message The message to log.
-   */
-  void error(const std::string &message) const {
-    if (_logger) {
-      _logger->error(message);
-    }
-  }
-
-  /**
-   * @brief Log a message with specified level.
-   *
-   * @param level The severity level.
-   * @param message The message to log.
-   */
-  void log(LogLevel level, const std::string &message) const {
-    if (_logger) {
-      _logger->log(level, message);
-    }
-  }
-
-private:
-  Logger *_logger = nullptr; ///< Pointer to the logger instance
+  virtual ~Loggable(void) = default;
 };
 
 } // namespace utility::logging

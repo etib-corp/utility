@@ -52,11 +52,48 @@ enum class LogLevel {
  * supporting multiple log levels and formatted output.
  */
 class Logger {
+private:
+  std::string _name; ///< Logger name
+
+protected:
+  /**
+   * @brief Get string representation of log level.
+   * @param level The log level to convert.
+   * @return String representation of the level.
+   */
+  static std::string levelToString(LogLevel level);
+
+  /**
+   * @brief Get current timestamp as formatted string.
+   * @return Formatted timestamp string.
+   */
+  static std::string getTimestamp(void);
+
+  /**
+   * @brief Format a log message with timestamp, logger name, and level.
+   * @param level The log level.
+   * @param message The message to format.
+   * @return Formatted log message.
+   */
+  std::string formatMessage(LogLevel level, const std::string &message) const;
+
+  /**
+   * @brief Get the logger name.
+   * @return The name of this logger.
+   */
+  const std::string &getName(void) const { return _name; }
+
 public:
   /**
    * @brief Virtual destructor for proper cleanup.
    */
   virtual ~Logger(void) = default;
+
+  /**
+   * @brief Set the logger name.
+   * @param name The name to assign to this logger.
+   */
+  void setName(const std::string &name) { _name = name; }
 
   /**
    * @brief Log a debug message.
@@ -88,43 +125,6 @@ public:
    * @param message The message to log.
    */
   virtual void log(LogLevel level, const std::string &message) = 0;
-
-  /**
-   * @brief Set the logger name.
-   * @param name The name to assign to this logger.
-   */
-  void setName(const std::string &name) { _name = name; }
-
-  /**
-   * @brief Get the logger name.
-   * @return The name of this logger.
-   */
-  const std::string &getName(void) const { return _name; }
-
-protected:
-  /**
-   * @brief Get string representation of log level.
-   * @param level The log level to convert.
-   * @return String representation of the level.
-   */
-  static std::string levelToString(LogLevel level);
-
-  /**
-   * @brief Get current timestamp as formatted string.
-   * @return Formatted timestamp string.
-   */
-  static std::string getTimestamp(void);
-
-  /**
-   * @brief Format a log message with timestamp, logger name, and level.
-   * @param level The log level.
-   * @param message The message to format.
-   * @return Formatted log message.
-   */
-  std::string formatMessage(LogLevel level, const std::string &message) const;
-
-private:
-  std::string _name; ///< Logger name
 };
 
 /**
