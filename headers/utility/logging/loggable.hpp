@@ -46,6 +46,7 @@ namespace utility::logging {
  */
 template <InheritFromLogger LoggerType> class Loggable {
 private:
+  std::string _name;                   ///< Logger name
   std::unique_ptr<LoggerType> _logger; ///< Internal logger instance
 
 protected:
@@ -53,7 +54,8 @@ protected:
    * @brief Construct a Loggable with a default StandardLogger.
    */
   explicit Loggable(void)
-      : _logger(std::make_unique<LoggerType>(typeid(*this).name())) {}
+      : _name(typeid(*this).name()),
+        _logger(std::make_unique<LoggerType>(_name)) {}
 
   /**
    * @brief Get the internal logger.
