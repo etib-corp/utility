@@ -40,11 +40,13 @@ namespace utility::logging {
 
 /**
  * @brief Mixin base class providing logging capabilities to derived classes.
+ * @tparam ClassType The derived class type.
+ * @tparam LoggerType The logger type, must inherit from `Logger`.
  *
  * Any class that inherits from `Loggable` can use logging methods to output
  * debug, info, warning, and error messages.
  */
-template <InheritFromLogger LoggerType> class Loggable {
+template <typename ClassType, InheritFromLogger LoggerType> class Loggable {
 private:
   std::string _name;                   ///< Logger name
   std::unique_ptr<LoggerType> _logger; ///< Internal logger instance
@@ -54,7 +56,7 @@ protected:
    * @brief Construct a Loggable with a default StandardLogger.
    */
   explicit Loggable(void)
-      : _name(typeid(*this).name()),
+      : _name(typeid(ClassType).name()),
         _logger(std::make_unique<LoggerType>(_name)) {}
 
   /**
