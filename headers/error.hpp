@@ -91,19 +91,6 @@ class Error : public std::exception {
             return _celerity;
         }
 
-            /**
-         * @brief Return the originating project name/identifier.
-         *
-         * Implement this in derived project-specific Error classes so callers can
-         * distinguish which project threw the exception.
-         */
-        virtual const std::string &project() const noexcept = 0;
-
-        /**
-         * @brief Convenience: combined project + message for logging.
-         */
-        virtual std::string fullMessage() const { return std::string(project()) + ": " + _message; }
-
     private:
         std::string _message;       ///< Descriptive error message
         ERROR_CELERITY _celerity;   ///< Error severity/urgency level
