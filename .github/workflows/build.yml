@@ -29,8 +29,8 @@ jobs:
       - name: Install Ubuntu dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
-            sudo apt-get update
-            sudo apt-get install -y build-essential git make pkg-config cmake ninja-build gnome-desktop-testing libasound2-dev libpulse-dev libaudio-dev libfribidi-dev libjack-dev libsndio-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxtst-dev libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev libpipewire-0.3-dev libwayland-dev libdecor-0-dev liburing-dev
+          sudo apt-get update
+          sudo apt-get install -y build-essential git make pkg-config cmake ninja-build gnome-desktop-testing libasound2-dev libpulse-dev libaudio-dev libfribidi-dev libjack-dev libsndio-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxtst-dev libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev libpipewire-0.3-dev libwayland-dev libdecor-0-dev liburing-dev
 
       - name: Checkout
         uses: actions/checkout@v6.0.1
@@ -64,17 +64,24 @@ jobs:
           ctest
           -N
 
-      - name: Test
+      - name: Run tests
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
+        id: run-tests
         run: >
           ctest
           --build-config ${{ matrix.build_type }}
           --output-on-failure
-          --output-log=test-results-${{ github.sha }}-${{ matrix.os }}.log
+
+      - name: Write test results to file
+        uses: DamianReeves/write-file-action@v1.3
+        with:
+          path: test-results-${{ matrix.os }}-${{ github.sha }}
+          contents: ${{ steps.run-tests.outputs.stdout }}
 
       - name: Upload test results
-        if: always()
         uses: actions/upload-artifact@v6.0.0
         with:
-          name: test-results-${{ matrix.os }}
-          path: ${{ steps.strings.outputs.build-output-dir }}/test-results-${{ github.sha }}-${{ matrix.os }}.log
+          name: test-results-${{ matrix.os }}-${{ github.sha }}
+          path: test-results-${{ matrix.os }}-${{ github.sha }}
+
+    
