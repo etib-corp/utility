@@ -66,4 +66,4 @@ jobs:
         uses: actions/upload-artifact@v6.0.0
         with:
           name: test-results-${{ matrix.os }}-${{ github.sha }}
-          path: test-results-${{ matrix.os }}-${{ github.sha }}.json
+          path: ${{ steps.strings.outputs.build-output-dir }}/tests/test-results-${{ matrix.os }}-${{ github.sha }}.json
