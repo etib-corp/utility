@@ -58,30 +58,12 @@ jobs:
           --build ${{ steps.strings.outputs.build-output-dir }}
           --config ${{ matrix.build_type }}
 
-      - name: Verify test discovery
-        working-directory: ${{ steps.strings.outputs.build-output-dir }}
-        run: >
-          ctest
-          -N
-
       - name: Run tests
-        working-directory: ${{ steps.strings.outputs.build-output-dir }}
-        id: run-tests
-        run: >
-          ctest
-          --build-config ${{ matrix.build_type }}
-          --output-on-failure
-
-      - name: Write test results to file
-        uses: DamianReeves/write-file-action@v1.3
-        with:
-          path: test-results-${{ matrix.os }}-${{ github.sha }}
-          contents: ${{ steps.run-tests.outputs.stdout }}
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}/tests
+        run: ./test_utility --gtest_color=no --gtest_output=json:test-results-${{ matrix.os }}-${{ github.sha }}.json
 
       - name: Upload test results
         uses: actions/upload-artifact@v6.0.0
         with:
           name: test-results-${{ matrix.os }}-${{ github.sha }}
-          path: test-results-${{ matrix.os }}-${{ github.sha }}
-
-    
+          path: test-results-${{ matrix.os }}-${{ github.sha }}.json
