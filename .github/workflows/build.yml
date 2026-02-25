@@ -58,9 +58,16 @@ jobs:
           --build ${{ steps.strings.outputs.build-output-dir }}
           --config ${{ matrix.build_type }}
 
-      - name: Run tests
+      - name: Run tests (Linux/macOS)
+        if: matrix.os != 'windows-latest'
         working-directory: ${{ steps.strings.outputs.build-output-dir }}/tests
         run: ./test_utility --gtest_color=no --gtest_output=json:test-results-${{ matrix.os }}-${{ github.sha }}.json
+
+      - name: Run tests (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}/tests/${{ matrix.build_type }}
+        run: .\test_utility.exe --gtest_color=no --gtest_output=json:../test-results-${{ matrix.os }}-${{ github.sha }}.json
 
       - name: Upload test results
         uses: actions/upload-artifact@v6.0.0
