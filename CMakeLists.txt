@@ -66,6 +66,7 @@ option(BUILD_TESTING "Build the tests" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
 
 if(BUILD_TESTING)
+    include(CTest)
     add_subdirectory(tests)
 else()
     message(STATUS "Skipping tests...")

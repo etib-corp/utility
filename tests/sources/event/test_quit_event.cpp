@@ -22,4 +22,11 @@
 
 #include "event/test_quit_event.hpp"
 
-TEST_F(TestQuitEvent, _) {}
+TEST_F(TestQuitEvent, IsDerivedFromEventAndConstructible) {
+	utility::event::QuitEvent quitEvent;
+	utility::event::Event *basePointer = &quitEvent;
+
+	EXPECT_NE(basePointer, nullptr);
+	EXPECT_TRUE((std::is_base_of_v<utility::event::Event,
+																 utility::event::QuitEvent>));
+}

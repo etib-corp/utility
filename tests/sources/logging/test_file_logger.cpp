@@ -22,4 +22,47 @@
 
 #include "logging/test_file_logger.hpp"
 
-TEST_F(TestFileLogger, _) {}
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+
+TEST_F(TestFileLogger, CreatesAndOpensLogFile) {
+	std::filesystem::create_directories("logs");
+
+	std::string name = "file_logger_open_test";
+	const std::filesystem::path expectedPath =
+			std::filesystem::path("logs") / (name + ".log");
+	std::filesystem::remove(expectedPath);
+
+	utility::logging::FileLogger logger(name);
+
+	EXPECT_TRUE(logger.isOpen());
+	EXPECT_EQ(std::filesystem::path(logger.getFilePath()), expectedPath);
+}
+
+TEST_F(TestFileLogger, WritesMessagesToDisk) {
+	std::filesystem::create_directories("logs");
+
+	std::string name = "file_logger_write_test";
+	const std::filesystem::path path = std::filesystem::path("logs") /
+																		 (name + ".log");
+	std::filesystem::remove(path);
+
+	{
+		utility::logging::FileLogger logger(name);
+		logger.info("hello file logger");
+		logger.error("error line");
+	}
+
+	std::ifstream input(path);
+	ASSERT_TRUE(input.is_open());
+
+	std::stringstream content;
+	content << input.rdbuf();
+	const std::string text = content.str();
+
+	EXPECT_NE(text.find("[INFO]"), std::string::npos);
+	EXPECT_NE(text.find("hello file logger"), std::string::npos);
+	EXPECT_NE(text.find("[ERROR]"), std::string::npos);
+	EXPECT_NE(text.find("error line"), std::string::npos);
+}

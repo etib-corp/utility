@@ -58,8 +58,23 @@ jobs:
           --build ${{ steps.strings.outputs.build-output-dir }}
           --config ${{ matrix.build_type }}
 
+      - name: Verify test discovery
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+        run: >
+          ctest
+          -N
+
       - name: Test
-        working-directory: ${{ steps.strings.outputs.build-output-dir }}/tests
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
         run: >
           ctest
           --build-config ${{ matrix.build_type }}
+          --output-on-failure
+          --output-log=test-results-${{ github.sha }}-${{ matrix.os }}.log
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v6.0.0
+        with:
+          name: test-results-${{ matrix.os }}
+          path: ${{ steps.strings.outputs.build-output-dir }}/test-results-${{ github.sha }}-${{ matrix.os }}.log
