@@ -30,24 +30,24 @@
 namespace {
 
 class LoggableFixture
-		: public utility::logging::Loggable<LoggableFixture,
-																				utility::logging::StandardLogger> {
+    : public utility::logging::Loggable<LoggableFixture,
+                                        utility::logging::StandardLogger> {
 public:
-	void writeInfo(const std::string &message) { getLogger().info(message); }
+  void writeInfo(const std::string &message) { getLogger().info(message); }
 };
 
 } // namespace
 
 TEST_F(TestLoggable, ProvidesUsableLoggerFromMixin) {
-	std::stringstream capturedStdout;
-	std::streambuf *oldStdout = std::cout.rdbuf(capturedStdout.rdbuf());
+  std::stringstream capturedStdout;
+  std::streambuf *oldStdout = std::cout.rdbuf(capturedStdout.rdbuf());
 
-	LoggableFixture fixture;
-	fixture.writeInfo("loggable payload");
+  LoggableFixture fixture;
+  fixture.writeInfo("loggable payload");
 
-	std::cout.rdbuf(oldStdout);
-	const std::string output = capturedStdout.str();
+  std::cout.rdbuf(oldStdout);
+  const std::string output = capturedStdout.str();
 
-	EXPECT_NE(output.find("[INFO]"), std::string::npos);
-	EXPECT_NE(output.find("loggable payload"), std::string::npos);
+  EXPECT_NE(output.find("[INFO]"), std::string::npos);
+  EXPECT_NE(output.find("loggable payload"), std::string::npos);
 }

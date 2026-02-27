@@ -13,7 +13,8 @@ TEST(PerformanceMouseMotionEvent, PositionUpdatesCompleteWithinBudget) {
 
   const auto start = Clock::now();
   for (std::uint32_t i = 0; i < iterations; ++i) {
-    event.setPosition({static_cast<float>(i % 1024U), static_cast<float>(i % 768U)});
+    event.setPosition(
+        {static_cast<float>(i % 1024U), static_cast<float>(i % 768U)});
     (void)event.getPosition();
   }
   const auto end = Clock::now();

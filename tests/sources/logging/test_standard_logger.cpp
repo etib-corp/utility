@@ -26,37 +26,37 @@
 #include <sstream>
 
 TEST_F(TestStandardLogger, InfoAndDebugGoToStdout) {
-	std::stringstream capturedStdout;
-	std::streambuf *oldStdout = std::cout.rdbuf(capturedStdout.rdbuf());
+  std::stringstream capturedStdout;
+  std::streambuf *oldStdout = std::cout.rdbuf(capturedStdout.rdbuf());
 
-	std::string name = "std_logger";
-	utility::logging::StandardLogger logger(name);
-	logger.debug("debug message");
-	logger.info("info message");
+  std::string name = "std_logger";
+  utility::logging::StandardLogger logger(name);
+  logger.debug("debug message");
+  logger.info("info message");
 
-	std::cout.rdbuf(oldStdout);
+  std::cout.rdbuf(oldStdout);
 
-	const std::string output = capturedStdout.str();
-	EXPECT_NE(output.find("[DEBUG]"), std::string::npos);
-	EXPECT_NE(output.find("debug message"), std::string::npos);
-	EXPECT_NE(output.find("[INFO]"), std::string::npos);
-	EXPECT_NE(output.find("info message"), std::string::npos);
+  const std::string output = capturedStdout.str();
+  EXPECT_NE(output.find("[DEBUG]"), std::string::npos);
+  EXPECT_NE(output.find("debug message"), std::string::npos);
+  EXPECT_NE(output.find("[INFO]"), std::string::npos);
+  EXPECT_NE(output.find("info message"), std::string::npos);
 }
 
 TEST_F(TestStandardLogger, WarningAndErrorGoToStderr) {
-	std::stringstream capturedStderr;
-	std::streambuf *oldStderr = std::cerr.rdbuf(capturedStderr.rdbuf());
+  std::stringstream capturedStderr;
+  std::streambuf *oldStderr = std::cerr.rdbuf(capturedStderr.rdbuf());
 
-	std::string name = "std_logger";
-	utility::logging::StandardLogger logger(name);
-	logger.warning("warning message");
-	logger.error("error message");
+  std::string name = "std_logger";
+  utility::logging::StandardLogger logger(name);
+  logger.warning("warning message");
+  logger.error("error message");
 
-	std::cerr.rdbuf(oldStderr);
+  std::cerr.rdbuf(oldStderr);
 
-	const std::string output = capturedStderr.str();
-	EXPECT_NE(output.find("[WARNING]"), std::string::npos);
-	EXPECT_NE(output.find("warning message"), std::string::npos);
-	EXPECT_NE(output.find("[ERROR]"), std::string::npos);
-	EXPECT_NE(output.find("error message"), std::string::npos);
+  const std::string output = capturedStderr.str();
+  EXPECT_NE(output.find("[WARNING]"), std::string::npos);
+  EXPECT_NE(output.find("warning message"), std::string::npos);
+  EXPECT_NE(output.find("[ERROR]"), std::string::npos);
+  EXPECT_NE(output.find("error message"), std::string::npos);
 }

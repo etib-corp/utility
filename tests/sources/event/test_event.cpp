@@ -27,14 +27,14 @@
 #include "utility/event/quit_event.hpp"
 
 TEST_F(TestEvent, BaseClassIsPolymorphic) {
-	utility::event::Event event;
-	utility::event::Event *eventPointer = &event;
+  utility::event::Event event;
+  utility::event::Event *eventPointer = &event;
 
-	EXPECT_NE(eventPointer, nullptr);
-	EXPECT_TRUE((std::is_polymorphic_v<utility::event::Event>));
+  EXPECT_NE(eventPointer, nullptr);
+  EXPECT_TRUE((std::is_polymorphic_v<utility::event::Event>));
 }
 
 TEST_F(TestEvent, InheritFromEventConceptAcceptsDerivedTypes) {
-	EXPECT_TRUE((utility::event::InheritFromEvent<utility::event::Event>));
-	EXPECT_TRUE((utility::event::InheritFromEvent<utility::event::QuitEvent>));
+  EXPECT_TRUE((utility::event::InheritFromEvent<utility::event::Event>));
+  EXPECT_TRUE((utility::event::InheritFromEvent<utility::event::QuitEvent>));
 }

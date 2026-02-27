@@ -13,7 +13,8 @@ TEST(PerformanceMouseButtonEvent, PositionAndButtonsCompleteWithinBudget) {
 
   const auto start = Clock::now();
   for (std::uint32_t i = 0; i < iterations; ++i) {
-    event.setPosition({static_cast<float>(i % 500U), static_cast<float>(i % 300U)});
+    event.setPosition(
+        {static_cast<float>(i % 500U), static_cast<float>(i % 300U)});
     event.setButtonState(utility::event::MouseButtonEvent::MouseButton::LEFT,
                          (i % 2U) == 0U);
     (void)event.getPosition();

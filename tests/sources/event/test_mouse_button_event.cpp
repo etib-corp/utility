@@ -23,24 +23,29 @@
 #include "event/test_mouse_button_event.hpp"
 
 TEST_F(TestMouseButtonEvent, DefaultStateHasZeroPositionAndNoPressedButtons) {
-	utility::event::MouseButtonEvent event;
-	const auto position = event.getPosition();
+  utility::event::MouseButtonEvent event;
+  const auto position = event.getPosition();
 
-	EXPECT_FLOAT_EQ(position[0], 0.0F);
-	EXPECT_FLOAT_EQ(position[1], 0.0F);
-	EXPECT_FALSE(event.isButtonPressed(utility::event::MouseButtonEvent::MouseButton::LEFT));
+  EXPECT_FLOAT_EQ(position[0], 0.0F);
+  EXPECT_FLOAT_EQ(position[1], 0.0F);
+  EXPECT_FALSE(event.isButtonPressed(
+      utility::event::MouseButtonEvent::MouseButton::LEFT));
 }
 
 TEST_F(TestMouseButtonEvent, PositionAndButtonStateCanBeChanged) {
-	utility::event::MouseButtonEvent event;
+  utility::event::MouseButtonEvent event;
 
-	event.setPosition({100.0F, 200.0F});
-	event.setButtonState(utility::event::MouseButtonEvent::MouseButton::LEFT, true);
-	event.setButtonState(utility::event::MouseButtonEvent::MouseButton::RIGHT, false);
+  event.setPosition({100.0F, 200.0F});
+  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::LEFT,
+                       true);
+  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::RIGHT,
+                       false);
 
-	const auto position = event.getPosition();
-	EXPECT_FLOAT_EQ(position[0], 100.0F);
-	EXPECT_FLOAT_EQ(position[1], 200.0F);
-	EXPECT_TRUE(event.isButtonPressed(utility::event::MouseButtonEvent::MouseButton::LEFT));
-	EXPECT_FALSE(event.isButtonPressed(utility::event::MouseButtonEvent::MouseButton::RIGHT));
+  const auto position = event.getPosition();
+  EXPECT_FLOAT_EQ(position[0], 100.0F);
+  EXPECT_FLOAT_EQ(position[1], 200.0F);
+  EXPECT_TRUE(event.isButtonPressed(
+      utility::event::MouseButtonEvent::MouseButton::LEFT));
+  EXPECT_FALSE(event.isButtonPressed(
+      utility::event::MouseButtonEvent::MouseButton::RIGHT));
 }

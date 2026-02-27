@@ -23,11 +23,11 @@
 #include "test_singleton.hpp"
 
 TEST_F(TestSingleton, ReturnsSameInstanceAndPersistsState) {
-	int &first = utility::Singleton<int>::getInstance();
-	int &second = utility::Singleton<int>::getInstance();
+  int &first = utility::Singleton<int>::getInstance();
+  int &second = utility::Singleton<int>::getInstance();
 
-	first = 42;
+  first = 42;
 
-	EXPECT_EQ(&first, &second);
-	EXPECT_EQ(second, 42);
+  EXPECT_EQ(&first, &second);
+  EXPECT_EQ(second, 42);
 }

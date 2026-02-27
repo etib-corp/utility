@@ -17,7 +17,8 @@ TEST(PerformanceRectangle, GeometryOperationsCompleteWithinBudget) {
   const auto start = Clock::now();
   for (std::uint32_t i = 0; i < iterations; ++i) {
     rectangle.translate(0.1F, -0.1F);
-    if (rectangle.intersects(other) && rectangle.contains({rectangle.x(), rectangle.y()})) {
+    if (rectangle.intersects(other) &&
+        rectangle.contains({rectangle.x(), rectangle.y()})) {
       ++hits;
     }
   }

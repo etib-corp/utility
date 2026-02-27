@@ -23,19 +23,19 @@
 #include "event/test_mouse_motion_event.hpp"
 
 TEST_F(TestMouseMotionEvent, DefaultPositionIsOrigin) {
-	utility::event::MouseMotionEvent event;
-	const auto position = event.getPosition();
+  utility::event::MouseMotionEvent event;
+  const auto position = event.getPosition();
 
-	EXPECT_FLOAT_EQ(position[0], 0.0F);
-	EXPECT_FLOAT_EQ(position[1], 0.0F);
+  EXPECT_FLOAT_EQ(position[0], 0.0F);
+  EXPECT_FLOAT_EQ(position[1], 0.0F);
 }
 
 TEST_F(TestMouseMotionEvent, PositionCanBeUpdated) {
-	utility::event::MouseMotionEvent event;
+  utility::event::MouseMotionEvent event;
 
-	event.setPosition({12.5F, -7.25F});
+  event.setPosition({12.5F, -7.25F});
 
-	const auto position = event.getPosition();
-	EXPECT_FLOAT_EQ(position[0], 12.5F);
-	EXPECT_FLOAT_EQ(position[1], -7.25F);
+  const auto position = event.getPosition();
+  EXPECT_FLOAT_EQ(position[0], 12.5F);
+  EXPECT_FLOAT_EQ(position[1], -7.25F);
 }

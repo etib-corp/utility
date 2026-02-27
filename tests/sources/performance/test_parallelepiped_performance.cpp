@@ -13,9 +13,9 @@ TEST(PerformanceParallelepiped, SetGetOperationsCompleteWithinBudget) {
 
   const auto start = Clock::now();
   for (std::uint32_t i = 0; i < iterations; ++i) {
-    const utility::math::Vector<float, 3> position{
-        static_cast<float>(i % 100U), static_cast<float>(i % 50U),
-        static_cast<float>(i % 25U)};
+    const utility::math::Vector<float, 3> position{static_cast<float>(i % 100U),
+                                                   static_cast<float>(i % 50U),
+                                                   static_cast<float>(i % 25U)};
     const utility::math::Vector<float, 3> origin{0.5F, 0.5F, 0.5F};
     const utility::math::Vector<float, 3> size{10.0F, 20.0F, 30.0F};
 

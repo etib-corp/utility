@@ -53,8 +53,8 @@ TEST_F(TestCamera, ConstructorValidationRejectsInvalidValues) {
   EXPECT_THROW((utility::math::Camera<float>(position, forward, up, 0.0F,
                                              16.0F / 9.0F, 0.1F, 1000.0F)),
                std::invalid_argument);
-  EXPECT_THROW((utility::math::Camera<float>(position, forward, up, 60.0F,
-                                             0.0F, 0.1F, 1000.0F)),
+  EXPECT_THROW((utility::math::Camera<float>(position, forward, up, 60.0F, 0.0F,
+                                             0.1F, 1000.0F)),
                std::invalid_argument);
   EXPECT_THROW((utility::math::Camera<float>(position, forward, up, 60.0F,
                                              16.0F / 9.0F, 0.0F, 1000.0F)),
@@ -62,14 +62,14 @@ TEST_F(TestCamera, ConstructorValidationRejectsInvalidValues) {
   EXPECT_THROW((utility::math::Camera<float>(position, forward, up, 60.0F,
                                              16.0F / 9.0F, 1.0F, 1.0F)),
                std::invalid_argument);
-  EXPECT_THROW((utility::math::Camera<float>(position, {0.0F, 0.0F, 0.0F}, up,
-                                             60.0F, 16.0F / 9.0F, 0.1F,
-                                             1000.0F)),
-               std::invalid_argument);
-  EXPECT_THROW((utility::math::Camera<float>(position, forward, {0.0F, 0.0F, 0.0F},
-                                             60.0F, 16.0F / 9.0F, 0.1F,
-                                             1000.0F)),
-               std::invalid_argument);
+  EXPECT_THROW(
+      (utility::math::Camera<float>(position, {0.0F, 0.0F, 0.0F}, up, 60.0F,
+                                    16.0F / 9.0F, 0.1F, 1000.0F)),
+      std::invalid_argument);
+  EXPECT_THROW(
+      (utility::math::Camera<float>(position, forward, {0.0F, 0.0F, 0.0F},
+                                    60.0F, 16.0F / 9.0F, 0.1F, 1000.0F)),
+      std::invalid_argument);
 }
 
 TEST_F(TestCamera, ViewRayAtCenterAlignsWithForward) {

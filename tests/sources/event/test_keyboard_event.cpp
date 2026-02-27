@@ -23,22 +23,24 @@
 #include "event/test_keyboard_event.hpp"
 
 TEST_F(TestKeyboardEvent, DefaultStateIsConsistent) {
-	utility::event::KeyboardEvent event;
+  utility::event::KeyboardEvent event;
 
-	EXPECT_EQ(event.getScancode(), utility::event::KeyboardEvent::ScanCode::UNKNOWN);
-	EXPECT_EQ(event.getKeycode(), utility::event::KeyboardEvent::KeyCode::UNKNOWN);
-	EXPECT_TRUE(event.getIsDownEvent());
-	EXPECT_FALSE(event.getIsRepeatEvent());
+  EXPECT_EQ(event.getScancode(),
+            utility::event::KeyboardEvent::ScanCode::UNKNOWN);
+  EXPECT_EQ(event.getKeycode(),
+            utility::event::KeyboardEvent::KeyCode::UNKNOWN);
+  EXPECT_TRUE(event.getIsDownEvent());
+  EXPECT_FALSE(event.getIsRepeatEvent());
 }
 
 TEST_F(TestKeyboardEvent, KeyCodeAndFlagsCanBeUpdated) {
-	utility::event::KeyboardEvent event;
+  utility::event::KeyboardEvent event;
 
-	event.setKeycode(utility::event::KeyboardEvent::KeyCode::RETURN);
-	event.setIsDownEvent(false);
-	event.setIsRepeatEvent(true);
+  event.setKeycode(utility::event::KeyboardEvent::KeyCode::RETURN);
+  event.setIsDownEvent(false);
+  event.setIsRepeatEvent(true);
 
-	EXPECT_EQ(event.getKeycode(), utility::event::KeyboardEvent::KeyCode::RETURN);
-	EXPECT_FALSE(event.getIsDownEvent());
-	EXPECT_TRUE(event.getIsRepeatEvent());
+  EXPECT_EQ(event.getKeycode(), utility::event::KeyboardEvent::KeyCode::RETURN);
+  EXPECT_FALSE(event.getIsDownEvent());
+  EXPECT_TRUE(event.getIsRepeatEvent());
 }

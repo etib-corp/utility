@@ -23,34 +23,34 @@
 #include "math/test_parallelepiped.hpp"
 
 TEST_F(TestParallelepiped, DefaultConstructorInitializesToZero) {
-	utility::math::Parallelepiped<float> shape;
+  utility::math::Parallelepiped<float> shape;
 
-	const auto position = shape.getPosition();
-	const auto origin = shape.getOrigin();
-	const auto size = shape.getSize();
+  const auto position = shape.getPosition();
+  const auto origin = shape.getOrigin();
+  const auto size = shape.getSize();
 
-	EXPECT_FLOAT_EQ(position[0], 0.0F);
-	EXPECT_FLOAT_EQ(position[1], 0.0F);
-	EXPECT_FLOAT_EQ(position[2], 0.0F);
-	EXPECT_FLOAT_EQ(origin[0], 0.0F);
-	EXPECT_FLOAT_EQ(origin[1], 0.0F);
-	EXPECT_FLOAT_EQ(origin[2], 0.0F);
-	EXPECT_FLOAT_EQ(size[0], 0.0F);
-	EXPECT_FLOAT_EQ(size[1], 0.0F);
-	EXPECT_FLOAT_EQ(size[2], 0.0F);
+  EXPECT_FLOAT_EQ(position[0], 0.0F);
+  EXPECT_FLOAT_EQ(position[1], 0.0F);
+  EXPECT_FLOAT_EQ(position[2], 0.0F);
+  EXPECT_FLOAT_EQ(origin[0], 0.0F);
+  EXPECT_FLOAT_EQ(origin[1], 0.0F);
+  EXPECT_FLOAT_EQ(origin[2], 0.0F);
+  EXPECT_FLOAT_EQ(size[0], 0.0F);
+  EXPECT_FLOAT_EQ(size[1], 0.0F);
+  EXPECT_FLOAT_EQ(size[2], 0.0F);
 }
 
 TEST_F(TestParallelepiped, SettersAndGettersWork) {
-	utility::math::Parallelepiped<float> shape;
-	const utility::math::Vector<float, 3> position{1.0F, 2.0F, 3.0F};
-	const utility::math::Vector<float, 3> origin{0.5F, 0.5F, 0.5F};
-	const utility::math::Vector<float, 3> size{10.0F, 20.0F, 30.0F};
+  utility::math::Parallelepiped<float> shape;
+  const utility::math::Vector<float, 3> position{1.0F, 2.0F, 3.0F};
+  const utility::math::Vector<float, 3> origin{0.5F, 0.5F, 0.5F};
+  const utility::math::Vector<float, 3> size{10.0F, 20.0F, 30.0F};
 
-	shape.setPosition(position);
-	shape.setOrigin(origin);
-	shape.setSize(size);
+  shape.setPosition(position);
+  shape.setOrigin(origin);
+  shape.setSize(size);
 
-	EXPECT_EQ(shape.getPosition(), position);
-	EXPECT_EQ(shape.getOrigin(), origin);
-	EXPECT_EQ(shape.getSize(), size);
+  EXPECT_EQ(shape.getPosition(), position);
+  EXPECT_EQ(shape.getOrigin(), origin);
+  EXPECT_EQ(shape.getSize(), size);
 }

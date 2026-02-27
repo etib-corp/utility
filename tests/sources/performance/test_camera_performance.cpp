@@ -23,7 +23,8 @@ TEST(PerformanceCamera, ViewRayAndMovementOperationsCompleteWithinBudget) {
     camera.move({0.0005F, -0.00025F, 0.0F});
     if ((i % 10000U) == 0U) {
       const auto position = camera.getPosition();
-      camera.lookAt(position + utility::math::Vector<float, 3>{0.0F, 0.0F, -1.0F});
+      camera.lookAt(position +
+                    utility::math::Vector<float, 3>{0.0F, 0.0F, -1.0F});
     }
   }
   const auto end = Clock::now();
