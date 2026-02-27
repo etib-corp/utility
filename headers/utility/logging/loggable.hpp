@@ -33,6 +33,7 @@
 
 #include <memory>
 #include <string>
+#include <typeinfo>
 
 #include "utility/logging/logger.hpp"
 

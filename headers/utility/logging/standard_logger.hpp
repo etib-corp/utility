@@ -45,7 +45,7 @@ public:
    * @brief Constructor with logger name.
    * @param name The name of the logger.
    */
-  StandardLogger(std::string &name);
+  StandardLogger(const std::string &name);
 
   /**
    * @brief Destructor ensuring output streams are flushed.

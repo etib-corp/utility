@@ -54,7 +54,7 @@ public:
    * @param name The name of the logger.
    * @throws std::runtime_error if file cannot be opened.
    */
-  FileLogger(std::string &name);
+  FileLogger(const std::string &name);
 
   /**
    * @brief Destructor ensuring file is properly closed.

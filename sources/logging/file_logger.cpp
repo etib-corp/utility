@@ -27,7 +27,7 @@
 
 namespace utility::logging {
 
-FileLogger::FileLogger(std::string &name)
+FileLogger::FileLogger(const std::string &name)
     : Logger(name), _filePath("logs/" + name + ".log") {
   _fileStream.open(_filePath, std::ios::out | std::ios::app);
 

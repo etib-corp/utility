@@ -32,6 +32,7 @@
 #pragma once
 
 #include <string>
+#include <type_traits>
 
 namespace utility::logging {
 
@@ -88,7 +89,7 @@ public:
    * @brief Default constructor.
    * @param name The name of the logger.
    */
-  Logger(std::string &name);
+  Logger(const std::string &name);
 
   /**
    * @brief Virtual destructor for proper cleanup.

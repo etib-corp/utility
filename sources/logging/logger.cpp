@@ -65,6 +65,6 @@ std::string Logger::formatMessage(LogLevel level,
   return ss.str();
 }
 
-Logger::Logger(std::string &name) : _name(name) {}
+Logger::Logger(const std::string &name) : _name(name) {}
 
 } // namespace utility::logging
