@@ -694,7 +694,11 @@ public:
    * @return True if the specified modifier is set, false otherwise.
    */
   bool isModifierSet(const KeyModifiers modifier) const noexcept {
-    return _modifiers.test(static_cast<std::size_t>(modifier));
+    const auto mask = static_cast<std::size_t>(modifier);
+    if (mask == 0) {
+      return _modifiers.none();
+    }
+    return (_modifiers.to_ulong() & mask) != 0;
   }
 
   /**

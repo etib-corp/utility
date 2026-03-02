@@ -44,3 +44,26 @@ TEST_F(TestKeyboardEvent, KeyCodeAndFlagsCanBeUpdated) {
   EXPECT_FALSE(event.getIsDownEvent());
   EXPECT_TRUE(event.getIsRepeatEvent());
 }
+
+TEST_F(TestKeyboardEvent, ModifierMasksSupportGroupedAndHighBitValues) {
+  using KeyModifiers = utility::event::KeyboardEvent::KeyModifiers;
+
+  utility::event::KeyboardEvent event;
+
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::NONE));
+
+  event.setModifiers(KeyModifiers::LSHIFT);
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::LSHIFT));
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::SHIFT));
+  EXPECT_FALSE(event.isModifierSet(KeyModifiers::RSHIFT));
+  EXPECT_FALSE(event.isModifierSet(KeyModifiers::NONE));
+
+  event.setModifiers(KeyModifiers::RALT);
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::RALT));
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::ALT));
+  EXPECT_FALSE(event.isModifierSet(KeyModifiers::LALT));
+
+  event.setModifiers(KeyModifiers::MODE);
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::MODE));
+  EXPECT_FALSE(event.isModifierSet(KeyModifiers::ALT));
+}
