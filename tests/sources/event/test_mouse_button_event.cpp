@@ -49,3 +49,13 @@ TEST_F(TestMouseButtonEvent, PositionAndButtonStateCanBeChanged) {
   EXPECT_FALSE(event.isButtonPressed(
       utility::event::MouseButtonEvent::MouseButton::RIGHT));
 }
+
+TEST_F(TestMouseButtonEvent,
+       FactoryCreatesMouseButtonEventThroughAbstractInterface) {
+  utility::event::MouseButtonEvent::Factory factory;
+  const auto event = factory.create();
+
+  EXPECT_NE(event, nullptr);
+  EXPECT_NE(dynamic_cast<utility::event::MouseButtonEvent *>(event.get()),
+            nullptr);
+}

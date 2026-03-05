@@ -41,3 +41,13 @@ TEST_F(TestTextEditingEvent, TextRangeCanBeUpdated) {
   EXPECT_EQ(event.getStart(), 2);
   EXPECT_EQ(event.getLength(), 4);
 }
+
+TEST_F(TestTextEditingEvent,
+       FactoryCreatesTextEditingEventThroughAbstractInterface) {
+  utility::event::TextEditingEvent::Factory factory;
+  const auto event = factory.create();
+
+  EXPECT_NE(event, nullptr);
+  EXPECT_NE(dynamic_cast<utility::event::TextEditingEvent *>(event.get()),
+            nullptr);
+}

@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "utility/event/event.hpp"
 
 #include "utility/math/vector.hpp"
@@ -36,6 +38,30 @@ namespace utility::event {
 class MouseMotionEvent : public Event {
 public:
   using MousePosition = math::Vector<float, 2>; /**< 2D mouse position type */
+
+  /**
+   * @brief Factory for creating MouseMotionEvent instances.
+   */
+  class Factory : public Event::AbstractFactory {
+  public:
+    ~Factory(void) override = default;
+
+    /**
+     * @brief Create a MouseMotionEvent as a base Event pointer.
+     * @return Newly created MouseMotionEvent as std::unique_ptr<Event>.
+     */
+    std::unique_ptr<Event> create(void) const override {
+      return std::make_unique<MouseMotionEvent>();
+    }
+
+    /**
+     * @brief Create a strongly-typed MouseMotionEvent.
+     * @return Newly created MouseMotionEvent as std::unique_ptr<MouseMotionEvent>.
+     */
+    std::unique_ptr<MouseMotionEvent> createTyped(void) const {
+      return std::make_unique<MouseMotionEvent>();
+    }
+  };
 
 private:
   MousePosition _position{0, 0};

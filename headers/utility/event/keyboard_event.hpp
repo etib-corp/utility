@@ -24,6 +24,7 @@
 
 #include <bitset>
 #include <cstdint>
+#include <memory>
 
 #include "utility/event/event.hpp"
 
@@ -639,6 +640,30 @@ public:
     SHIFT = LSHIFT | RSHIFT, /**< Any Shift key is down. */
     ALT = LALT | RALT,       /**< Any Alt key is down. */
     GUI = LGUI | RGUI        /**< Any GUI key is down. */
+  };
+
+  /**
+   * @brief Factory for creating KeyboardEvent instances.
+   */
+  class Factory : public Event::AbstractFactory {
+  public:
+    ~Factory(void) override = default;
+
+    /**
+     * @brief Create a KeyboardEvent as a base Event pointer.
+     * @return Newly created KeyboardEvent as std::unique_ptr<Event>.
+     */
+    std::unique_ptr<Event> create(void) const override {
+      return std::make_unique<KeyboardEvent>();
+    }
+
+    /**
+     * @brief Create a strongly-typed KeyboardEvent.
+     * @return Newly created KeyboardEvent as std::unique_ptr<KeyboardEvent>.
+     */
+    std::unique_ptr<KeyboardEvent> createTyped(void) const {
+      return std::make_unique<KeyboardEvent>();
+    }
   };
 
 private:

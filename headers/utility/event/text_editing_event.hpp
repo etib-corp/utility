@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "utility/event/event.hpp"
@@ -38,6 +39,30 @@ private:
   int _length{0};
 
 public:
+  /**
+   * @brief Factory for creating TextEditingEvent instances.
+   */
+  class Factory : public Event::AbstractFactory {
+  public:
+    ~Factory(void) override = default;
+
+    /**
+     * @brief Create a TextEditingEvent as a base Event pointer.
+     * @return Newly created TextEditingEvent as std::unique_ptr<Event>.
+     */
+    std::unique_ptr<Event> create(void) const override {
+      return std::make_unique<TextEditingEvent>();
+    }
+
+    /**
+     * @brief Create a strongly-typed TextEditingEvent.
+     * @return Newly created TextEditingEvent as std::unique_ptr<TextEditingEvent>.
+     */
+    std::unique_ptr<TextEditingEvent> createTyped(void) const {
+      return std::make_unique<TextEditingEvent>();
+    }
+  };
+
   /**
    * @brief Default constructor.
    */

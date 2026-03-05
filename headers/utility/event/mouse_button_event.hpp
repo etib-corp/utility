@@ -24,6 +24,7 @@
 
 #include <bitset>
 #include <cstdint>
+#include <memory>
 
 #include "utility/event/event.hpp"
 
@@ -49,6 +50,30 @@ public:
     RIGHT = 3,
     X1 = 4,
     X2 = 5
+  };
+
+  /**
+   * @brief Factory for creating MouseButtonEvent instances.
+   */
+  class Factory : public Event::AbstractFactory {
+  public:
+    ~Factory(void) override = default;
+
+    /**
+     * @brief Create a MouseButtonEvent as a base Event pointer.
+     * @return Newly created MouseButtonEvent as std::unique_ptr<Event>.
+     */
+    std::unique_ptr<Event> create(void) const override {
+      return std::make_unique<MouseButtonEvent>();
+    }
+
+    /**
+     * @brief Create a strongly-typed MouseButtonEvent.
+     * @return Newly created MouseButtonEvent as std::unique_ptr<MouseButtonEvent>.
+     */
+    std::unique_ptr<MouseButtonEvent> createTyped(void) const {
+      return std::make_unique<MouseButtonEvent>();
+    }
   };
 
 private:

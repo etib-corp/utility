@@ -30,3 +30,11 @@ TEST_F(TestQuitEvent, IsDerivedFromEventAndConstructible) {
   EXPECT_TRUE(
       (std::is_base_of_v<utility::event::Event, utility::event::QuitEvent>));
 }
+
+TEST_F(TestQuitEvent, FactoryCreatesQuitEventThroughAbstractInterface) {
+  utility::event::QuitEvent::Factory factory;
+  const auto event = factory.create();
+
+  EXPECT_NE(event, nullptr);
+  EXPECT_NE(dynamic_cast<utility::event::QuitEvent *>(event.get()), nullptr);
+}

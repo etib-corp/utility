@@ -35,3 +35,12 @@ TEST_F(TestTextInputEvent, TextCanBeUpdated) {
 
   EXPECT_EQ(event.getText(), "é漢字");
 }
+
+TEST_F(TestTextInputEvent, FactoryCreatesTextInputEventThroughAbstractInterface) {
+  utility::event::TextInputEvent::Factory factory;
+  const auto event = factory.create();
+
+  EXPECT_NE(event, nullptr);
+  EXPECT_NE(dynamic_cast<utility::event::TextInputEvent *>(event.get()),
+            nullptr);
+}

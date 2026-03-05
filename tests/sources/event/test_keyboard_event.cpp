@@ -67,3 +67,12 @@ TEST_F(TestKeyboardEvent, ModifierMasksSupportGroupedAndHighBitValues) {
   EXPECT_TRUE(event.isModifierSet(KeyModifiers::MODE));
   EXPECT_FALSE(event.isModifierSet(KeyModifiers::ALT));
 }
+
+TEST_F(TestKeyboardEvent, FactoryCreatesKeyboardEventThroughAbstractInterface) {
+  utility::event::KeyboardEvent::Factory factory;
+  const auto event = factory.create();
+
+  EXPECT_NE(event, nullptr);
+  EXPECT_NE(dynamic_cast<utility::event::KeyboardEvent *>(event.get()),
+            nullptr);
+}

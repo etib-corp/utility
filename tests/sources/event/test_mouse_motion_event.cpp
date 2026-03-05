@@ -39,3 +39,13 @@ TEST_F(TestMouseMotionEvent, PositionCanBeUpdated) {
   EXPECT_FLOAT_EQ(position[0], 12.5F);
   EXPECT_FLOAT_EQ(position[1], -7.25F);
 }
+
+TEST_F(TestMouseMotionEvent,
+       FactoryCreatesMouseMotionEventThroughAbstractInterface) {
+  utility::event::MouseMotionEvent::Factory factory;
+  const auto event = factory.create();
+
+  EXPECT_NE(event, nullptr);
+  EXPECT_NE(dynamic_cast<utility::event::MouseMotionEvent *>(event.get()),
+            nullptr);
+}

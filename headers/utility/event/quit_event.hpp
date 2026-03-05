@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "utility/event/event.hpp"
 
 namespace utility::event {
@@ -33,6 +35,30 @@ namespace utility::event {
  */
 class QuitEvent : public Event {
 public:
+  /**
+   * @brief Factory for creating QuitEvent instances.
+   */
+  class Factory : public Event::AbstractFactory {
+  public:
+    ~Factory(void) override = default;
+
+    /**
+     * @brief Create a QuitEvent as a base Event pointer.
+     * @return Newly created QuitEvent as std::unique_ptr<Event>.
+     */
+    std::unique_ptr<Event> create(void) const override {
+      return std::make_unique<QuitEvent>();
+    }
+
+    /**
+     * @brief Create a strongly-typed QuitEvent.
+     * @return Newly created QuitEvent as std::unique_ptr<QuitEvent>.
+     */
+    std::unique_ptr<QuitEvent> createTyped(void) const {
+      return std::make_unique<QuitEvent>();
+    }
+  };
+
   /**
    * @brief Default constructor.
    */

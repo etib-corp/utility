@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "utility/event/event.hpp"
@@ -36,6 +37,30 @@ private:
   std::string _text{};
 
 public:
+  /**
+   * @brief Factory for creating TextInputEvent instances.
+   */
+  class Factory : public Event::AbstractFactory {
+  public:
+    ~Factory(void) override = default;
+
+    /**
+     * @brief Create a TextInputEvent as a base Event pointer.
+     * @return Newly created TextInputEvent as std::unique_ptr<Event>.
+     */
+    std::unique_ptr<Event> create(void) const override {
+      return std::make_unique<TextInputEvent>();
+    }
+
+    /**
+     * @brief Create a strongly-typed TextInputEvent.
+     * @return Newly created TextInputEvent as std::unique_ptr<TextInputEvent>.
+     */
+    std::unique_ptr<TextInputEvent> createTyped(void) const {
+      return std::make_unique<TextInputEvent>();
+    }
+  };
+
   /**
    * @brief Default constructor.
    */
