@@ -37,7 +37,7 @@ TEST(PerformanceLogger, MessageFormattingCompletesWithinBudget) {
 
   const auto start = Clock::now();
   for (std::uint32_t i = 0; i < iterations; ++i) {
-    last = logger.exposeFormatMessage(utility::logging::LogLevel::INFO,
+    last = logger.exposeFormatMessage(utility::logging::LogLevel::INFO_LEVEL,
                                       "payload_" + std::to_string(i));
   }
   const auto end = Clock::now();

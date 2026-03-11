@@ -40,10 +40,10 @@ namespace utility::logging {
  * @brief Log severity levels.
  */
 enum class LogLevel {
-  DEBUG,   ///< Detailed debugging information
-  INFO,    ///< General informational messages
-  WARNING, ///< Warning messages for potentially harmful situations
-  ERROR    ///< Error messages for serious problems
+  DEBUG_LEVEL,   ///< Detailed debugging information
+  INFO_LEVEL,    ///< General informational messages
+  WARNING_LEVEL, ///< Warning messages for potentially harmful situations
+  ERROR_LEVEL    ///< Error messages for serious problems
 };
 
 /**

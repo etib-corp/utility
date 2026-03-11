@@ -48,6 +48,6 @@ TEST_F(TestLoggable, ProvidesUsableLoggerFromMixin) {
   std::cout.rdbuf(oldStdout);
   const std::string output = capturedStdout.str();
 
-  EXPECT_NE(output.find("[INFO]"), std::string::npos);
+  EXPECT_NE(output.find("[INFO_LEVEL]"), std::string::npos);
   EXPECT_NE(output.find("loggable payload"), std::string::npos);
 }

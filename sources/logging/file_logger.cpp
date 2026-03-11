@@ -59,19 +59,19 @@ FileLogger &FileLogger::operator=(FileLogger &&other) noexcept {
 }
 
 void FileLogger::debug(const std::string &message) {
-  log(LogLevel::DEBUG, message);
+  log(LogLevel::DEBUG_LEVEL, message);
 }
 
 void FileLogger::info(const std::string &message) {
-  log(LogLevel::INFO, message);
+  log(LogLevel::INFO_LEVEL, message);
 }
 
 void FileLogger::warning(const std::string &message) {
-  log(LogLevel::WARNING, message);
+  log(LogLevel::WARNING_LEVEL, message);
 }
 
 void FileLogger::error(const std::string &message) {
-  log(LogLevel::ERROR, message);
+  log(LogLevel::ERROR_LEVEL, message);
 }
 
 void FileLogger::log(LogLevel level, const std::string &message) {
