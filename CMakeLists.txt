@@ -62,17 +62,17 @@ target_include_directories(${PROJECT_NAME}
 )
 
 # Optional components
-option(BUILD_TESTING "Build the tests" OFF)
-option(BUILD_DOCS "Build documentation" OFF)
+option(BUILD_UTILITY_TESTING "Build the tests" OFF)
+option(BUILD_UTILITY_DOCS "Build documentation" OFF)
 
-if(BUILD_TESTING)
+if(BUILD_UTILITY_TESTING)
     include(CTest)
     add_subdirectory(tests)
 else()
     message(STATUS "Skipping tests...")
 endif()
 
-if(BUILD_DOCS)
+if(BUILD_UTILITY_DOCS)
     # Find Doxygen package (keep usage compatible across CMake versions and CI images)
     find_package(Doxygen REQUIRED)
     if(NOT Doxygen_FOUND)
