@@ -34,25 +34,25 @@ StandardLogger::~StandardLogger() {
 }
 
 void StandardLogger::debug(const std::string &message) {
-  log(LogLevel::DEBUG, message);
+  log(LogLevel::DEBUG_LEVEL, message);
 }
 
 void StandardLogger::info(const std::string &message) {
-  log(LogLevel::INFO, message);
+  log(LogLevel::INFO_LEVEL, message);
 }
 
 void StandardLogger::warning(const std::string &message) {
-  log(LogLevel::WARNING, message);
+  log(LogLevel::WARNING_LEVEL, message);
 }
 
 void StandardLogger::error(const std::string &message) {
-  log(LogLevel::ERROR, message);
+  log(LogLevel::ERROR_LEVEL, message);
 }
 
 void StandardLogger::log(LogLevel level, const std::string &message) {
   std::string formatted = formatMessage(level, message);
 
-  if (level == LogLevel::WARNING || level == LogLevel::ERROR) {
+  if (level == LogLevel::WARNING_LEVEL || level == LogLevel::ERROR_LEVEL) {
     std::cerr << formatted << std::endl;
   } else {
     std::cout << formatted << std::endl;
