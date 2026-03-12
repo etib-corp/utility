@@ -62,14 +62,24 @@ TEST_F(TestDefaultAssetManager, GetNonExistentAsset) {
   EXPECT_EQ(asset, nullptr);
 }
 
-// Test the writing and reading of an asset
 TEST_F(TestDefaultAssetManager, WriteAndReadAsset) {
   utility::DefaultAssetManager assetManager;
   auto asset = assetManager.add("../tests/sources/assetmanager/testAsset/file3");
   std::string data = "Hello, World!";
   asset->write(data.c_str(), sizeof(char), data.size());
+  assetManager.save("../tests/sources/assetmanager/testAsset/file3");
   asset->seek(0, utility::FileAsset::Seek::SET);
-  std::string readData;
+  std::string readData(data.size(), '\0');
   asset->read(readData, sizeof(char), data.size());
   EXPECT_EQ(data, readData);
+  asset->clear();
+  assetManager.save("../tests/sources/assetmanager/testAsset/file3");
+  asset->seek(0, utility::FileAsset::Seek::SET);
+}
+
+TEST_F(TestDefaultAssetManager, LoadModel) {
+  utility::DefaultAssetManager assetManager;
+  assetManager.loadDirectory("../tests/sources/assetmanager/testAsset");
+  auto vertices = assetManager.loadModel("../tests/sources/assetmanager/testAsset/model.obj");
+  EXPECT_EQ(vertices.size(), 11484);
 }
