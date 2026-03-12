@@ -24,8 +24,9 @@
  * @file standard_logger.hpp
  * @brief Standard output/error logger declaration.
  *
- * Declares `utility::StandardLogger`, which routes INFO_LEVEL/DEBUG_LEVEL to stdout and
- * WARNING_LEVEL/ERROR_LEVEL to stderr. See implementation in sources/standard_logger.cpp.
+ * Declares `utility::StandardLogger`, which routes INFO_LEVEL/DEBUG_LEVEL to
+ * stdout and WARNING_LEVEL/ERROR_LEVEL to stderr. See implementation in
+ * sources/standard_logger.cpp.
  */
 
 #pragma once
@@ -37,7 +38,8 @@ namespace utility::logging {
 /**
  * @brief Standard output/error logger implementation.
  *
- * Logs DEBUG_LEVEL and INFO_LEVEL messages to stdout, WARNING_LEVEL and ERROR_LEVEL to stderr.
+ * Logs DEBUG_LEVEL and INFO_LEVEL messages to stdout, WARNING_LEVEL and
+ * ERROR_LEVEL to stderr.
  */
 class StandardLogger : public Logger {
 public:
@@ -79,7 +81,8 @@ public:
   /**
    * @brief Log a message with specified level.
    *
-   * Routes DEBUG_LEVEL and INFO_LEVEL to stdout, WARNING_LEVEL and ERROR_LEVEL to stderr.
+   * Routes DEBUG_LEVEL and INFO_LEVEL to stdout, WARNING_LEVEL and ERROR_LEVEL
+   * to stderr.
    * @param level The severity level.
    * @param message The message to log.
    */

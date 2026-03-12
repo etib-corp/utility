@@ -20,28 +20,16 @@
  SOFTWARE.
  */
 
-#include "event/test_text_input_event.hpp"
+#include "utility/asset_manager/asset_manager.hpp"
 
-TEST_F(TestTextInputEvent, DefaultTextIsEmpty) {
-  utility::event::TextInputEvent event;
-
-  EXPECT_TRUE(event.getText().empty());
+bool utility::AssetManager::exists(const std::string &path) const {
+  return _assets.find(path) != _assets.end();
 }
 
-TEST_F(TestTextInputEvent, TextCanBeUpdated) {
-  utility::event::TextInputEvent event;
-
-  event.setText("é漢字");
-
-  EXPECT_EQ(event.getText(), "é漢字");
-}
-
-TEST_F(TestTextInputEvent,
-       FactoryCreatesTextInputEventThroughAbstractInterface) {
-  utility::event::TextInputEvent::Factory factory;
-  const auto event = factory.create();
-
-  EXPECT_NE(event, nullptr);
-  EXPECT_NE(dynamic_cast<utility::event::TextInputEvent *>(event.get()),
-            nullptr);
+std::shared_ptr<utility::FileAsset>
+utility::AssetManager::get(const std::string &path) {
+  if (exists(path)) {
+    return _assets[path];
+  }
+  return nullptr;
 }

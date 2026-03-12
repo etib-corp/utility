@@ -56,7 +56,8 @@ public:
 
     /**
      * @brief Create a strongly-typed TextEditingEvent.
-     * @return Newly created TextEditingEvent as std::unique_ptr<TextEditingEvent>.
+     * @return Newly created TextEditingEvent as
+     * std::unique_ptr<TextEditingEvent>.
      */
     std::unique_ptr<TextEditingEvent> createTyped(void) const {
       return std::make_unique<TextEditingEvent>();
