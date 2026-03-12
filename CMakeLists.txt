@@ -34,6 +34,14 @@ if(NOT CMAKE_BUILD_TYPE)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
+# Fetch and configure dependencies
+FetchContent_Declare(
+    tinyobjloader
+    GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader.git
+    GIT_TAG v1.0.6
+)
+FetchContent_MakeAvailable(tinyobjloader)
+
 # Set the files directories
 set(HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/headers")
 set(SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sources")
@@ -50,6 +58,12 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 
 # Create the main library
 add_library(${PROJECT_NAME} ${SOURCES})
+
+# Link common dependencies
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+        tinyobjloader
+)
 
 # Set common target properties
 set_utility_target_properties(${PROJECT_NAME})

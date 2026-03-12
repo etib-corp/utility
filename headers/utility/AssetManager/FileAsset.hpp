@@ -94,13 +94,37 @@ namespace utility
 		 */
 		size_t tell() const;
 
+		/**
+		 * @brief Returns the content of the file.
+		 * @return The content of the file.
+		 * This method returns the content of the file as a string. The content is
+		 * stored in the _content member variable and can be accessed using this method.
+		 */
 		[[__nodiscard__]] inline const std::string &content() const
 		{
 			return _content;
 		}
 
+		/**
+		* @brief Clears the content of the file.
+		*
+		* This method clears the content of the file by resetting the _content
+		* member variable to an empty string and resetting the _pos member
+		* variable to 0.
+		* After calling this method, the file will be empty and the position will be reset to the beginning of the file.
+		* This method can be used to clear the content of the file before writing new data to it or to reset the file to an empty state.
+		 */
+		void clear();
+
+		/**
+		 * @brief Removes a number of elements from the current position.
+		 * @param count The number of elements to remove.
+		 * @return The number of elements removed.
+		 */
+		size_t remove(size_t count);
+
 		protected:
 		std::string _content;	 ///> The content of the file
-		size_t _pos;			 ///> The current position in the file
+		size_t _pos = 0;			 ///> The current position in the file
 	};
 }	 // namespace utility

@@ -7,10 +7,12 @@
 
 #pragma once
 
-#include "utility/AssetManager/FIleAsset.hpp"
+#include "utility/AssetManager/FileAsset.hpp"
+#include "utility/Vertex.hpp"
 
 #include <map>
 #include <memory>
+#include <vector>
 #include <string>
 #include <utility>
 
@@ -107,6 +109,16 @@ namespace utility
 		 * If the asset does not exist, it returns a nullptr.
 		 */
 		std::shared_ptr<utility::FileAsset> get(const std::string &path);
+
+		/**
+		 * @brief Loads a model from a file.
+		 * @param path The path to the model file.
+		 * @return A vector of Vertex objects representing the model.
+		 *
+		 * This method is responsible for loading a model from the specified
+		 * file and returning its vertices as a vector of Vertex objects.
+		 */
+		std::vector<Vertex> loadModel(const std::string &path);
 
 		protected:
 		std::map<std::string, std::shared_ptr<utility::FileAsset>>

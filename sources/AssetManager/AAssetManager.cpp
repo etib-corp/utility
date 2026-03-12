@@ -20,3 +20,14 @@ std::shared_ptr<utility::FileAsset>
 	}
 	return nullptr;
 }
+
+std::vector<utility::Vertex> utility::AAssetManager::loadModel(const std::string &path)
+{
+	std::vector<utility::Vertex> vertices;
+	auto asset = get(path);
+	if (asset == nullptr) {
+		return vertices;
+	}
+	std::string content = asset->content();
+	return vertices;
+}

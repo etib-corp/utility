@@ -5,7 +5,7 @@
 ** FileAsset
 */
 
-#include "utility/AssetManager/FIleAsset.hpp"
+#include "utility/AssetManager/FileAsset.hpp"
 
 utility::FileAsset::FileAsset(const std::string &content)
 	: _content(content)
@@ -64,4 +64,17 @@ int utility::FileAsset::seek(long offset, Seek whence)
 size_t utility::FileAsset::tell() const
 {
 	return _pos;
+}
+
+void utility::FileAsset::clear()
+{
+	_content.clear();
+	_pos = 0;
+}
+
+size_t utility::FileAsset::remove(size_t count)
+{
+	size_t toRemove = std::min(count, _content.size() - _pos);
+	_content.erase(_pos, toRemove);
+	return toRemove;
 }
