@@ -49,8 +49,15 @@ public:
     MIDDLE = 2,
     RIGHT = 3,
     X1 = 4,
-    X2 = 5
+    X2 = 5,
+    LAST = 6 // Sentinel value to indicate the number of buttons, not an actual
+             // button
   };
+
+  using MouseButtonsState =
+      std::bitset<sizeof(std::uint8_t) *
+                  static_cast<std::size_t>(
+                      MouseButton::LAST)>; /**< Bitset for button states */
 
   /**
    * @brief Factory for creating MouseButtonEvent instances.
@@ -69,7 +76,8 @@ public:
 
     /**
      * @brief Create a strongly-typed MouseButtonEvent.
-     * @return Newly created MouseButtonEvent as std::unique_ptr<MouseButtonEvent>.
+     * @return Newly created MouseButtonEvent as
+     * std::unique_ptr<MouseButtonEvent>.
      */
     std::unique_ptr<MouseButtonEvent> createTyped(void) const {
       return std::make_unique<MouseButtonEvent>();
@@ -77,8 +85,9 @@ public:
   };
 
 private:
-  MousePosition _position{0, 0};
-  std::bitset<sizeof(std::uint8_t) * 8> _buttonStates;
+  MousePosition _position{0, 0}; /**< Current mouse position (x, y) */
+  MouseButtonsState
+      _buttonStates; /**< Bitset to track the state of mouse buttons */
 
 public:
   /**
@@ -121,6 +130,14 @@ public:
    */
   bool isButtonPressed(const MouseButton button) const noexcept {
     return _buttonStates.test(static_cast<std::size_t>(button));
+  }
+
+  /**
+   * @brief Get the current state of all mouse buttons.
+   * @return A bitset representing the state of all mouse buttons.
+   */
+  const MouseButtonsState &getButtonsState(void) const noexcept {
+    return _buttonStates;
   }
 };
 

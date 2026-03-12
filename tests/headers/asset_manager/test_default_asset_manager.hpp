@@ -20,28 +20,14 @@
  SOFTWARE.
  */
 
-#include "event/test_text_input_event.hpp"
+#pragma once
 
-TEST_F(TestTextInputEvent, DefaultTextIsEmpty) {
-  utility::event::TextInputEvent event;
+#include <gtest/gtest.h>
 
-  EXPECT_TRUE(event.getText().empty());
-}
+#include <utility/asset_manager/default_asset_manager.hpp>
 
-TEST_F(TestTextInputEvent, TextCanBeUpdated) {
-  utility::event::TextInputEvent event;
-
-  event.setText("é漢字");
-
-  EXPECT_EQ(event.getText(), "é漢字");
-}
-
-TEST_F(TestTextInputEvent,
-       FactoryCreatesTextInputEventThroughAbstractInterface) {
-  utility::event::TextInputEvent::Factory factory;
-  const auto event = factory.create();
-
-  EXPECT_NE(event, nullptr);
-  EXPECT_NE(dynamic_cast<utility::event::TextInputEvent *>(event.get()),
-            nullptr);
-}
+class TestDefaultAssetManager : public ::testing::Test {
+protected:
+  void SetUp(void) override {}
+  void TearDown(void) override {}
+};

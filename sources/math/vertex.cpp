@@ -20,14 +20,6 @@
  SOFTWARE.
  */
 
-#pragma once
+#include "utility/math/vertex.hpp"
 
-#include <gtest/gtest.h>
-
-#include <utility/AssetManager/DefaultAssetManager.hpp>
-
-class TestDefaultAssetManager : public ::testing::Test {
-protected:
-    void SetUp(void) override {}
-    void TearDown(void) override {}
-    };
+namespace utility::math {} // namespace utility::math

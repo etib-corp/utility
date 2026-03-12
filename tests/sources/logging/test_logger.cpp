@@ -46,26 +46,26 @@ public:
 } // namespace
 
 TEST_F(TestLogger, LevelToStringMapsKnownValues) {
-  EXPECT_EQ(
-      TestableLogger::exposeLevelToString(utility::logging::LogLevel::DEBUG_LEVEL),
-      "DEBUG_LEVEL");
-  EXPECT_EQ(
-      TestableLogger::exposeLevelToString(utility::logging::LogLevel::INFO_LEVEL),
-      "INFO_LEVEL");
-  EXPECT_EQ(
-      TestableLogger::exposeLevelToString(utility::logging::LogLevel::WARNING_LEVEL),
-      "WARNING_LEVEL");
-  EXPECT_EQ(
-      TestableLogger::exposeLevelToString(utility::logging::LogLevel::ERROR_LEVEL),
-      "ERROR_LEVEL");
+  EXPECT_EQ(TestableLogger::exposeLevelToString(
+                utility::logging::LogLevel::DEBUG_LEVEL),
+            "DEBUG_LEVEL");
+  EXPECT_EQ(TestableLogger::exposeLevelToString(
+                utility::logging::LogLevel::INFO_LEVEL),
+            "INFO_LEVEL");
+  EXPECT_EQ(TestableLogger::exposeLevelToString(
+                utility::logging::LogLevel::WARNING_LEVEL),
+            "WARNING_LEVEL");
+  EXPECT_EQ(TestableLogger::exposeLevelToString(
+                utility::logging::LogLevel::ERROR_LEVEL),
+            "ERROR_LEVEL");
 }
 
 TEST_F(TestLogger, FormatMessageIncludesNameLevelAndPayload) {
   std::string name = "unit_logger";
   const TestableLogger logger(name);
 
-  const std::string formatted =
-      logger.exposeFormatMessage(utility::logging::LogLevel::INFO_LEVEL, "hello");
+  const std::string formatted = logger.exposeFormatMessage(
+      utility::logging::LogLevel::INFO_LEVEL, "hello");
 
   EXPECT_NE(formatted.find("[unit_logger]"), std::string::npos);
   EXPECT_NE(formatted.find("[INFO_LEVEL]"), std::string::npos);

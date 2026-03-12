@@ -20,66 +20,75 @@
  SOFTWARE.
  */
 
-#include "assetmanager/test_default_asset_manager.hpp"
+#include "asset_manager/test_default_asset_manager.hpp"
+
+#include <string>
+
+namespace {
+const std::string kTestAssetDirectory =
+  std::string(UTILITY_TEST_ASSETS_DIR) + "/testAsset";
+} // namespace
 
 TEST_F(TestDefaultAssetManager, LoadDirectory) {
   utility::DefaultAssetManager assetManager;
-  assetManager.loadDirectory("../tests/sources/assetmanager/testAsset");
-  EXPECT_TRUE(assetManager.exists("../tests/sources/assetmanager/testAsset/file1"));
+  assetManager.loadDirectory(kTestAssetDirectory);
+  EXPECT_TRUE(assetManager.exists(kTestAssetDirectory + "/file1"));
 }
 
 TEST_F(TestDefaultAssetManager, AddAsset) {
   utility::DefaultAssetManager assetManager;
-  auto asset = assetManager.add("../tests/sources/assetmanager/testAsset/file2");
-  EXPECT_TRUE(assetManager.exists("../tests/sources/assetmanager/testAsset/file2"));
+  auto asset = assetManager.add(kTestAssetDirectory + "/file2");
+  EXPECT_TRUE(assetManager.exists(kTestAssetDirectory + "/file2"));
   EXPECT_NE(asset, nullptr);
 }
 
 TEST_F(TestDefaultAssetManager, RemoveAsset) {
   utility::DefaultAssetManager assetManager;
-  assetManager.loadDirectory("../tests/sources/assetmanager/testAsset");
-  assetManager.remove("../tests/sources/assetmanager/testAsset/file1");
-  EXPECT_FALSE(assetManager.exists("../tests/sources/assetmanager/testAsset/file1"));
+  assetManager.loadDirectory(kTestAssetDirectory);
+  assetManager.remove(kTestAssetDirectory + "/file1");
+  EXPECT_FALSE(assetManager.exists(kTestAssetDirectory + "/file1"));
 }
 
 TEST_F(TestDefaultAssetManager, SaveAsset) {
   utility::DefaultAssetManager assetManager;
-  auto asset = assetManager.add("../tests/sources/assetmanager/testAsset/file2");
-  assetManager.save("../tests/sources/assetmanager/testAsset/file2");
-  EXPECT_TRUE(assetManager.exists("../tests/sources/assetmanager/testAsset/file2"));
+  auto asset = assetManager.add(kTestAssetDirectory + "/file2");
+  ASSERT_NE(asset, nullptr);
+  assetManager.save(kTestAssetDirectory + "/file2");
+  EXPECT_TRUE(assetManager.exists(kTestAssetDirectory + "/file2"));
 }
 
 TEST_F(TestDefaultAssetManager, GetAsset) {
   utility::DefaultAssetManager assetManager;
-  assetManager.loadDirectory("../tests/sources/assetmanager/testAsset");
-  auto asset = assetManager.get("../tests/sources/assetmanager/testAsset/file1");
+  assetManager.loadDirectory(kTestAssetDirectory);
+  auto asset = assetManager.get(kTestAssetDirectory + "/file1");
   EXPECT_NE(asset, nullptr);
 }
 
 TEST_F(TestDefaultAssetManager, GetNonExistentAsset) {
   utility::DefaultAssetManager assetManager;
-  auto asset = assetManager.get("../tests/sources/assetmanager/testAsset/nonexistent");
+  auto asset = assetManager.get(kTestAssetDirectory + "/nonexistent");
   EXPECT_EQ(asset, nullptr);
 }
 
 TEST_F(TestDefaultAssetManager, WriteAndReadAsset) {
   utility::DefaultAssetManager assetManager;
-  auto asset = assetManager.add("../tests/sources/assetmanager/testAsset/file3");
+  auto asset = assetManager.add(kTestAssetDirectory + "/file3");
+  ASSERT_NE(asset, nullptr);
   std::string data = "Hello, World!";
   asset->write(data.c_str(), sizeof(char), data.size());
-  assetManager.save("../tests/sources/assetmanager/testAsset/file3");
+  assetManager.save(kTestAssetDirectory + "/file3");
   asset->seek(0, utility::FileAsset::Seek::SET);
   std::string readData(data.size(), '\0');
   asset->read(readData, sizeof(char), data.size());
   EXPECT_EQ(data, readData);
   asset->clear();
-  assetManager.save("../tests/sources/assetmanager/testAsset/file3");
+  assetManager.save(kTestAssetDirectory + "/file3");
   asset->seek(0, utility::FileAsset::Seek::SET);
 }
 
 TEST_F(TestDefaultAssetManager, LoadModel) {
   utility::DefaultAssetManager assetManager;
-  assetManager.loadDirectory("../tests/sources/assetmanager/testAsset");
-  auto vertices = assetManager.loadModel("../tests/sources/assetmanager/testAsset/model.obj");
+  assetManager.loadDirectory(kTestAssetDirectory);
+  auto vertices = assetManager.loadModel(kTestAssetDirectory + "/model.obj");
   EXPECT_EQ(vertices.size(), 11484);
 }

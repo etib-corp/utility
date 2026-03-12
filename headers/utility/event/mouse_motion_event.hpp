@@ -56,7 +56,8 @@ public:
 
     /**
      * @brief Create a strongly-typed MouseMotionEvent.
-     * @return Newly created MouseMotionEvent as std::unique_ptr<MouseMotionEvent>.
+     * @return Newly created MouseMotionEvent as
+     * std::unique_ptr<MouseMotionEvent>.
      */
     std::unique_ptr<MouseMotionEvent> createTyped(void) const {
       return std::make_unique<MouseMotionEvent>();
