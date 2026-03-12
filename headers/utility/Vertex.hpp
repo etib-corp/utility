@@ -5,8 +5,7 @@
 ** Vertex
 */
 
-#ifndef VERTEX_HPP_
-#define VERTEX_HPP_
+#pragma once
 
 #include "math/vector.hpp"
 
@@ -22,7 +21,7 @@ namespace utility
 	 */
 	struct Vertex {
 		math::Vector<float, 3> pos;	  // Position of the vertex
-		math::Vector<float, 3> color;	  // Color of the vertex    (TODO: change to Vector<4> for alpha)
+		math::Vector<float, 4> color;	  // Color of the vertex
 		math::Vector<float, 2> texCoord;	   // Texture coordinates of the vertex
 
 		/*
@@ -42,5 +41,3 @@ namespace utility
 		}
 	};
 }	 // namespace evan
-
-#endif /* !VERTEX_HPP_ */

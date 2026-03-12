@@ -10,6 +10,10 @@
 #include "utility/AssetManager/FileAsset.hpp"
 #include "utility/Vertex.hpp"
 
+#include <tiny_obj_loader.h>
+
+#include <iostream>
+#include <sstream>
 #include <map>
 #include <memory>
 #include <vector>
