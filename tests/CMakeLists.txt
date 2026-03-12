@@ -31,6 +31,10 @@ target_include_directories(test_${PROJECT_NAME} PRIVATE
     ${PROJECT_SOURCE_DIR}/headers
 )
 
+target_compile_definitions(test_${PROJECT_NAME} PRIVATE
+    UTILITY_TEST_ASSETS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets"
+)
+
 # Link libraries
 target_link_libraries(test_${PROJECT_NAME} PRIVATE
     utility

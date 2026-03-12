@@ -33,3 +33,47 @@ utility::AssetManager::get(const std::string &path) {
   }
   return nullptr;
 }
+
+std::vector<utility::math::Vertex<float, float>>
+utility::AssetManager::loadModel(const std::string &path) {
+  std::vector<utility::math::Vertex<float, float>> vertices;
+  auto asset = get(path);
+  if (asset == nullptr) {
+    return vertices;
+  }
+  std::string content = asset->content();
+  tinyobj::attrib_t attrib;
+  std::vector<tinyobj::shape_t> shapes;
+  std::vector<tinyobj::material_t> materials;
+  std::string warn;
+  std::string err;
+  std::istringstream input(content);
+  bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, &input,
+                              nullptr, true);
+  if (!ret) {
+    std::cerr << "Failed to load/parse .obj." << std::endl;
+    return vertices;
+  }
+  for (const auto &shape : shapes) {
+    for (const auto &index : shape.mesh.indices) {
+      utility::math::Vertex<float, float> vertex{};
+      vertex.setPosition({attrib.vertices[3 * index.vertex_index + 0],
+                          attrib.vertices[3 * index.vertex_index + 1],
+                          attrib.vertices[3 * index.vertex_index + 2]});
+      if (index.texcoord_index >= 0) {
+        vertex.setTextureCoordinates(
+            {attrib.texcoords[2 * index.texcoord_index + 0],
+             attrib.texcoords[2 * index.texcoord_index + 1]});
+      }
+      if (index.normal_index >= 0) {
+        vertex.setColor({attrib.normals[3 * index.normal_index + 0],
+                         attrib.normals[3 * index.normal_index + 1],
+                         attrib.normals[3 * index.normal_index + 2], 1.0f});
+      } else {
+        vertex.setColor({1.0f, 1.0f, 1.0f, 1.0f});
+      }
+      vertices.push_back(vertex);
+    }
+  }
+  return vertices;
+}

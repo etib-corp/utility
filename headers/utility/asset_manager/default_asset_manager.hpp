@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include "utility/asset_manager/asset_manager.hpp"
-
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
+
+#include "utility/asset_manager/asset_manager.hpp"
 
 namespace utility {
 

@@ -20,6 +20,8 @@
  SOFTWARE.
  */
 
+#include <filesystem>
+
 #include "utility/asset_manager/default_asset_manager.hpp"
 
 bool utility::DefaultAssetManager::loadDirectory(const std::string &directory) {

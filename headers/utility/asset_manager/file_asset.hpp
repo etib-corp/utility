@@ -1,9 +1,24 @@
 /*
-** ETIB PROJECT, 2025
-** utility
-** File description:
-** FileAsset
-*/
+ Copyright (c) 2026 ETIB Corporation
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy of
+ this software and associated documentation files (the "Software"), to deal in
+ the Software without restriction, including without limitation the rights to
+ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ of the Software, and to permit persons to whom the Software is furnished to do
+ so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
 
 #pragma once
 
@@ -94,14 +109,44 @@ public:
 
   /**
    * @brief Returns the content of the file.
-   * @return The content of the file as a const reference to a string.
+   * @return The content of the file.
+   * This method returns the content of the file as a string. The content is
+   * stored in the _content member variable and can be accessed using this
+   * method.
    */
   [[__nodiscard__]] inline const std::string &content() const {
     return _content;
   }
 
+  /**
+   * @brief Clears the content of the file.
+   *
+   * This method clears the content of the file by resetting the _content
+   * member variable to an empty string and resetting the _pos member
+   * variable to 0.
+   * After calling this method, the file will be empty and the position will be
+   * reset to the beginning of the file. This method can be used to clear the
+   * content of the file before writing new data to it or to reset the file to
+   * an empty state.
+   */
+  void clear();
+
+  /**
+   * @brief Removes a number of elements from the current position.
+   * @param count The number of elements to remove.
+   * @return The number of elements removed.
+   */
+  size_t remove(size_t count);
+
 protected:
-  std::string _content; /**< The content of the file */
-  size_t _pos; /**< The current position in the file for reading/writing */
+  /**
+   * @brief In-memory content of the asset.
+   */
+  std::string _content;
+
+  /**
+   * @brief Current read/write cursor position in the content buffer.
+   */
+  size_t _pos = 0;
 };
 } // namespace utility

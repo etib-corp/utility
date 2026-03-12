@@ -22,12 +22,18 @@
 
 #pragma once
 
-#include "utility/asset_manager/file_asset.hpp"
-
+#include <iostream>
 #include <map>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
+#include <vector>
+
+#include "utility/asset_manager/file_asset.hpp"
+#include "utility/math/vertex.hpp"
+
+#include <tiny_obj_loader.h>
 
 /**
  * @namespace utility
@@ -120,9 +126,24 @@ public:
    */
   std::shared_ptr<utility::FileAsset> get(const std::string &path);
 
+  /**
+   * @brief Loads a model from a file.
+   * @param path The path to the model file.
+   * @return A vector of Vertex objects representing the model.
+   *
+   * This method is responsible for loading a model from the specified
+   * file and returning its vertices as a vector of Vertex objects.
+   */
+  std::vector<utility::math::Vertex<float, float>>
+  loadModel(const std::string &path);
+
 protected:
-  std::map<std::string, std::shared_ptr<utility::FileAsset>>
-      _assets; /**< Map of asset paths to their corresponding FileAsset objects
-                */
+  /**
+   * @brief Map of loaded assets.
+   *
+   * Key: asset path.
+   * Value: shared pointer to the corresponding FileAsset.
+   */
+  std::map<std::string, std::shared_ptr<utility::FileAsset>> _assets;
 };
 } // namespace utility
