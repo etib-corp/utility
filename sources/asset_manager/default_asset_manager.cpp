@@ -64,7 +64,7 @@ std::shared_ptr<utility::FileAsset>
 utility::DefaultAssetManager::add(const std::string &path) {
   const std::string key = NormalizePath(path);
   if (this->exists(key)) {
-    return this->get(key);
+    return this->open(key);
   }
 
   std::ifstream file(key, std::ios::binary | std::ios::ate);

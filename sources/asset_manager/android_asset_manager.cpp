@@ -58,7 +58,7 @@ std::shared_ptr<utility::FileAsset>
 utility::AndroidAssetManager::add(const std::string &path) {
   const std::string key = NormalizePath(path);
   if (this->exists(key)) {
-    return this->get(key);
+    return this->open(key);
   }
 
   AAsset *file =

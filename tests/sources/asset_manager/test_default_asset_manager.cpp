@@ -59,11 +59,11 @@ TEST_F(TestDefaultAssetManager, FilesystemPathOverloads) {
   EXPECT_TRUE(assetManager.loadDirectory(directoryPath));
   EXPECT_TRUE(assetManager.exists(filePath));
 
-  auto fromGet = assetManager.get(filePath);
+  auto fromOpen = assetManager.open(filePath);
   auto fromAdd = assetManager.add(filePath);
 
-  ASSERT_NE(fromGet, nullptr);
-  EXPECT_EQ(fromGet, fromAdd);
+  ASSERT_NE(fromOpen, nullptr);
+  EXPECT_EQ(fromOpen, fromAdd);
 }
 
 TEST_F(TestDefaultAssetManager, RemoveAsset) {
@@ -86,16 +86,16 @@ TEST_F(TestDefaultAssetManager, SaveUnknownAssetFails) {
   EXPECT_FALSE(assetManager.save(kTestAssetDirectory + "/missing"));
 }
 
-TEST_F(TestDefaultAssetManager, GetAsset) {
+TEST_F(TestDefaultAssetManager, OpenAsset) {
   utility::DefaultAssetManager assetManager;
   assetManager.loadDirectory(kTestAssetDirectory);
-  auto asset = assetManager.get(kTestAssetDirectory + "/file1");
+  auto asset = assetManager.open(kTestAssetDirectory + "/file1");
   EXPECT_NE(asset, nullptr);
 }
 
-TEST_F(TestDefaultAssetManager, GetNonExistentAsset) {
+TEST_F(TestDefaultAssetManager, OpenNonExistentAsset) {
   utility::DefaultAssetManager assetManager;
-  auto asset = assetManager.get(kTestAssetDirectory + "/nonexistent");
+  auto asset = assetManager.open(kTestAssetDirectory + "/nonexistent");
   EXPECT_EQ(asset, nullptr);
 }
 
