@@ -26,7 +26,7 @@
 
 namespace {
 std::string NormalizePath(const std::string &path) {
-  return std::filesystem::path(path).lexically_normal().string();
+  return std::filesystem::path(path).lexically_normal().generic_string();
 }
 } // namespace
 

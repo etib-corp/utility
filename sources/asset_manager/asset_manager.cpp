@@ -22,13 +22,19 @@
 
 #include "utility/asset_manager/asset_manager.hpp"
 
+namespace {
+std::string NormalizePath(const std::string &path) {
+  return std::filesystem::path(path).lexically_normal().generic_string();
+}
+} // namespace
+
 bool utility::AssetManager::exists(const std::string &path) const {
-  return _assets.find(path) != _assets.end();
+  return _assets.find(NormalizePath(path)) != _assets.end();
 }
 
 std::shared_ptr<utility::FileAsset>
 utility::AssetManager::get(const std::string &path) const {
-  const auto it = _assets.find(path);
+  const auto it = _assets.find(NormalizePath(path));
   if (it == _assets.end()) {
     return nullptr;
   }
