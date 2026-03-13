@@ -23,6 +23,7 @@
 #pragma once
 
 #include <iostream>
+#include <filesystem>
 #include <map>
 #include <memory>
 #include <sstream>
@@ -49,7 +50,7 @@ namespace utility {
 class AssetManager {
 public:
   /**
-   * @brief Defautl destructor for AssetManager.
+  * @brief Default destructor for AssetManager.
    */
   virtual ~AssetManager() = default;
 
@@ -66,6 +67,15 @@ public:
   virtual bool loadDirectory(const std::string &directory) = 0;
 
   /**
+   * @brief Loads assets from a directory.
+   * @param directory The filesystem path to the directory containing assets.
+   * @return True if the assets were loaded successfully, false otherwise.
+   */
+  bool loadDirectory(const std::filesystem::path &directory) {
+    return loadDirectory(directory.string());
+  }
+
+  /**
    * @brief Adds an asset to the manager.
    * @param path The path to the asset.
    * @return A shared pointer to the FileAsset object.
@@ -76,6 +86,15 @@ public:
    * _assets map.
    */
   virtual std::shared_ptr<utility::FileAsset> add(const std::string &path) = 0;
+
+  /**
+   * @brief Adds an asset to the manager.
+   * @param path The filesystem path to the asset.
+   * @return A shared pointer to the FileAsset object.
+   */
+  std::shared_ptr<utility::FileAsset> add(const std::filesystem::path &path) {
+    return add(path.string());
+  }
 
   /**
    * @brief Removes an asset from the manager.
@@ -93,6 +112,15 @@ public:
   virtual void remove(const std::string &path, bool save = true) = 0;
 
   /**
+   * @brief Removes an asset from the manager.
+   * @param path The filesystem path to the asset.
+   * @param save Whether to save the asset before removing it.
+   */
+  void remove(const std::filesystem::path &path, bool save = true) {
+    remove(path.string(), save);
+  }
+
+  /**
    * @brief Saves an asset to the disk.
    * @param path The path to the asset.
    * @param newPath The new path to save the asset to (optional).
@@ -108,6 +136,26 @@ public:
                     const std::string &newPath = "") = 0;
 
   /**
+   * @brief Saves an asset to the disk.
+   * @param path The filesystem path to the managed asset.
+   * @param newPath The target filesystem path where the asset is written.
+   * @return True if the asset was saved successfully, false otherwise.
+   */
+  bool save(const std::filesystem::path &path,
+            const std::filesystem::path &newPath) {
+    return save(path.string(), newPath.string());
+  }
+
+  /**
+   * @brief Saves an asset to its original path.
+   * @param path The filesystem path to the managed asset.
+   * @return True if the asset was saved successfully, false otherwise.
+   */
+  bool save(const std::filesystem::path &path) {
+    return save(path.string());
+  }
+
+  /**
    * @brief Checks if an asset exists in the manager.
    * @param path The path to the asset.
    * @return True if the asset exists, false otherwise.
@@ -117,6 +165,15 @@ public:
   bool exists(const std::string &path) const;
 
   /**
+   * @brief Checks if an asset exists in the manager.
+   * @param path The filesystem path to the asset.
+   * @return True if the asset exists, false otherwise.
+   */
+  bool exists(const std::filesystem::path &path) const {
+    return exists(path.string());
+  }
+
+  /**
    * @brief Gets an asset from the manager.
    * @param path The path to the asset.
    * @return A shared pointer to the FileAsset object.
@@ -124,7 +181,16 @@ public:
    * This method retrieves the asset from the _assets map.
    * If the asset does not exist, it returns a nullptr.
    */
-  std::shared_ptr<utility::FileAsset> get(const std::string &path);
+  std::shared_ptr<utility::FileAsset> get(const std::string &path) const;
+
+  /**
+   * @brief Gets an asset from the manager.
+   * @param path The filesystem path to the asset.
+   * @return A shared pointer to the FileAsset object.
+   */
+  std::shared_ptr<utility::FileAsset> get(const std::filesystem::path &path) const {
+    return get(path.string());
+  }
 
   /**
    * @brief Loads a model from a file.
@@ -136,6 +202,16 @@ public:
    */
   std::vector<utility::math::Vertex<float, float>>
   loadModel(const std::string &path);
+
+  /**
+   * @brief Loads a model from a file.
+   * @param path The filesystem path to the model file.
+   * @return A vector of Vertex objects representing the model.
+   */
+  std::vector<utility::math::Vertex<float, float>>
+  loadModel(const std::filesystem::path &path) {
+    return loadModel(path.string());
+  }
 
 protected:
   /**

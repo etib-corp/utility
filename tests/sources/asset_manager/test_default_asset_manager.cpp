@@ -22,6 +22,7 @@
 
 #include "asset_manager/test_default_asset_manager.hpp"
 
+#include <filesystem>
 #include <string>
 
 namespace {
@@ -42,6 +43,29 @@ TEST_F(TestDefaultAssetManager, AddAsset) {
   EXPECT_NE(asset, nullptr);
 }
 
+TEST_F(TestDefaultAssetManager, AddAssetCachesInstance) {
+  utility::DefaultAssetManager assetManager;
+  auto first = assetManager.add(kTestAssetDirectory + "/file2");
+  auto second = assetManager.add(kTestAssetDirectory + "/file2");
+  ASSERT_NE(first, nullptr);
+  EXPECT_EQ(first, second);
+}
+
+TEST_F(TestDefaultAssetManager, FilesystemPathOverloads) {
+  utility::DefaultAssetManager assetManager;
+  const std::filesystem::path directoryPath(kTestAssetDirectory);
+  const std::filesystem::path filePath = directoryPath / "file2";
+
+  EXPECT_TRUE(assetManager.loadDirectory(directoryPath));
+  EXPECT_TRUE(assetManager.exists(filePath));
+
+  auto fromGet = assetManager.get(filePath);
+  auto fromAdd = assetManager.add(filePath);
+
+  ASSERT_NE(fromGet, nullptr);
+  EXPECT_EQ(fromGet, fromAdd);
+}
+
 TEST_F(TestDefaultAssetManager, RemoveAsset) {
   utility::DefaultAssetManager assetManager;
   assetManager.loadDirectory(kTestAssetDirectory);
@@ -55,6 +79,11 @@ TEST_F(TestDefaultAssetManager, SaveAsset) {
   ASSERT_NE(asset, nullptr);
   assetManager.save(kTestAssetDirectory + "/file2");
   EXPECT_TRUE(assetManager.exists(kTestAssetDirectory + "/file2"));
+}
+
+TEST_F(TestDefaultAssetManager, SaveUnknownAssetFails) {
+  utility::DefaultAssetManager assetManager;
+  EXPECT_FALSE(assetManager.save(kTestAssetDirectory + "/missing"));
 }
 
 TEST_F(TestDefaultAssetManager, GetAsset) {
@@ -84,6 +113,26 @@ TEST_F(TestDefaultAssetManager, WriteAndReadAsset) {
   asset->clear();
   assetManager.save(kTestAssetDirectory + "/file3");
   asset->seek(0, utility::FileAsset::Seek::SET);
+}
+
+TEST_F(TestDefaultAssetManager, ReadStringWithoutPreSizing) {
+  utility::DefaultAssetManager assetManager;
+  auto asset = assetManager.add(kTestAssetDirectory + "/file2");
+  ASSERT_NE(asset, nullptr);
+  asset->seek(0, utility::FileAsset::Seek::SET);
+
+  std::string data;
+  const auto readCount = asset->read(data, sizeof(char), 5);
+
+  EXPECT_EQ(readCount, 5);
+  EXPECT_EQ(data.size(), 5);
+}
+
+TEST_F(TestDefaultAssetManager, LoadDirectoryInvalidPath) {
+  utility::DefaultAssetManager assetManager;
+  const auto invalidPath =
+      (std::filesystem::path(kTestAssetDirectory) / "missing_directory").string();
+  EXPECT_FALSE(assetManager.loadDirectory(invalidPath));
 }
 
 TEST_F(TestDefaultAssetManager, LoadModel) {

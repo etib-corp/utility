@@ -27,11 +27,12 @@ bool utility::AssetManager::exists(const std::string &path) const {
 }
 
 std::shared_ptr<utility::FileAsset>
-utility::AssetManager::get(const std::string &path) {
-  if (exists(path)) {
-    return _assets[path];
+utility::AssetManager::get(const std::string &path) const {
+  const auto it = _assets.find(path);
+  if (it == _assets.end()) {
+    return nullptr;
   }
-  return nullptr;
+  return it->second;
 }
 
 std::vector<utility::math::Vertex<float, float>>
@@ -56,19 +57,37 @@ utility::AssetManager::loadModel(const std::string &path) {
   }
   for (const auto &shape : shapes) {
     for (const auto &index : shape.mesh.indices) {
-      utility::math::Vertex<float, float> vertex{};
-      vertex.setPosition({attrib.vertices[3 * index.vertex_index + 0],
-                          attrib.vertices[3 * index.vertex_index + 1],
-                          attrib.vertices[3 * index.vertex_index + 2]});
-      if (index.texcoord_index >= 0) {
-        vertex.setTextureCoordinates(
-            {attrib.texcoords[2 * index.texcoord_index + 0],
-             attrib.texcoords[2 * index.texcoord_index + 1]});
+      if (index.vertex_index < 0) {
+        continue;
       }
+
+      const size_t vertexBase = static_cast<size_t>(index.vertex_index) * 3;
+      if (vertexBase + 2 >= attrib.vertices.size()) {
+        continue;
+      }
+
+      utility::math::Vertex<float, float> vertex{};
+      vertex.setPosition({attrib.vertices[vertexBase + 0],
+                          attrib.vertices[vertexBase + 1],
+                          attrib.vertices[vertexBase + 2]});
+
+      if (index.texcoord_index >= 0) {
+        const size_t texcoordBase = static_cast<size_t>(index.texcoord_index) * 2;
+        if (texcoordBase + 1 < attrib.texcoords.size()) {
+          vertex.setTextureCoordinates({attrib.texcoords[texcoordBase + 0],
+                                        attrib.texcoords[texcoordBase + 1]});
+        }
+      }
+
       if (index.normal_index >= 0) {
-        vertex.setColor({attrib.normals[3 * index.normal_index + 0],
-                         attrib.normals[3 * index.normal_index + 1],
-                         attrib.normals[3 * index.normal_index + 2], 1.0f});
+        const size_t normalBase = static_cast<size_t>(index.normal_index) * 3;
+        if (normalBase + 2 < attrib.normals.size()) {
+          vertex.setColor({attrib.normals[normalBase + 0],
+                           attrib.normals[normalBase + 1],
+                           attrib.normals[normalBase + 2], 1.0f});
+        } else {
+          vertex.setColor({1.0f, 1.0f, 1.0f, 1.0f});
+        }
       } else {
         vertex.setColor({1.0f, 1.0f, 1.0f, 1.0f});
       }

@@ -24,7 +24,16 @@
 
 #ifdef __ANDROID__
 
-utility::AndroidAssetManager::AndroidAssetManager(AssetManager *assetManager)
+#include <filesystem>
+#include <fstream>
+
+namespace {
+std::string NormalizePath(const std::string &path) {
+  return std::filesystem::path(path).lexically_normal().string();
+}
+} // namespace
+
+utility::AndroidAssetManager::AndroidAssetManager(AAssetManager *assetManager)
     : _assetManager(assetManager) {}
 
 bool utility::AndroidAssetManager::loadDirectory(const std::string &directory) {
@@ -47,35 +56,58 @@ bool utility::AndroidAssetManager::loadDirectory(const std::string &directory) {
 
 std::shared_ptr<utility::FileAsset>
 utility::AndroidAssetManager::add(const std::string &path) {
+  const std::string key = NormalizePath(path);
+  if (this->exists(key)) {
+    return this->get(key);
+  }
+
   AAsset *file =
-      AAssetManager_open(_assetManager, path.c_str(), AASSET_MODE_UNKNOWN);
+      AAssetManager_open(_assetManager, key.c_str(), AASSET_MODE_UNKNOWN);
   if (file == nullptr) {
     return nullptr;
   }
+
   off_t fileLength = AAsset_getLength(file);
-  std::string content(fileLength, '\0');
-  AAsset_read(file, &content[0], fileLength);
+  if (fileLength < 0) {
+    AAsset_close(file);
+    return nullptr;
+  }
+
+  std::string content(static_cast<size_t>(fileLength), '\0');
+  if (!content.empty()) {
+    const int bytesRead =
+        AAsset_read(file, content.data(), static_cast<size_t>(fileLength));
+    if (bytesRead < 0 || static_cast<off_t>(bytesRead) != fileLength) {
+      AAsset_close(file);
+      return nullptr;
+    }
+  }
   AAsset_close(file);
-  return std::make_shared<utility::FileAsset>(content);
+
+  auto asset = std::make_shared<utility::FileAsset>(content);
+  _assets[key] = asset;
+  return asset;
 }
 
 void utility::AndroidAssetManager::remove(const std::string &path, bool save) {
-  auto it = _assets.find(path);
+  const std::string key = NormalizePath(path);
+  auto it = _assets.find(key);
   if (it != _assets.end()) {
     if (save) {
-      this->save(path);
+      this->save(key);
     }
     _assets.erase(it);
   } else {
-    std::cerr << "Asset not found: " << path << std::endl;
+    std::cerr << "Asset not found: " << key << std::endl;
   }
 }
 
 bool utility::AndroidAssetManager::save(const std::string &path,
                                         const std::string &newPath) {
-  auto it = _assets.find(path);
+  const std::string key = NormalizePath(path);
+  auto it = _assets.find(key);
   if (it == _assets.end()) {
-    std::cerr << "Asset not found: " << path << std::endl;
+    std::cerr << "Asset not found: " << key << std::endl;
     return false;
   }
   // Android assets are read-only from the APK. Saving to a new path must be

@@ -22,48 +22,94 @@
 
 #include "utility/asset_manager/file_asset.hpp"
 
+#include <algorithm>
+#include <limits>
+
 utility::FileAsset::FileAsset(const std::string &content) : _content(content) {}
 
-utility::FileAsset::~FileAsset() {}
+utility::FileAsset::~FileAsset() = default;
 
 size_t utility::FileAsset::write(const void *ptr, size_t size, size_t nmemb) {
+  if (ptr == nullptr || size == 0 || nmemb == 0) {
+    return 0;
+  }
+
+  if (size > std::numeric_limits<size_t>::max() / nmemb) {
+    return 0;
+  }
+
+  if (_pos > _content.size()) {
+    _pos = _content.size();
+  }
+
+  const size_t bytesToWrite = size * nmemb;
   size_t lenBefore = _content.size();
-  size_t newLen = lenBefore + size * nmemb;
+  size_t newLen = lenBefore + bytesToWrite;
   if (newLen > _content.capacity()) {
     _content.reserve(newLen);
   }
-  _content.insert(_pos, static_cast<const char *>(ptr), size * nmemb);
-  _pos += size * nmemb;
+
+  _content.insert(_pos, static_cast<const char *>(ptr), bytesToWrite);
+  _pos += bytesToWrite;
   return (_content.size() - lenBefore) / size;
 }
 
 size_t utility::FileAsset::read(void *ptr, size_t size, size_t count) {
+  if (ptr == nullptr || size == 0 || count == 0 || _pos >= _content.size()) {
+    return 0;
+  }
+
+  if (size > std::numeric_limits<size_t>::max() / count) {
+    return 0;
+  }
+
   size_t toRead = size * count;
-  if (_pos + toRead > _content.size())
-    toRead = _content.size() - _pos;
+  toRead = std::min(toRead, _content.size() - _pos);
   std::memcpy(ptr, _content.c_str() + _pos, toRead);
   _pos += toRead;
   return toRead / size;
 }
 
 size_t utility::FileAsset::read(std::string &str, size_t size, size_t count) {
-  return this->read(&str[0], size, count);
+  if (size == 0 || count == 0 || _pos >= _content.size()) {
+    str.clear();
+    return 0;
+  }
+
+  if (size > std::numeric_limits<size_t>::max() / count) {
+    str.clear();
+    return 0;
+  }
+
+  size_t toRead = std::min(size * count, _content.size() - _pos);
+  str.resize(toRead);
+  std::memcpy(str.data(), _content.data() + _pos, toRead);
+  _pos += toRead;
+  return toRead / size;
 }
 
 int utility::FileAsset::seek(long offset, Seek whence) {
+  long newPos = 0;
+
   switch (whence) {
   case FileAsset::Seek::SET:
-    _pos = offset;
+    newPos = offset;
     break;
   case FileAsset::Seek::CUR:
-    _pos += offset;
+    newPos = static_cast<long>(_pos) + offset;
     break;
   case FileAsset::Seek::END:
-    _pos = _content.size() + offset;
+    newPos = static_cast<long>(_content.size()) + offset;
     break;
   default:
     return -1;
   }
+
+  if (newPos < 0) {
+    return -1;
+  }
+
+  _pos = std::min(static_cast<size_t>(newPos), _content.size());
   return 0;
 }
 
@@ -75,6 +121,10 @@ void utility::FileAsset::clear() {
 }
 
 size_t utility::FileAsset::remove(size_t count) {
+  if (count == 0 || _pos >= _content.size()) {
+    return 0;
+  }
+
   size_t toRemove = std::min(count, _content.size() - _pos);
   _content.erase(_pos, toRemove);
   return toRemove;

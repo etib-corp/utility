@@ -114,7 +114,7 @@ public:
    * stored in the _content member variable and can be accessed using this
    * method.
    */
-  [[__nodiscard__]] inline const std::string &content() const {
+  [[nodiscard]] inline const std::string &content() const {
     return _content;
   }
 
