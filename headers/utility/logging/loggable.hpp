@@ -59,7 +59,7 @@ protected:
    * @brief Construct a Loggable with a default StandardLogger.
    */
   explicit Loggable(void)
-      : _name(utility::demangle(typeid(ClassType).name())),
+      : _name(utility::demangle<ClassType>()),
         _logger(std::make_unique<LoggerType>(_name)) {}
 
   /**
