@@ -66,6 +66,13 @@ target_link_libraries(${PROJECT_NAME}
         tinyobjloader
 )
 
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME}
+        PUBLIC
+            Dbghelp
+    )
+endif()
+
 # Set common target properties
 set_utility_target_properties(${PROJECT_NAME})
 
