@@ -43,6 +43,11 @@ public:
    */
   DefaultAssetManager() = default;
 
+  using AssetManager::loadDirectory;
+  using AssetManager::add;
+  using AssetManager::remove;
+  using AssetManager::save;
+
   /**
    * @brief Default destructor for DefaultAssetManager.
    * @param directory The path to the directory containing the assets.
