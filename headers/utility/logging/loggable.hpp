@@ -35,6 +35,8 @@
 #include <string>
 #include <typeinfo>
 
+#include "utility/demangle.hpp"
+
 #include "utility/logging/logger.hpp"
 
 namespace utility::logging {
@@ -57,7 +59,7 @@ protected:
    * @brief Construct a Loggable with a default StandardLogger.
    */
   explicit Loggable(void)
-      : _name(typeid(ClassType).name()),
+      : _name(utility::demangle(typeid(ClassType).name())),
         _logger(std::make_unique<LoggerType>(_name)) {}
 
   /**
