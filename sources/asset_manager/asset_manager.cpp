@@ -33,7 +33,7 @@ bool utility::AssetManager::exists(const std::string &path) const {
 }
 
 std::shared_ptr<utility::FileAsset>
-utility::AssetManager::get(const std::string &path) const {
+utility::AssetManager::open(const std::string &path) const {
   const auto it = _assets.find(NormalizePath(path));
   if (it == _assets.end()) {
     return nullptr;
@@ -44,7 +44,7 @@ utility::AssetManager::get(const std::string &path) const {
 std::vector<utility::math::Vertex<float, float>>
 utility::AssetManager::loadModel(const std::string &path) {
   std::vector<utility::math::Vertex<float, float>> vertices;
-  auto asset = get(path);
+  auto asset = open(path);
   if (asset == nullptr) {
     return vertices;
   }

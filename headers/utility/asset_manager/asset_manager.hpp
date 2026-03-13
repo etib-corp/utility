@@ -174,22 +174,22 @@ public:
   }
 
   /**
-   * @brief Gets an asset from the manager.
+   * @brief Opens an asset from the manager.
    * @param path The path to the asset.
    * @return A shared pointer to the FileAsset object.
    *
    * This method retrieves the asset from the _assets map.
    * If the asset does not exist, it returns a nullptr.
    */
-  std::shared_ptr<utility::FileAsset> get(const std::string &path) const;
+  std::shared_ptr<utility::FileAsset> open(const std::string &path) const;
 
   /**
-   * @brief Gets an asset from the manager.
+   * @brief Opens an asset from the manager.
    * @param path The filesystem path to the asset.
    * @return A shared pointer to the FileAsset object.
    */
-  std::shared_ptr<utility::FileAsset> get(const std::filesystem::path &path) const {
-    return get(path.string());
+  std::shared_ptr<utility::FileAsset> open(const std::filesystem::path &path) const {
+    return open(path.string());
   }
 
   /**
