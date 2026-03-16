@@ -48,16 +48,16 @@ public:
 TEST_F(TestLogger, LevelToStringMapsKnownValues) {
   EXPECT_EQ(TestableLogger::exposeLevelToString(
                 utility::logging::LogLevel::DEBUG_LEVEL),
-            "DEBUG_LEVEL");
+            "Debug");
   EXPECT_EQ(TestableLogger::exposeLevelToString(
                 utility::logging::LogLevel::INFO_LEVEL),
-            "INFO_LEVEL");
+            "Info");
   EXPECT_EQ(TestableLogger::exposeLevelToString(
                 utility::logging::LogLevel::WARNING_LEVEL),
-            "WARNING_LEVEL");
+           "Warning");
   EXPECT_EQ(TestableLogger::exposeLevelToString(
                 utility::logging::LogLevel::ERROR_LEVEL),
-            "ERROR_LEVEL");
+            "Error");
 }
 
 TEST_F(TestLogger, FormatMessageIncludesNameLevelAndPayload) {
@@ -68,6 +68,6 @@ TEST_F(TestLogger, FormatMessageIncludesNameLevelAndPayload) {
       utility::logging::LogLevel::INFO_LEVEL, "hello");
 
   EXPECT_NE(formatted.find("[unit_logger]"), std::string::npos);
-  EXPECT_NE(formatted.find("[INFO_LEVEL]"), std::string::npos);
+  EXPECT_NE(formatted.find("[Info]"), std::string::npos);
   EXPECT_NE(formatted.find("hello"), std::string::npos);
 }

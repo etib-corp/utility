@@ -37,9 +37,9 @@ TEST_F(TestStandardLogger, InfoAndDebugGoToStdout) {
   std::cout.rdbuf(oldStdout);
 
   const std::string output = capturedStdout.str();
-  EXPECT_NE(output.find("[DEBUG_LEVEL]"), std::string::npos);
+  EXPECT_NE(output.find("[Debug]"), std::string::npos);
   EXPECT_NE(output.find("debug message"), std::string::npos);
-  EXPECT_NE(output.find("[INFO_LEVEL]"), std::string::npos);
+  EXPECT_NE(output.find("[Info]"), std::string::npos);
   EXPECT_NE(output.find("info message"), std::string::npos);
 }
 
@@ -55,8 +55,8 @@ TEST_F(TestStandardLogger, WarningAndErrorGoToStderr) {
   std::cerr.rdbuf(oldStderr);
 
   const std::string output = capturedStderr.str();
-  EXPECT_NE(output.find("[WARNING_LEVEL]"), std::string::npos);
+  EXPECT_NE(output.find("[Warning]"), std::string::npos);
   EXPECT_NE(output.find("warning message"), std::string::npos);
-  EXPECT_NE(output.find("[ERROR_LEVEL]"), std::string::npos);
+  EXPECT_NE(output.find("[Error]"), std::string::npos);
   EXPECT_NE(output.find("error message"), std::string::npos);
 }

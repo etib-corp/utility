@@ -61,8 +61,8 @@ TEST_F(TestFileLogger, WritesMessagesToDisk) {
   content << input.rdbuf();
   const std::string text = content.str();
 
-  EXPECT_NE(text.find("[INFO_LEVEL]"), std::string::npos);
+  EXPECT_NE(text.find("[Info]"), std::string::npos);
   EXPECT_NE(text.find("hello file logger"), std::string::npos);
-  EXPECT_NE(text.find("[ERROR_LEVEL]"), std::string::npos);
+  EXPECT_NE(text.find("[Error]"), std::string::npos);
   EXPECT_NE(text.find("error line"), std::string::npos);
 }

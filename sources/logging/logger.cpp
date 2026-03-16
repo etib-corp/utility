@@ -31,15 +31,15 @@ namespace utility::logging {
 std::string Logger::levelToString(LogLevel level) {
   switch (level) {
   case LogLevel::DEBUG_LEVEL:
-    return "DEBUG_LEVEL";
+    return "Debug";
   case LogLevel::INFO_LEVEL:
-    return "INFO_LEVEL";
+    return "Info";
   case LogLevel::WARNING_LEVEL:
-    return "WARNING_LEVEL";
+    return"Warning";
   case LogLevel::ERROR_LEVEL:
-    return "ERROR_LEVEL";
+    return "Error";
   default:
-    return "UNKNOWN";
+    return "Unknown";
   }
 }
 
