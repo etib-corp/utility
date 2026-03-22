@@ -26,11 +26,12 @@ namespace utility::graphics {
 
 Text::Text(void)
         : _content(""), _fontPath(""), _fontSize(12.0f), _position(0.0f),
-            _rotation(0.0f), _scale(1.0f) {}
+    _rotation(0.0f), _scale(1.0f), _color(1.0f, 1.0f, 1.0f, 1.0f) {}
 
 Text::Text(const std::string &content, const std::string &fontPath,
            float fontSize)
         : _content(content), _fontPath(fontPath), _fontSize(fontSize),
-            _position(0.0f), _rotation(0.0f), _scale(1.0f) {}
+    _position(0.0f), _rotation(0.0f), _scale(1.0f),
+    _color(1.0f, 1.0f, 1.0f, 1.0f) {}
 
 } // namespace utility::graphics

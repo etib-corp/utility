@@ -23,7 +23,7 @@
 #include "math/test_color.hpp"
 
 TEST_F(TestColor, ConstructorAndSettersClampValues) {
-  utility::math::Color<float> color(2.0F, -1.0F, 0.5F, 4.0F);
+  utility::graphics::Color<float> color(2.0F, -1.0F, 0.5F, 4.0F);
 
   EXPECT_FLOAT_EQ(color.red(), 1.0F);
   EXPECT_FLOAT_EQ(color.green(), 0.0F);
@@ -38,8 +38,8 @@ TEST_F(TestColor, ConstructorAndSettersClampValues) {
 }
 
 TEST_F(TestColor, ArithmeticAndTransformationsWork) {
-  utility::math::Color<float> base(0.2F, 0.4F, 0.6F, 1.0F);
-  utility::math::Color<float> delta(0.3F, 0.3F, 0.3F, 1.0F);
+  utility::graphics::Color<float> base(0.2F, 0.4F, 0.6F, 1.0F);
+  utility::graphics::Color<float> delta(0.3F, 0.3F, 0.3F, 1.0F);
 
   const auto added = base + delta;
   const auto subtracted = base - delta;
@@ -60,21 +60,21 @@ TEST_F(TestColor, ArithmeticAndTransformationsWork) {
 }
 
 TEST_F(TestColor, LerpBlendAndNamedColorsWork) {
-  const auto red = utility::math::Color<float>::Red();
-  const auto blue = utility::math::Color<float>::Blue();
+  const auto red = utility::graphics::Color<float>::Red();
+  const auto blue = utility::graphics::Color<float>::Blue();
   const auto middle = red.lerp(blue, 0.5F);
 
   EXPECT_NEAR(middle.red(), 0.5F, 1e-5F);
   EXPECT_NEAR(middle.blue(), 0.5F, 1e-5F);
 
-  utility::math::Color<float> foreground(1.0F, 0.0F, 0.0F, 0.5F);
-  utility::math::Color<float> background(0.0F, 0.0F, 1.0F, 1.0F);
+  utility::graphics::Color<float> foreground(1.0F, 0.0F, 0.0F, 0.5F);
+  utility::graphics::Color<float> background(0.0F, 0.0F, 1.0F, 1.0F);
   const auto blended = foreground.blendOver(background);
 
   EXPECT_NEAR(blended.red(), 0.5F, 1e-5F);
   EXPECT_NEAR(blended.blue(), 0.5F, 1e-5F);
 
-  const auto white = utility::math::Color<std::uint8_t>::White();
+  const auto white = utility::graphics::Color<std::uint8_t>::White();
   EXPECT_EQ(white.red(), 255);
   EXPECT_EQ(white.green(), 255);
   EXPECT_EQ(white.blue(), 255);

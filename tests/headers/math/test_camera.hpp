@@ -24,7 +24,7 @@
 
 #include <gtest/gtest.h>
 
-#include <utility/math/camera.hpp>
+#include <utility/graphics/camera.hpp>
 
 class TestCamera : public ::testing::Test {
 protected:

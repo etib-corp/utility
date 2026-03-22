@@ -24,7 +24,7 @@
 
 #include <gtest/gtest.h>
 
-#include <utility/math/color.hpp>
+#include <utility/graphics/color.hpp>
 #include <utility/math/vector.hpp>
 
 class TestPerformance : public ::testing::Test {

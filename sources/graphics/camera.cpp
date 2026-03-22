@@ -20,6 +20,6 @@
  SOFTWARE.
  */
 
-#include "utility/math/camera.hpp"
+#include "utility/graphics/camera.hpp"
 
-namespace utility::math {} // namespace utility::math
+namespace utility::graphics {} // namespace utility::graphics

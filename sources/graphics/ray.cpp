@@ -20,6 +20,6 @@
  SOFTWARE.
  */
 
-#include "utility/math/vertex.hpp"
+#include "utility/graphics/ray.hpp"
 
-namespace utility::math {} // namespace utility::math
+namespace utility::graphics {} // namespace utility::graphics

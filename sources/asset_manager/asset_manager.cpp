@@ -41,9 +41,9 @@ utility::AssetManager::open(const std::string &path) const {
   return it->second;
 }
 
-std::vector<utility::math::Vertex<float, float>>
+std::vector<utility::graphics::Vertex<float, float>>
 utility::AssetManager::loadModel(const std::string &path) {
-  std::vector<utility::math::Vertex<float, float>> vertices;
+  std::vector<utility::graphics::Vertex<float, float>> vertices;
   auto asset = open(path);
   if (asset == nullptr) {
     return vertices;
@@ -72,7 +72,7 @@ utility::AssetManager::loadModel(const std::string &path) {
         continue;
       }
 
-      utility::math::Vertex<float, float> vertex{};
+      utility::graphics::Vertex<float, float> vertex{};
       vertex.setPosition({attrib.vertices[vertexBase + 0],
                           attrib.vertices[vertexBase + 1],
                           attrib.vertices[vertexBase + 2]});

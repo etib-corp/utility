@@ -10,10 +10,13 @@
 #include <ostream>
 #include <type_traits>
 
-#include "utility/math/color.hpp"
+#include "utility/graphics/color.hpp"
 #include "utility/math/vector.hpp"
 
-namespace utility::math {
+namespace utility::graphics {
+
+using utility::math::CanBeVectorComponent;
+using utility::math::Vector;
 
 /**
  * @brief Vertex type containing common mesh attributes.
@@ -153,4 +156,4 @@ operator<<(std::ostream &outputStream,
   return outputStream;
 }
 
-} // namespace utility::math
+} // namespace utility::graphics

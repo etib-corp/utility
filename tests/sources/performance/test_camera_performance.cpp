@@ -3,13 +3,13 @@
 #include <chrono>
 #include <cstdint>
 
-#include "utility/math/camera.hpp"
+#include "utility/graphics/camera.hpp"
 
 TEST(PerformanceCamera, ViewRayAndMovementOperationsCompleteWithinBudget) {
   using Clock = std::chrono::steady_clock;
 
   constexpr std::uint32_t iterations = 250000;
-  utility::math::Camera<float> camera;
+  utility::graphics::Camera<float> camera;
   utility::math::Vector<float, 3> accumulator{0.0F, 0.0F, 0.0F};
 
   const auto start = Clock::now();

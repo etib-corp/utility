@@ -24,7 +24,7 @@
  * @file ray.hpp
  * @brief Geometric ray template declaration.
  *
- * Declares `utility::math::Ray<Type, Dimension>`, a fixed-dimension ray defined
+ * Declares `utility::graphics::Ray<Type, Dimension>`, a fixed-dimension ray defined
  * by an origin and a non-zero direction vector. Provides accessors, mutators,
  * translation utilities, and point evaluation along the ray.
  */
@@ -38,7 +38,9 @@
 
 #include "utility/math/vector.hpp"
 
-namespace utility::math {
+namespace utility::graphics {
+
+using utility::math::Vector;
 
 /**
  * @brief Concept to ensure the type can be used as a ray component.
@@ -233,4 +235,4 @@ std::ostream &operator<<(std::ostream &outputStream,
   return outputStream;
 }
 
-} // namespace utility::math
+} // namespace utility::graphics

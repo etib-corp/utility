@@ -23,7 +23,7 @@
 #include "math/test_ray.hpp"
 
 TEST_F(TestRay, DefaultConstructorInitializesExpectedValues) {
-  utility::math::Ray<float, 3> ray;
+  utility::graphics::Ray<float, 3> ray;
 
   const auto origin = ray.getOrigin();
   const auto direction = ray.getDirection();
@@ -39,15 +39,15 @@ TEST_F(TestRay, DefaultConstructorInitializesExpectedValues) {
 TEST_F(TestRay, ZeroDirectionIsRejected) {
   const utility::math::Vector<float, 3> zeroDirection{0.0F, 0.0F, 0.0F};
   EXPECT_THROW(
-      (utility::math::Ray<float, 3>({0.0F, 0.0F, 0.0F}, zeroDirection)),
+      (utility::graphics::Ray<float, 3>({0.0F, 0.0F, 0.0F}, zeroDirection)),
       std::invalid_argument);
 
-  utility::math::Ray<float, 3> ray;
+  utility::graphics::Ray<float, 3> ray;
   EXPECT_THROW(ray.setDirection({0.0F, 0.0F, 0.0F}), std::invalid_argument);
 }
 
 TEST_F(TestRay, PointEvaluationAndNormalizationWork) {
-  utility::math::Ray<float, 3> ray({1.0F, 2.0F, 3.0F}, {2.0F, 0.0F, 0.0F});
+  utility::graphics::Ray<float, 3> ray({1.0F, 2.0F, 3.0F}, {2.0F, 0.0F, 0.0F});
 
   const auto point = ray.pointAt(3.0F);
   const auto unitDirection = ray.normalizedDirection();
@@ -62,7 +62,7 @@ TEST_F(TestRay, PointEvaluationAndNormalizationWork) {
 }
 
 TEST_F(TestRay, TranslateAndTranslatedCopyWork) {
-  utility::math::Ray<float, 2> ray({1.0F, 2.0F}, {0.0F, 1.0F});
+  utility::graphics::Ray<float, 2> ray({1.0F, 2.0F}, {0.0F, 1.0F});
 
   const auto moved = ray.translated({5.0F, -1.0F});
   ray.translate({-1.0F, 3.0F});

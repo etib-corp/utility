@@ -24,7 +24,7 @@
 
 #include <gtest/gtest.h>
 
-#include <utility/math/color.hpp>
+#include <utility/graphics/color.hpp>
 
 class TestColor : public ::testing::Test {
 protected:

@@ -3,13 +3,13 @@
 #include <chrono>
 #include <cstdint>
 
-#include "utility/math/ray.hpp"
+#include "utility/graphics/ray.hpp"
 
 TEST(PerformanceRay, PointAndTranslationOperationsCompleteWithinBudget) {
   using Clock = std::chrono::steady_clock;
 
   constexpr std::uint32_t iterations = 250000;
-  utility::math::Ray<float, 3> ray({0.0F, 0.0F, 0.0F}, {1.0F, -0.5F, 0.25F});
+  utility::graphics::Ray<float, 3> ray({0.0F, 0.0F, 0.0F}, {1.0F, -0.5F, 0.25F});
 
   utility::math::Vector<float, 3> accumulator{0.0F, 0.0F, 0.0F};
 

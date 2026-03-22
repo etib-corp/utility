@@ -37,6 +37,10 @@ TEST_F(TestText, DefaultConstructorInitializesWithDefaults) {
   EXPECT_EQ(text.getScale()[0], 1.0f);
   EXPECT_EQ(text.getScale()[1], 1.0f);
   EXPECT_EQ(text.getScale()[2], 1.0f);
+  EXPECT_EQ(text.getColor().red(), 1.0f);
+  EXPECT_EQ(text.getColor().green(), 1.0f);
+  EXPECT_EQ(text.getColor().blue(), 1.0f);
+  EXPECT_EQ(text.getColor().alpha(), 1.0f);
 }
 
 TEST_F(TestText, ParameterizedConstructorSetsValues) {
@@ -103,13 +107,15 @@ TEST_F(TestText, MethodChainingWorks) {
   utility::math::Vector<std::float_t, 3> position{1.0f, 2.0f, 3.0f};
   utility::math::Vector<std::float_t, 3> rotation{10.0f, 20.0f, 30.0f};
   utility::math::Vector<std::float_t, 3> scale{2.0f, 2.0f, 2.0f};
+  utility::graphics::Color<std::float_t> color{0.2f, 0.4f, 0.8f, 0.9f};
 
   text.setContent("Chained text")
       .setFontPath("/fonts/custom.ttf")
       .setFontSize(16.0f)
       .setPosition(position)
       .setRotation(rotation)
-      .setScale(scale);
+      .setScale(scale)
+      .setColor(color);
 
   EXPECT_EQ(text.getContent(), "Chained text");
   EXPECT_EQ(text.getFontPath(), "/fonts/custom.ttf");
@@ -123,6 +129,23 @@ TEST_F(TestText, MethodChainingWorks) {
   EXPECT_EQ(text.getScale()[0], 2.0f);
   EXPECT_EQ(text.getScale()[1], 2.0f);
   EXPECT_EQ(text.getScale()[2], 2.0f);
+  EXPECT_EQ(text.getColor().red(), 0.2f);
+  EXPECT_EQ(text.getColor().green(), 0.4f);
+  EXPECT_EQ(text.getColor().blue(), 0.8f);
+  EXPECT_EQ(text.getColor().alpha(), 0.9f);
+}
+
+TEST_F(TestText, SetColorSupportsChaining) {
+  utility::graphics::Text text;
+  utility::graphics::Color<std::float_t> color{0.1f, 0.3f, 0.7f, 0.5f};
+
+  auto &result = text.setColor(color);
+
+  EXPECT_EQ(&result, &text);
+  EXPECT_EQ(text.getColor().red(), 0.1f);
+  EXPECT_EQ(text.getColor().green(), 0.3f);
+  EXPECT_EQ(text.getColor().blue(), 0.7f);
+  EXPECT_EQ(text.getColor().alpha(), 0.5f);
 }
 
 TEST_F(TestText, SetPositionSupportsChaining) {

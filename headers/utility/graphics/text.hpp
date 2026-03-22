@@ -32,6 +32,7 @@
 
 #include <cmath>
 #include <string>
+#include <utility/graphics/color.hpp>
 #include <utility/math/vector.hpp>
 
 namespace utility::graphics {
@@ -50,6 +51,7 @@ private:
   utility::math::Vector<std::float_t, 3> _position; ///< Text world position
   utility::math::Vector<std::float_t, 3> _rotation; ///< Text euler rotation
   utility::math::Vector<std::float_t, 3> _scale;    ///< Text local scale
+  utility::graphics::Color<std::float_t> _color;        ///< Text RGBA color
 
 public:
   /**
@@ -172,6 +174,24 @@ public:
    */
   Text &setScale(const utility::math::Vector<std::float_t, 3> &scale) {
     _scale = scale;
+    return *this;
+  }
+
+  /**
+   * @brief Get the text color.
+   * @return Const reference to the text color.
+   */
+  const utility::graphics::Color<std::float_t> &getColor(void) const {
+    return _color;
+  }
+
+  /**
+   * @brief Set the text color.
+   * @param color Text RGBA color.
+   * @return Reference to this Text instance for chaining.
+   */
+  Text &setColor(const utility::graphics::Color<std::float_t> &color) {
+    _color = color;
     return *this;
   }
 };

@@ -24,7 +24,7 @@
  * @file camera.hpp
  * @brief 3D perspective camera template declaration.
  *
- * Declares `utility::math::Camera<Type>`, a lightweight camera model storing
+ * Declares `utility::graphics::Camera<Type>`, a lightweight camera model storing
  * position/orientation and perspective parameters, with utility methods to
  * generate world-space view rays.
  */
@@ -38,10 +38,12 @@
 #include <type_traits>
 #include <utility>
 
-#include "utility/math/ray.hpp"
+#include "utility/graphics/ray.hpp"
 #include "utility/math/vector.hpp"
 
-namespace utility::math {
+namespace utility::graphics {
+
+using utility::math::Vector;
 
 /**
  * @brief Concept to ensure the type can be used as a camera component.
@@ -369,4 +371,4 @@ std::ostream &operator<<(std::ostream &outputStream,
   return outputStream;
 }
 
-} // namespace utility::math
+} // namespace utility::graphics

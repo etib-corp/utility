@@ -24,7 +24,7 @@
  * @file color.hpp
  * @brief RGBA color representation with blending and manipulation operations.
  *
- * Declares `utility::Color<Type>`, supporting RGBA color components with
+ * Declares `utility::graphics::Color<Type>`, supporting RGBA color components with
  * operations for blending, grayscale conversion, and color manipulation.
  */
 
@@ -37,7 +37,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace utility::math {
+namespace utility::graphics {
 
 /**
  * @brief Concept to ensure the type can be used as a color component.
@@ -574,4 +574,4 @@ std::ostream &operator<<(std::ostream &outputStream, const Color<Type> &color) {
   return outputStream;
 }
 
-} // namespace utility::math
+} // namespace utility::graphics

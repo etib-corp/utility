@@ -24,7 +24,7 @@
 
 #include <gtest/gtest.h>
 
-#include <utility/math/ray.hpp>
+#include <utility/graphics/ray.hpp>
 
 class TestRay : public ::testing::Test {
 protected:

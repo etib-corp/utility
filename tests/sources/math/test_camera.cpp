@@ -23,7 +23,7 @@
 #include "math/test_camera.hpp"
 
 TEST_F(TestCamera, DefaultConstructorInitializesExpectedValues) {
-  utility::math::Camera<float> camera;
+  utility::graphics::Camera<float> camera;
 
   const auto position = camera.getPosition();
   const auto forward = camera.getForward();
@@ -50,30 +50,30 @@ TEST_F(TestCamera, ConstructorValidationRejectsInvalidValues) {
   const utility::math::Vector<float, 3> forward{0.0F, 0.0F, -1.0F};
   const utility::math::Vector<float, 3> up{0.0F, 1.0F, 0.0F};
 
-  EXPECT_THROW((utility::math::Camera<float>(position, forward, up, 0.0F,
+  EXPECT_THROW((utility::graphics::Camera<float>(position, forward, up, 0.0F,
                                              16.0F / 9.0F, 0.1F, 1000.0F)),
                std::invalid_argument);
-  EXPECT_THROW((utility::math::Camera<float>(position, forward, up, 60.0F, 0.0F,
+  EXPECT_THROW((utility::graphics::Camera<float>(position, forward, up, 60.0F, 0.0F,
                                              0.1F, 1000.0F)),
                std::invalid_argument);
-  EXPECT_THROW((utility::math::Camera<float>(position, forward, up, 60.0F,
+  EXPECT_THROW((utility::graphics::Camera<float>(position, forward, up, 60.0F,
                                              16.0F / 9.0F, 0.0F, 1000.0F)),
                std::invalid_argument);
-  EXPECT_THROW((utility::math::Camera<float>(position, forward, up, 60.0F,
+  EXPECT_THROW((utility::graphics::Camera<float>(position, forward, up, 60.0F,
                                              16.0F / 9.0F, 1.0F, 1.0F)),
                std::invalid_argument);
   EXPECT_THROW(
-      (utility::math::Camera<float>(position, {0.0F, 0.0F, 0.0F}, up, 60.0F,
+      (utility::graphics::Camera<float>(position, {0.0F, 0.0F, 0.0F}, up, 60.0F,
                                     16.0F / 9.0F, 0.1F, 1000.0F)),
       std::invalid_argument);
   EXPECT_THROW(
-      (utility::math::Camera<float>(position, forward, {0.0F, 0.0F, 0.0F},
+      (utility::graphics::Camera<float>(position, forward, {0.0F, 0.0F, 0.0F},
                                     60.0F, 16.0F / 9.0F, 0.1F, 1000.0F)),
       std::invalid_argument);
 }
 
 TEST_F(TestCamera, ViewRayAtCenterAlignsWithForward) {
-  utility::math::Camera<float> camera;
+  utility::graphics::Camera<float> camera;
 
   const auto ray = camera.viewRay(0.0F, 0.0F);
   const auto direction = ray.getDirection();
@@ -88,7 +88,7 @@ TEST_F(TestCamera, ViewRayAtCenterAlignsWithForward) {
 }
 
 TEST_F(TestCamera, MoveLookAtAndSetPerspectiveWork) {
-  utility::math::Camera<float> camera;
+  utility::graphics::Camera<float> camera;
 
   camera.move({1.0F, 2.0F, 3.0F});
   camera.lookAt({1.0F, 2.0F, 2.0F});
