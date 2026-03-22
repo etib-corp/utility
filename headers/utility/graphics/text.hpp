@@ -30,7 +30,9 @@
 
 #pragma once
 
+#include <cmath>
 #include <string>
+#include <utility/math/vector.hpp>
 
 namespace utility::graphics {
 
@@ -45,6 +47,9 @@ private:
   std::string _content;  ///< Text content to display
   std::string _fontPath; ///< Path to the font file
   float _fontSize;       ///< Font size in points
+  utility::math::Vector<std::float_t, 3> _position; ///< Text world position
+  utility::math::Vector<std::float_t, 3> _rotation; ///< Text euler rotation
+  utility::math::Vector<std::float_t, 3> _scale;    ///< Text local scale
 
 public:
   /**
@@ -113,6 +118,60 @@ public:
    */
   Text &setFontSize(float fontSize) {
     _fontSize = fontSize;
+    return *this;
+  }
+
+  /**
+   * @brief Get the text position.
+   * @return Const reference to the text position.
+   */
+  const utility::math::Vector<std::float_t, 3> &getPosition(void) const {
+    return _position;
+  }
+
+  /**
+   * @brief Set the text position.
+   * @param position Text world position.
+   * @return Reference to this Text instance for chaining.
+   */
+  Text &setPosition(const utility::math::Vector<std::float_t, 3> &position) {
+    _position = position;
+    return *this;
+  }
+
+  /**
+   * @brief Get the text rotation.
+   * @return Const reference to the text rotation.
+   */
+  const utility::math::Vector<std::float_t, 3> &getRotation(void) const {
+    return _rotation;
+  }
+
+  /**
+   * @brief Set the text rotation.
+   * @param rotation Text euler rotation.
+   * @return Reference to this Text instance for chaining.
+   */
+  Text &setRotation(const utility::math::Vector<std::float_t, 3> &rotation) {
+    _rotation = rotation;
+    return *this;
+  }
+
+  /**
+   * @brief Get the text scale.
+   * @return Const reference to the text scale.
+   */
+  const utility::math::Vector<std::float_t, 3> &getScale(void) const {
+    return _scale;
+  }
+
+  /**
+   * @brief Set the text scale.
+   * @param scale Text local scale.
+   * @return Reference to this Text instance for chaining.
+   */
+  Text &setScale(const utility::math::Vector<std::float_t, 3> &scale) {
+    _scale = scale;
     return *this;
   }
 };
