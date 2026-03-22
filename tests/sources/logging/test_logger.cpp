@@ -54,7 +54,7 @@ TEST_F(TestLogger, LevelToStringMapsKnownValues) {
             "Info");
   EXPECT_EQ(TestableLogger::exposeLevelToString(
                 utility::logging::LogLevel::WARNING_LEVEL),
-           "Warning");
+            "Warning");
   EXPECT_EQ(TestableLogger::exposeLevelToString(
                 utility::logging::LogLevel::ERROR_LEVEL),
             "Error");

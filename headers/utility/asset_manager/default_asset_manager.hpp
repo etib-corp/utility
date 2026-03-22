@@ -43,8 +43,8 @@ public:
    */
   DefaultAssetManager() = default;
 
-  using AssetManager::loadDirectory;
   using AssetManager::add;
+  using AssetManager::loadDirectory;
   using AssetManager::remove;
   using AssetManager::save;
 

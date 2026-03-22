@@ -27,7 +27,7 @@
 
 namespace {
 const std::string kTestAssetDirectory =
-  std::string(UTILITY_TEST_ASSETS_DIR) + "/testAsset";
+    std::string(UTILITY_TEST_ASSETS_DIR) + "/testAsset";
 } // namespace
 
 TEST_F(TestDefaultAssetManager, LoadDirectory) {
@@ -131,7 +131,8 @@ TEST_F(TestDefaultAssetManager, ReadStringWithoutPreSizing) {
 TEST_F(TestDefaultAssetManager, LoadDirectoryInvalidPath) {
   utility::DefaultAssetManager assetManager;
   const auto invalidPath =
-      (std::filesystem::path(kTestAssetDirectory) / "missing_directory").string();
+      (std::filesystem::path(kTestAssetDirectory) / "missing_directory")
+          .string();
   EXPECT_FALSE(assetManager.loadDirectory(invalidPath));
 }
 

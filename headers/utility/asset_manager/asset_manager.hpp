@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <iostream>
 #include <filesystem>
+#include <iostream>
 #include <map>
 #include <memory>
 #include <sstream>
@@ -50,7 +50,7 @@ namespace utility {
 class AssetManager {
 public:
   /**
-  * @brief Default destructor for AssetManager.
+   * @brief Default destructor for AssetManager.
    */
   virtual ~AssetManager() = default;
 
@@ -151,9 +151,7 @@ public:
    * @param path The filesystem path to the managed asset.
    * @return True if the asset was saved successfully, false otherwise.
    */
-  bool save(const std::filesystem::path &path) {
-    return save(path.string());
-  }
+  bool save(const std::filesystem::path &path) { return save(path.string()); }
 
   /**
    * @brief Checks if an asset exists in the manager.
@@ -188,7 +186,8 @@ public:
    * @param path The filesystem path to the asset.
    * @return A shared pointer to the FileAsset object.
    */
-  std::shared_ptr<utility::FileAsset> open(const std::filesystem::path &path) const {
+  std::shared_ptr<utility::FileAsset>
+  open(const std::filesystem::path &path) const {
     return open(path.string());
   }
 

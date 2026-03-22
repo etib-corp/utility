@@ -41,7 +41,8 @@ bool utility::DefaultAssetManager::loadDirectory(const std::string &directory) {
   }
 
   bool success = true;
-  for (const auto &entry : std::filesystem::directory_iterator(directoryPath, error)) {
+  for (const auto &entry :
+       std::filesystem::directory_iterator(directoryPath, error)) {
     if (error) {
       std::cerr << "Failed to iterate asset directory: " << directory
                 << std::endl;

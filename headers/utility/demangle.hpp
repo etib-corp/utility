@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <typeinfo>
 #include <string>
+#include <typeinfo>
 
 #if defined(__GNUC__) || defined(__clang__)
-#include <cxxabi.h>
 #include <cstdlib>
+#include <cxxabi.h>
 #elif defined(_MSC_VER)
 #include <Windows.h>
 #include <dbghelp.h>

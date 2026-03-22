@@ -114,9 +114,7 @@ public:
    * stored in the _content member variable and can be accessed using this
    * method.
    */
-  [[nodiscard]] inline const std::string &content() const {
-    return _content;
-  }
+  [[nodiscard]] inline const std::string &content() const { return _content; }
 
   /**
    * @brief Clears the content of the file.

@@ -78,7 +78,8 @@ utility::AssetManager::loadModel(const std::string &path) {
                           attrib.vertices[vertexBase + 2]});
 
       if (index.texcoord_index >= 0) {
-        const size_t texcoordBase = static_cast<size_t>(index.texcoord_index) * 2;
+        const size_t texcoordBase =
+            static_cast<size_t>(index.texcoord_index) * 2;
         if (texcoordBase + 1 < attrib.texcoords.size()) {
           vertex.setTextureCoordinates({attrib.texcoords[texcoordBase + 0],
                                         attrib.texcoords[texcoordBase + 1]});
