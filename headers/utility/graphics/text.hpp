@@ -45,13 +45,13 @@ namespace utility::graphics {
  */
 class Text {
 private:
-  std::string _content;  ///< Text content to display
-  std::string _fontPath; ///< Path to the font file
-  float _fontSize;       ///< Font size in points
+  std::string _content;                             ///< Text content to display
+  std::string _fontPath;                            ///< Path to the font file
+  float _fontSize;                                  ///< Font size in points
   utility::math::Vector<std::float_t, 3> _position; ///< Text world position
   utility::math::Vector<std::float_t, 3> _rotation; ///< Text euler rotation
   utility::math::Vector<std::float_t, 3> _scale;    ///< Text local scale
-  utility::graphics::Color<std::float_t> _color;        ///< Text RGBA color
+  utility::graphics::Color<std::uint8_t> _color;    ///< Text RGBA color
 
 public:
   /**
@@ -181,7 +181,7 @@ public:
    * @brief Get the text color.
    * @return Const reference to the text color.
    */
-  const utility::graphics::Color<std::float_t> &getColor(void) const {
+  const utility::graphics::Color<std::uint8_t> &getColor(void) const {
     return _color;
   }
 
@@ -190,7 +190,7 @@ public:
    * @param color Text RGBA color.
    * @return Reference to this Text instance for chaining.
    */
-  Text &setColor(const utility::graphics::Color<std::float_t> &color) {
+  Text &setColor(const utility::graphics::Color<std::uint8_t> &color) {
     _color = color;
     return *this;
   }
