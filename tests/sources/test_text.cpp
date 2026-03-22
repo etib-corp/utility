@@ -107,7 +107,7 @@ TEST_F(TestText, MethodChainingWorks) {
   utility::math::Vector<std::float_t, 3> position{1.0f, 2.0f, 3.0f};
   utility::math::Vector<std::float_t, 3> rotation{10.0f, 20.0f, 30.0f};
   utility::math::Vector<std::float_t, 3> scale{2.0f, 2.0f, 2.0f};
-  utility::graphics::Color<std::float_t> color{0.2f, 0.4f, 0.8f, 0.9f};
+  utility::graphics::Color<std::uint8_t> color{51, 102, 204, 230};
 
   text.setContent("Chained text")
       .setFontPath("/fonts/custom.ttf")
@@ -129,23 +129,23 @@ TEST_F(TestText, MethodChainingWorks) {
   EXPECT_EQ(text.getScale()[0], 2.0f);
   EXPECT_EQ(text.getScale()[1], 2.0f);
   EXPECT_EQ(text.getScale()[2], 2.0f);
-  EXPECT_EQ(text.getColor().red(), 0.2f);
-  EXPECT_EQ(text.getColor().green(), 0.4f);
-  EXPECT_EQ(text.getColor().blue(), 0.8f);
-  EXPECT_EQ(text.getColor().alpha(), 0.9f);
+  EXPECT_EQ(text.getColor().red(), 51);
+  EXPECT_EQ(text.getColor().green(), 102);
+  EXPECT_EQ(text.getColor().blue(), 204);
+  EXPECT_EQ(text.getColor().alpha(), 230);
 }
 
 TEST_F(TestText, SetColorSupportsChaining) {
   utility::graphics::Text text;
-  utility::graphics::Color<std::float_t> color{0.1f, 0.3f, 0.7f, 0.5f};
+  utility::graphics::Color<std::uint8_t> color{26, 77, 179, 128};
 
   auto &result = text.setColor(color);
 
   EXPECT_EQ(&result, &text);
-  EXPECT_EQ(text.getColor().red(), 0.1f);
-  EXPECT_EQ(text.getColor().green(), 0.3f);
-  EXPECT_EQ(text.getColor().blue(), 0.7f);
-  EXPECT_EQ(text.getColor().alpha(), 0.5f);
+  EXPECT_EQ(text.getColor().red(), 26);
+  EXPECT_EQ(text.getColor().green(), 77);
+  EXPECT_EQ(text.getColor().blue(), 179);
+  EXPECT_EQ(text.getColor().alpha(), 128);
 }
 
 TEST_F(TestText, SetPositionSupportsChaining) {
