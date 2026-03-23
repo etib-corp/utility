@@ -15,11 +15,11 @@ TEST(PerformanceMouseButtonEvent, PositionAndButtonsCompleteWithinBudget) {
   for (std::uint32_t i = 0; i < iterations; ++i) {
     event.setPosition(
         {static_cast<float>(i % 500U), static_cast<float>(i % 300U)});
-    event.setButtonState(utility::event::MouseButtonEvent::MouseButton::LEFT,
+    event.setButtonState(utility::event::MouseButtonEvent::MouseButton::Left,
                          (i % 2U) == 0U);
     (void)event.getPosition();
     (void)event.isButtonPressed(
-        utility::event::MouseButtonEvent::MouseButton::LEFT);
+        utility::event::MouseButtonEvent::MouseButton::Left);
   }
   const auto end = Clock::now();
 
@@ -28,7 +28,7 @@ TEST(PerformanceMouseButtonEvent, PositionAndButtonsCompleteWithinBudget) {
           .count();
 
   volatile bool sink = event.isButtonPressed(
-      utility::event::MouseButtonEvent::MouseButton::LEFT);
+      utility::event::MouseButtonEvent::MouseButton::Left);
   (void)sink;
 
   RecordProperty("mouse_button_event_ops_ms", static_cast<int>(elapsed));

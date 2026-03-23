@@ -45,19 +45,19 @@ public:
    * @brief Mouse buttons enumeration.
    */
   enum class MouseButton : const std::uint8_t {
-    LEFT = 1,
-    MIDDLE = 2,
-    RIGHT = 3,
+    Left = 1,
+    Middle = 2,
+    Right = 3,
     X1 = 4,
     X2 = 5,
-    LAST = 6 // Sentinel value to indicate the number of buttons, not an actual
+    Last = 6 // Sentinel value to indicate the number of buttons, not an actual
              // button
   };
 
   using MouseButtonsState =
       std::bitset<sizeof(std::uint8_t) *
                   static_cast<std::size_t>(
-                      MouseButton::LAST)>; /**< Bitset for button states */
+                      MouseButton::Last)>; /**< Bitset for button states */
 
   /**
    * @brief Factory for creating MouseButtonEvent instances.

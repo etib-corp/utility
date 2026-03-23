@@ -13,7 +13,7 @@ TEST(PerformanceKeyboardEvent, StateUpdatesCompleteWithinBudget) {
 
   const auto start = Clock::now();
   for (std::uint32_t i = 0; i < iterations; ++i) {
-    event.setKeycode(utility::event::KeyboardEvent::KeyCode::RETURN);
+    event.setKeycode(utility::event::KeyboardEvent::KeyCode::Return);
     event.setIsDownEvent((i % 2U) == 0U);
     event.setIsRepeatEvent((i % 3U) == 0U);
     (void)event.getKeycode();

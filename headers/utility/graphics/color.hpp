@@ -24,8 +24,8 @@
  * @file color.hpp
  * @brief RGBA color representation with blending and manipulation operations.
  *
- * Declares `utility::graphics::Color<Type>`, supporting RGBA color components with
- * operations for blending, grayscale conversion, and color manipulation.
+ * Declares `utility::graphics::Color<Type>`, supporting RGBA color components
+ * with operations for blending, grayscale conversion, and color manipulation.
  */
 
 #pragma once
@@ -86,9 +86,9 @@ protected:
    */
   static Type clamp(Type value) {
     if constexpr (std::is_floating_point<Type>::value) {
-      return std::max(Type{0}, std::min(Type{1}, value));
+      return (std::max)(Type{0}, (std::min)(Type{1}, value));
     } else {
-      return std::max(Type{0}, std::min(Type{255}, value));
+      return (std::max)(Type{0}, (std::min)(Type{255}, value));
     }
   }
 

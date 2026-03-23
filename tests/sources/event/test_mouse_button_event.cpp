@@ -29,25 +29,25 @@ TEST_F(TestMouseButtonEvent, DefaultStateHasZeroPositionAndNoPressedButtons) {
   EXPECT_FLOAT_EQ(position[0], 0.0F);
   EXPECT_FLOAT_EQ(position[1], 0.0F);
   EXPECT_FALSE(event.isButtonPressed(
-      utility::event::MouseButtonEvent::MouseButton::LEFT));
+      utility::event::MouseButtonEvent::MouseButton::Left));
 }
 
 TEST_F(TestMouseButtonEvent, PositionAndButtonStateCanBeChanged) {
   utility::event::MouseButtonEvent event;
 
   event.setPosition({100.0F, 200.0F});
-  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::LEFT,
+  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::Left,
                        true);
-  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::RIGHT,
+  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::Right,
                        false);
 
   const auto position = event.getPosition();
   EXPECT_FLOAT_EQ(position[0], 100.0F);
   EXPECT_FLOAT_EQ(position[1], 200.0F);
   EXPECT_TRUE(event.isButtonPressed(
-      utility::event::MouseButtonEvent::MouseButton::LEFT));
+      utility::event::MouseButtonEvent::MouseButton::Left));
   EXPECT_FALSE(event.isButtonPressed(
-      utility::event::MouseButtonEvent::MouseButton::RIGHT));
+      utility::event::MouseButtonEvent::MouseButton::Right));
 }
 
 TEST_F(TestMouseButtonEvent,
@@ -62,18 +62,18 @@ TEST_F(TestMouseButtonEvent,
 
 TEST_F(TestMouseButtonEvent, MouseButtonsStateGetter) {
   utility::event::MouseButtonEvent event;
-  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::LEFT,
+  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::Left,
                        true);
-  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::RIGHT,
+  event.setButtonState(utility::event::MouseButtonEvent::MouseButton::Right,
                        true);
 
   const auto buttonsState = event.getButtonsState();
   EXPECT_TRUE(buttonsState.test(static_cast<std::size_t>(
-      utility::event::MouseButtonEvent::MouseButton::LEFT)));
+      utility::event::MouseButtonEvent::MouseButton::Left)));
   EXPECT_TRUE(buttonsState.test(static_cast<std::size_t>(
-      utility::event::MouseButtonEvent::MouseButton::RIGHT)));
+      utility::event::MouseButtonEvent::MouseButton::Right)));
   EXPECT_FALSE(buttonsState.test(static_cast<std::size_t>(
-      utility::event::MouseButtonEvent::MouseButton::MIDDLE)));
+      utility::event::MouseButtonEvent::MouseButton::Middle)));
   EXPECT_FALSE(buttonsState.test(static_cast<std::size_t>(
       utility::event::MouseButtonEvent::MouseButton::X1)));
   EXPECT_FALSE(buttonsState.test(static_cast<std::size_t>(

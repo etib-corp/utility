@@ -26,9 +26,9 @@ TEST_F(TestKeyboardEvent, DefaultStateIsConsistent) {
   utility::event::KeyboardEvent event;
 
   EXPECT_EQ(event.getScancode(),
-            utility::event::KeyboardEvent::ScanCode::UNKNOWN);
+            utility::event::KeyboardEvent::ScanCode::Unknown);
   EXPECT_EQ(event.getKeycode(),
-            utility::event::KeyboardEvent::KeyCode::UNKNOWN);
+            utility::event::KeyboardEvent::KeyCode::Unknown);
   EXPECT_TRUE(event.getIsDownEvent());
   EXPECT_FALSE(event.getIsRepeatEvent());
 }
@@ -36,11 +36,11 @@ TEST_F(TestKeyboardEvent, DefaultStateIsConsistent) {
 TEST_F(TestKeyboardEvent, KeyCodeAndFlagsCanBeUpdated) {
   utility::event::KeyboardEvent event;
 
-  event.setKeycode(utility::event::KeyboardEvent::KeyCode::RETURN);
+  event.setKeycode(utility::event::KeyboardEvent::KeyCode::Return);
   event.setIsDownEvent(false);
   event.setIsRepeatEvent(true);
 
-  EXPECT_EQ(event.getKeycode(), utility::event::KeyboardEvent::KeyCode::RETURN);
+  EXPECT_EQ(event.getKeycode(), utility::event::KeyboardEvent::KeyCode::Return);
   EXPECT_FALSE(event.getIsDownEvent());
   EXPECT_TRUE(event.getIsRepeatEvent());
 }
@@ -50,22 +50,22 @@ TEST_F(TestKeyboardEvent, ModifierMasksSupportGroupedAndHighBitValues) {
 
   utility::event::KeyboardEvent event;
 
-  EXPECT_TRUE(event.isModifierSet(KeyModifiers::NONE));
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::None));
 
-  event.setModifiers(KeyModifiers::LSHIFT);
-  EXPECT_TRUE(event.isModifierSet(KeyModifiers::LSHIFT));
-  EXPECT_TRUE(event.isModifierSet(KeyModifiers::SHIFT));
-  EXPECT_FALSE(event.isModifierSet(KeyModifiers::RSHIFT));
-  EXPECT_FALSE(event.isModifierSet(KeyModifiers::NONE));
+  event.setModifiers(KeyModifiers::LeftShift);
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::LeftShift));
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::Shift));
+  EXPECT_FALSE(event.isModifierSet(KeyModifiers::RightShift));
+  EXPECT_FALSE(event.isModifierSet(KeyModifiers::None));
 
-  event.setModifiers(KeyModifiers::RALT);
-  EXPECT_TRUE(event.isModifierSet(KeyModifiers::RALT));
-  EXPECT_TRUE(event.isModifierSet(KeyModifiers::ALT));
-  EXPECT_FALSE(event.isModifierSet(KeyModifiers::LALT));
+  event.setModifiers(KeyModifiers::RightAlt);
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::RightAlt));
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::Alt));
+  EXPECT_FALSE(event.isModifierSet(KeyModifiers::LeftAlt));
 
-  event.setModifiers(KeyModifiers::MODE);
-  EXPECT_TRUE(event.isModifierSet(KeyModifiers::MODE));
-  EXPECT_FALSE(event.isModifierSet(KeyModifiers::ALT));
+  event.setModifiers(KeyModifiers::None);
+  EXPECT_TRUE(event.isModifierSet(KeyModifiers::None));
+  EXPECT_FALSE(event.isModifierSet(KeyModifiers::Alt));
 }
 
 TEST_F(TestKeyboardEvent, FactoryCreatesKeyboardEventThroughAbstractInterface) {

@@ -24,9 +24,9 @@
  * @file ray.hpp
  * @brief Geometric ray template declaration.
  *
- * Declares `utility::graphics::Ray<Type, Dimension>`, a fixed-dimension ray defined
- * by an origin and a non-zero direction vector. Provides accessors, mutators,
- * translation utilities, and point evaluation along the ray.
+ * Declares `utility::graphics::Ray<Type, Dimension>`, a fixed-dimension ray
+ * defined by an origin and a non-zero direction vector. Provides accessors,
+ * mutators, translation utilities, and point evaluation along the ray.
  */
 
 #pragma once

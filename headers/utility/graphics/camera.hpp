@@ -24,9 +24,9 @@
  * @file camera.hpp
  * @brief 3D perspective camera template declaration.
  *
- * Declares `utility::graphics::Camera<Type>`, a lightweight camera model storing
- * position/orientation and perspective parameters, with utility methods to
- * generate world-space view rays.
+ * Declares `utility::graphics::Camera<Type>`, a lightweight camera model
+ * storing position/orientation and perspective parameters, with utility methods
+ * to generate world-space view rays.
  */
 
 #pragma once

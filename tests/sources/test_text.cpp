@@ -37,10 +37,10 @@ TEST_F(TestText, DefaultConstructorInitializesWithDefaults) {
   EXPECT_EQ(text.getScale()[0], 1.0f);
   EXPECT_EQ(text.getScale()[1], 1.0f);
   EXPECT_EQ(text.getScale()[2], 1.0f);
-  EXPECT_EQ(text.getColor().red(), 1.0f);
-  EXPECT_EQ(text.getColor().green(), 1.0f);
-  EXPECT_EQ(text.getColor().blue(), 1.0f);
-  EXPECT_EQ(text.getColor().alpha(), 1.0f);
+  EXPECT_EQ(text.getColor().red(), 255);
+  EXPECT_EQ(text.getColor().green(), 255);
+  EXPECT_EQ(text.getColor().blue(), 255);
+  EXPECT_EQ(text.getColor().alpha(), 255);
 }
 
 TEST_F(TestText, ParameterizedConstructorSetsValues) {
