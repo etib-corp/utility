@@ -77,8 +77,12 @@ public:
   /**
    * @brief Set preedit UTF-8 text.
    * @param text The preedit text.
+   * @return Reference to this TextEditingEvent for method chaining.
    */
-  void setText(const std::string &text) { _text = text; }
+  TextEditingEvent &setText(const std::string &text) {
+    _text = text;
+    return *this;
+  }
 
   /**
    * @brief Get preedit UTF-8 text.
@@ -89,8 +93,12 @@ public:
   /**
    * @brief Set cursor start position in preedit text.
    * @param start Cursor start position.
+   * @return Reference to this TextEditingEvent for method chaining.
    */
-  void setStart(const int start) noexcept { _start = start; }
+  TextEditingEvent &setStart(const int start) noexcept {
+    _start = start;
+    return *this;
+  }
 
   /**
    * @brief Get cursor start position in preedit text.
@@ -101,8 +109,12 @@ public:
   /**
    * @brief Set selection length in preedit text.
    * @param length Selection length.
+   * @return Reference to this TextEditingEvent for method chaining.
    */
-  void setLength(const int length) noexcept { _length = length; }
+  TextEditingEvent &setLength(const int length) noexcept {
+    _length = length;
+    return *this;
+  }
 
   /**
    * @brief Get selection length in preedit text.

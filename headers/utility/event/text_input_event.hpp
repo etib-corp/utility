@@ -74,8 +74,12 @@ public:
   /**
    * @brief Set committed UTF-8 text.
    * @param text The committed text.
+   * @return Reference to this TextInputEvent for method chaining.
    */
-  void setText(const std::string &text) { _text = text; }
+  TextInputEvent &setText(const std::string &text) {
+    _text = text;
+    return *this;
+  }
 
   /**
    * @brief Get committed UTF-8 text.

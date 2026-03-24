@@ -103,9 +103,11 @@ public:
   /**
    * @brief Set the current mouse position.
    * @param position The mouse position as a 2D vector (x, y).
+   * @return Reference to this MouseButtonEvent for method chaining.
    */
-  void setPosition(const MousePosition &position) noexcept {
+  MouseButtonEvent &setPosition(const MousePosition &position) noexcept {
     _position = position;
+    return *this;
   }
 
   /**
@@ -118,9 +120,11 @@ public:
    * @brief Set the state of a mouse button.
    * @param button The mouse button to set.
    * @param pressed True if the button is pressed, false if released.
+   * @return Reference to this MouseButtonEvent for method chaining.
    */
-  void setButtonState(const MouseButton button, const bool pressed) noexcept {
+  MouseButtonEvent &setButtonState(const MouseButton button, const bool pressed) noexcept {
     _buttonStates.set(static_cast<std::size_t>(button), pressed);
+    return *this;
   }
 
   /**

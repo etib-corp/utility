@@ -81,9 +81,11 @@ public:
   /**
    * @brief Set the current mouse position.
    * @param position The mouse position as a 2D vector (x, y).
+   * @return Reference to this MouseMotionEvent for method chaining.
    */
-  void setPosition(const MousePosition &position) noexcept {
+  MouseMotionEvent &setPosition(const MousePosition &position) noexcept {
     _position = position;
+    return *this;
   }
 
   /**

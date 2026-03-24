@@ -709,8 +709,12 @@ public:
   /**
    * @brief Set the virtual key code.
    * @param keycode The virtual key code to set.
+   * @return Reference to this KeyboardEvent for method chaining.
    */
-  void setKeycode(const KeyCode keycode) noexcept { _keycode = keycode; }
+  KeyboardEvent &setKeycode(const KeyCode keycode) noexcept {
+    _keycode = keycode;
+    return *this;
+  }
 
   /**
    * @brief Get the virtual key code.
@@ -721,10 +725,12 @@ public:
   /**
    * @brief Set the key modifiers.
    * @param modifiers The key modifiers to set.
+   * @return Reference to this KeyboardEvent for method chaining.
    */
-  void setModifiers(const KeyModifiers modifiers) noexcept {
+  KeyboardEvent &setModifiers(const KeyModifiers modifiers) noexcept {
     _modifiers = std::bitset<sizeof(KeyModifiers) * 8>(
         static_cast<std::size_t>(modifiers));
+    return *this;
   }
 
   /**
@@ -743,8 +749,12 @@ public:
   /**
    * @brief Set whether the event is a key down event.
    * @param isDown True if the event is a key down event, false otherwise.
+   * @return Reference to this KeyboardEvent for method chaining.
    */
-  void setIsDownEvent(const bool isDown) noexcept { isDownEvent = isDown; }
+  KeyboardEvent &setIsDownEvent(const bool isDown) noexcept {
+    isDownEvent = isDown;
+    return *this;
+  }
 
   /**
    * @brief Check if the event is a key down event.
@@ -755,9 +765,11 @@ public:
   /**
    * @brief Set whether the event is a key repeat event.
    * @param isRepeat True if the event is a key repeat event, false otherwise.
+   * @return Reference to this KeyboardEvent for method chaining.
    */
-  void setIsRepeatEvent(const bool isRepeat) noexcept {
+  KeyboardEvent &setIsRepeatEvent(const bool isRepeat) noexcept {
     isRepeatEvent = isRepeat;
+    return *this;
   }
 
   /**
