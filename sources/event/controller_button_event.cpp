@@ -20,18 +20,6 @@
  SOFTWARE.
  */
 
-#include "utility/graphics/text.hpp"
+#include "utility/event/controller_button_event.hpp"
 
-namespace utility::graphics {
-
-Text::Text(void)
-    : _content(""), _fontPath(""), _fontSize(12.0f), _position(0.0f),
-  _rotation(), _scale(1.0f), _color(255, 255, 255, 255) {}
-
-Text::Text(const std::string &content, const std::string &fontPath,
-           float fontSize)
-    : _content(content), _fontPath(fontPath), _fontSize(fontSize),
-  _position(0.0f), _rotation(), _scale(1.0f),
-      _color(255, 255, 255, 255) {}
-
-} // namespace utility::graphics
+namespace utility::event {} // namespace utility::event

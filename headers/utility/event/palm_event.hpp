@@ -1,0 +1,112 @@
+/*
+ Copyright (c) 2026 ETIB Corporation
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy of
+ this software and associated documentation files (the "Software"), to deal in
+ the Software without restriction, including without limitation the rights to
+ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ of the Software, and to permit persons to whom the Software is furnished to do
+ so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+
+#pragma once
+
+#include <memory>
+
+#include "utility/event/hand_event.hpp"
+#include "utility/event/pose.hpp"
+
+namespace utility::event {
+
+/**
+ * @brief Palm pose event.
+ */
+class PalmEvent : public HandEvent {
+public:
+  /**
+   * @brief Factory for creating PalmEvent instances.
+   */
+  class Factory : public Event::AbstractFactory {
+  public:
+    ~Factory(void) override = default;
+
+    /**
+     * @brief Create a PalmEvent as base Event pointer.
+     * @return Newly created PalmEvent.
+     */
+    std::unique_ptr<Event> create(void) const override {
+      return std::make_unique<PalmEvent>();
+    }
+
+    /**
+     * @brief Create a strongly-typed PalmEvent.
+     * @return Newly created PalmEvent.
+     */
+    std::unique_ptr<PalmEvent> createTyped(void) const {
+      return std::make_unique<PalmEvent>();
+    }
+  };
+
+private:
+  /** @brief Palm position in 3D. */
+  Vector3 _position{0.0F, 0.0F, 0.0F};
+
+  /** @brief Palm orientation in 3D. */
+  Vector3 _orientation{0.0F, 0.0F, 0.0F};
+
+public:
+  /**
+   * @brief Default constructor.
+   */
+  explicit PalmEvent(void) = default;
+
+  /**
+   * @brief Default destructor.
+   */
+  ~PalmEvent(void) override = default;
+
+  /**
+   * @brief Set palm position.
+   * @param position Position value.
+   * @return Reference to this PalmEvent.
+   */
+  PalmEvent &setPosition(const Vector3 &position) noexcept {
+    _position = position;
+    return *this;
+  }
+
+  /**
+   * @brief Get palm position.
+   * @return Position value.
+   */
+  Vector3 getPosition(void) const noexcept { return _position; }
+
+  /**
+   * @brief Set palm orientation.
+   * @param orientation Orientation value.
+   * @return Reference to this PalmEvent.
+   */
+  PalmEvent &setOrientation(const Vector3 &orientation) noexcept {
+    _orientation = orientation;
+    return *this;
+  }
+
+  /**
+   * @brief Get palm orientation.
+   * @return Orientation value.
+   */
+  Vector3 getOrientation(void) const noexcept { return _orientation; }
+};
+
+} // namespace utility::event

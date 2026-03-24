@@ -34,6 +34,7 @@ TEST_F(TestText, DefaultConstructorInitializesWithDefaults) {
   EXPECT_EQ(text.getRotation()[0], 0.0f);
   EXPECT_EQ(text.getRotation()[1], 0.0f);
   EXPECT_EQ(text.getRotation()[2], 0.0f);
+  EXPECT_EQ(text.getRotation()[3], 1.0f);
   EXPECT_EQ(text.getScale()[0], 1.0f);
   EXPECT_EQ(text.getScale()[1], 1.0f);
   EXPECT_EQ(text.getScale()[2], 1.0f);
@@ -105,7 +106,9 @@ TEST_F(TestText, SetFontSizeSupportsChaining) {
 TEST_F(TestText, MethodChainingWorks) {
   utility::graphics::Text text;
   utility::math::Vector<std::float_t, 3> position{1.0f, 2.0f, 3.0f};
-  utility::math::Vector<std::float_t, 3> rotation{10.0f, 20.0f, 30.0f};
+  utility::graphics::Rotation rotation =
+      utility::graphics::Rotation::fromEulerDegrees(10.0f, 20.0f, 30.0f)
+          .normalizedQuaternion();
   utility::math::Vector<std::float_t, 3> scale{2.0f, 2.0f, 2.0f};
   utility::graphics::Color<std::uint8_t> color{51, 102, 204, 230};
 
@@ -123,9 +126,10 @@ TEST_F(TestText, MethodChainingWorks) {
   EXPECT_EQ(text.getPosition()[0], 1.0f);
   EXPECT_EQ(text.getPosition()[1], 2.0f);
   EXPECT_EQ(text.getPosition()[2], 3.0f);
-  EXPECT_EQ(text.getRotation()[0], 10.0f);
-  EXPECT_EQ(text.getRotation()[1], 20.0f);
-  EXPECT_EQ(text.getRotation()[2], 30.0f);
+  EXPECT_NEAR(text.getRotation()[0], rotation[0], 1e-5f);
+  EXPECT_NEAR(text.getRotation()[1], rotation[1], 1e-5f);
+  EXPECT_NEAR(text.getRotation()[2], rotation[2], 1e-5f);
+  EXPECT_NEAR(text.getRotation()[3], rotation[3], 1e-5f);
   EXPECT_EQ(text.getScale()[0], 2.0f);
   EXPECT_EQ(text.getScale()[1], 2.0f);
   EXPECT_EQ(text.getScale()[2], 2.0f);
@@ -162,7 +166,7 @@ TEST_F(TestText, SetPositionSupportsChaining) {
 
 TEST_F(TestText, SetRotationSupportsChaining) {
   utility::graphics::Text text;
-  utility::math::Vector<std::float_t, 3> rotation{7.0f, 8.0f, 9.0f};
+  utility::graphics::Rotation rotation{7.0f, 8.0f, 9.0f, 10.0f};
 
   auto &result = text.setRotation(rotation);
 
@@ -170,6 +174,7 @@ TEST_F(TestText, SetRotationSupportsChaining) {
   EXPECT_EQ(text.getRotation()[0], 7.0f);
   EXPECT_EQ(text.getRotation()[1], 8.0f);
   EXPECT_EQ(text.getRotation()[2], 9.0f);
+  EXPECT_EQ(text.getRotation()[3], 10.0f);
 }
 
 TEST_F(TestText, SetScaleSupportsChaining) {

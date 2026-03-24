@@ -574,4 +574,9 @@ std::ostream &operator<<(std::ostream &outputStream, const Color<Type> &color) {
   return outputStream;
 }
 
+/**
+ * @brief Common 32-bit RGBA color type with uint8_t components.
+ */
+using Color32Bit = Color<std::uint8_t>;
+
 } // namespace utility::graphics

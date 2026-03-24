@@ -33,6 +33,7 @@
 #include <cmath>
 #include <string>
 #include <utility/graphics/color.hpp>
+#include <utility/graphics/rotation.hpp>
 #include <utility/math/vector.hpp>
 
 namespace utility::graphics {
@@ -49,7 +50,7 @@ private:
   std::string _fontPath;                            ///< Path to the font file
   float _fontSize;                                  ///< Font size in points
   utility::math::Vector<std::float_t, 3> _position; ///< Text world position
-  utility::math::Vector<std::float_t, 3> _rotation; ///< Text euler rotation
+  utility::graphics::Rotation _rotation;            ///< Text quaternion rotation
   utility::math::Vector<std::float_t, 3> _scale;    ///< Text local scale
   utility::graphics::Color<std::uint8_t> _color;    ///< Text RGBA color
 
@@ -145,16 +146,16 @@ public:
    * @brief Get the text rotation.
    * @return Const reference to the text rotation.
    */
-  const utility::math::Vector<std::float_t, 3> &getRotation(void) const {
+  const utility::graphics::Rotation &getRotation(void) const {
     return _rotation;
   }
 
   /**
    * @brief Set the text rotation.
-   * @param rotation Text euler rotation.
+   * @param rotation Text quaternion rotation.
    * @return Reference to this Text instance for chaining.
    */
-  Text &setRotation(const utility::math::Vector<std::float_t, 3> &rotation) {
+  Text &setRotation(const utility::graphics::Rotation &rotation) {
     _rotation = rotation;
     return *this;
   }

@@ -20,18 +20,54 @@
  SOFTWARE.
  */
 
-#include "utility/graphics/text.hpp"
+#pragma once
 
-namespace utility::graphics {
+#include <memory>
 
-Text::Text(void)
-    : _content(""), _fontPath(""), _fontSize(12.0f), _position(0.0f),
-  _rotation(), _scale(1.0f), _color(255, 255, 255, 255) {}
+#include "utility/event/hand_event.hpp"
+#include "utility/event/pose.hpp"
 
-Text::Text(const std::string &content, const std::string &fontPath,
-           float fontSize)
-    : _content(content), _fontPath(fontPath), _fontSize(fontSize),
-  _position(0.0f), _rotation(), _scale(1.0f),
-      _color(255, 255, 255, 255) {}
+namespace utility::event {
 
-} // namespace utility::graphics
+/**
+ * @brief Hand pinch event.
+ */
+class HandPinchEvent : public HandEvent {
+public:
+  /**
+   * @brief Factory for creating HandPinchEvent instances.
+   */
+  class Factory : public Event::AbstractFactory {
+  public:
+    ~Factory(void) override = default;
+
+    /**
+     * @brief Create a HandPinchEvent as base Event pointer.
+     * @return Newly created HandPinchEvent.
+     */
+    std::unique_ptr<Event> create(void) const override {
+      return std::make_unique<HandPinchEvent>();
+    }
+
+    /**
+     * @brief Create a strongly-typed HandPinchEvent.
+     * @return Newly created HandPinchEvent.
+     */
+    std::unique_ptr<HandPinchEvent> createTyped(void) const {
+      return std::make_unique<HandPinchEvent>();
+    }
+  };
+
+public:
+  /**
+   * @brief Default constructor.
+   */
+  explicit HandPinchEvent(void) = default;
+
+  /**
+   * @brief Default destructor.
+   */
+  ~HandPinchEvent(void) override = default;
+};
+
+} // namespace utility::event
