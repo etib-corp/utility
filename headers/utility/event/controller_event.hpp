@@ -29,7 +29,7 @@
 namespace utility::event {
 
 /**
- * @brief Abstract base class for hand events.
+ * @brief Abstract base class for controller-related events.
  *
  * Represents events related to hand tracking, such as gesture recognition or
  * hand pose updates. Specific hand event types should derive from this class.
@@ -37,18 +37,18 @@ namespace utility::event {
 class ControllerEvent : public Event {
 public:
   /**
-   * @brief Hand types for hand events.
-   * Defines the type of hand involved in the event (e.g., left or right).
+   * @brief Controller types for controller events.
+   * Defines the type of controller involved in the event (e.g., left or right).
    */
   enum class ControllerType {
-    Left,  /**< Left hand */
-    Right, /**< Right hand */
-    None   /**< No hand */
+    Left,  /**< Left controller */
+    Right, /**< Right controller */
+    None   /**< No controller */
   };
 
 private:
   ControllerType _controllerType{
-      ControllerType::None}; /**< Type of hand involved in the event */
+      ControllerType::None}; /**< Type of controller involved in the event */
 
 public:
   /**
@@ -62,8 +62,8 @@ public:
   virtual ~ControllerEvent(void) override = default;
 
   /**
-   * @brief Set the type of hand involved in the event.
-   * @param controllerType The type of hand (left or right).
+   * @brief Set the type of controller involved in the event.
+   * @param controllerType The type of controller (left or right).
    * @return Reference to the current event instance for chaining.
    */
   ControllerEvent &
@@ -73,8 +73,8 @@ public:
   }
 
   /**
-   * @brief Get the type of hand involved in the event.
-   * @return The type of hand (left or right).
+   * @brief Get the type of controller involved in the event.
+   * @return The type of controller (left or right).
    */
   ControllerType getControllerType(void) const noexcept {
     return _controllerType;

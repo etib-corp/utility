@@ -44,12 +44,13 @@ public:
    * Defines the type of hand involved in the event (e.g., left or right).
    */
   enum class HandType {
-    Left, /**< Left hand */
-    Right /**< Right hand */
+    Left,  /**< Left hand */
+    Right, /**< Right hand */
+    None   /**< No hand */
   };
 
 private:
-  HandType _handType; /**< Type of hand involved in the event */
+  HandType _handType{HandType::None}; /**< Type of hand involved in the event */
   utility::graphics::Position _position; /**< Position of the hand */
   utility::graphics::Rotation _rotation; /**< Rotation of the hand */
 
