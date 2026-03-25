@@ -158,8 +158,7 @@ protected:
     const Vector<Type, 3> u{q[0], q[1], q[2]};
     const Type s = q[3];
 
-    return u * (Type{2} * u.dot(vector)) +
-           vector * (s * s - u.dot(u)) +
+    return u * (Type{2} * u.dot(vector)) + vector * (s * s - u.dot(u)) +
            u.cross(vector) * (Type{2} * s);
   }
 
@@ -220,10 +219,9 @@ protected:
       qz = Type{0.25} * s;
     }
 
-    setRotation(Rotation(static_cast<std::float_t>(qx),
-                         static_cast<std::float_t>(qy),
-                         static_cast<std::float_t>(qz),
-                         static_cast<std::float_t>(qw)));
+    setRotation(
+        Rotation(static_cast<std::float_t>(qx), static_cast<std::float_t>(qy),
+                 static_cast<std::float_t>(qz), static_cast<std::float_t>(qw)));
   }
 
 public:
@@ -249,8 +247,8 @@ public:
          Type verticalFovDegrees, Type aspectRatio, Type nearPlane,
          Type farPlane)
       : _position(std::move(position)), _rotation(),
-        _verticalFovDegrees(verticalFovDegrees),
-        _aspectRatio(aspectRatio), _nearPlane(nearPlane), _farPlane(farPlane) {
+        _verticalFovDegrees(verticalFovDegrees), _aspectRatio(aspectRatio),
+        _nearPlane(nearPlane), _farPlane(farPlane) {
     setOrientationFromBasis(forward, up);
     validatePerspective(_verticalFovDegrees, _aspectRatio, _nearPlane,
                         _farPlane);
@@ -377,7 +375,8 @@ public:
     try {
       _rotation = rotation.normalizedQuaternion();
     } catch (const std::runtime_error &) {
-      throw std::invalid_argument("Camera rotation quaternion must be non-zero");
+      throw std::invalid_argument(
+          "Camera rotation quaternion must be non-zero");
     }
   }
 
@@ -468,10 +467,9 @@ public:
     const Type halfHeight = std::tan(halfFovRadians);
     const Type halfWidth = halfHeight * _aspectRatio;
 
-    const auto rayDirection =
-      (getForward() + right() * (ndcX * halfWidth) +
-       getUp() * (ndcY * halfHeight))
-        .normalized();
+    const auto rayDirection = (getForward() + right() * (ndcX * halfWidth) +
+                               getUp() * (ndcY * halfHeight))
+                                  .normalized();
 
     return Ray<Type, 3>(_position, rayDirection);
   }

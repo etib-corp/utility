@@ -76,10 +76,11 @@ TEST_F(TestCamera, ConstructorValidationRejectsInvalidValues) {
                                         60.0F, 16.0F / 9.0F, 0.1F, 1000.0F)),
       std::invalid_argument);
 
-  EXPECT_THROW((utility::graphics::Camera<float>(
-                   position, utility::graphics::Rotation(0.0F, 0.0F, 0.0F, 0.0F),
-                   60.0F, 16.0F / 9.0F, 0.1F, 1000.0F)),
-               std::invalid_argument);
+  EXPECT_THROW(
+      (utility::graphics::Camera<float>(
+          position, utility::graphics::Rotation(0.0F, 0.0F, 0.0F, 0.0F), 60.0F,
+          16.0F / 9.0F, 0.1F, 1000.0F)),
+      std::invalid_argument);
 }
 
 TEST_F(TestCamera, ViewRayAtCenterAlignsWithForward) {
@@ -131,8 +132,8 @@ TEST_F(TestCamera, MoveLookAtAndSetPerspectiveWork) {
 TEST_F(TestCamera, QuaternionSetRotationIsNormalizedAndAffectsForward) {
   utility::graphics::Camera<float> camera;
 
-  camera.setRotation(utility::graphics::Rotation::fromEulerDegrees(0.0F, 90.0F,
-                                                                    0.0F));
+  camera.setRotation(
+      utility::graphics::Rotation::fromEulerDegrees(0.0F, 90.0F, 0.0F));
 
   const auto rotation = camera.getRotation();
   EXPECT_NEAR(rotation.magnitude(), 1.0F, 1e-5F);

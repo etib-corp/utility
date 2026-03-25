@@ -60,10 +60,10 @@ public:
 
 private:
   /** @brief Palm position in 3D. */
-  Vector3 _position{0.0F, 0.0F, 0.0F};
+  utility::graphics::Position _position{0.0F, 0.0F, 0.0F};
 
   /** @brief Palm orientation in 3D. */
-  Vector3 _orientation{0.0F, 0.0F, 0.0F};
+  utility::graphics::Rotation _orientation{0.0F, 0.0F, 0.0F, 1.0F};
 
 public:
   /**
@@ -81,7 +81,7 @@ public:
    * @param position Position value.
    * @return Reference to this PalmEvent.
    */
-  PalmEvent &setPosition(const Vector3 &position) noexcept {
+  PalmEvent &setPosition(const utility::graphics::Position &position) noexcept {
     _position = position;
     return *this;
   }
@@ -90,14 +90,17 @@ public:
    * @brief Get palm position.
    * @return Position value.
    */
-  Vector3 getPosition(void) const noexcept { return _position; }
+  utility::graphics::Position getPosition(void) const noexcept {
+    return _position;
+  }
 
   /**
    * @brief Set palm orientation.
    * @param orientation Orientation value.
    * @return Reference to this PalmEvent.
    */
-  PalmEvent &setOrientation(const Vector3 &orientation) noexcept {
+  PalmEvent &
+  setOrientation(const utility::graphics::Rotation &orientation) noexcept {
     _orientation = orientation;
     return *this;
   }
@@ -106,7 +109,9 @@ public:
    * @brief Get palm orientation.
    * @return Orientation value.
    */
-  Vector3 getOrientation(void) const noexcept { return _orientation; }
+  utility::graphics::Rotation getOrientation(void) const noexcept {
+    return _orientation;
+  }
 };
 
 } // namespace utility::event

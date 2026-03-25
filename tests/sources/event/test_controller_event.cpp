@@ -25,7 +25,8 @@
 TEST_F(TestControllerEvent, ControllerButtonEventStoresHandButtonAndStates) {
   utility::event::ControllerButtonEvent event;
 
-  event.setControllerType(utility::event::ControllerEvent::ControllerType::Right);
+  event.setControllerType(
+      utility::event::ControllerEvent::ControllerType::Right);
   event.setButton(utility::event::ControllerButtonEvent::Button::Menu)
       .setTouched(true)
       .setClicked(true);
@@ -41,30 +42,38 @@ TEST_F(TestControllerEvent, ControllerButtonEventStoresHandButtonAndStates) {
 TEST_F(TestControllerEvent, ControllerMotionEventStoresAimAndGripPoses) {
   utility::event::ControllerMotionEvent event;
 
-  const utility::event::Pose aim{{1.0F, 2.0F, 3.0F}, {4.0F, 5.0F, 6.0F}};
-  const utility::event::Pose grip{{-1.0F, -2.0F, -3.0F}, {-4.0F, -5.0F, -6.0F}};
+  const utility::event::Pose aim{{1.0F, 2.0F, 3.0F}, {4.0F, 5.0F, 6.0F, 7.0F}};
+  const utility::event::Pose grip{{-1.0F, -2.0F, -3.0F},
+                                  {-4.0F, -5.0F, -6.0F, -7.0F}};
 
-  event.setControllerType(utility::event::ControllerEvent::ControllerType::Left);
+  event.setControllerType(
+      utility::event::ControllerEvent::ControllerType::Left);
   event.setAim(aim).setGrip(grip);
 
   EXPECT_EQ(event.getControllerType(),
             utility::event::ControllerEvent::ControllerType::Left);
 
   const auto storedAim = event.getAim();
-  EXPECT_FLOAT_EQ(storedAim.position[0], 1.0F);
-  EXPECT_FLOAT_EQ(storedAim.position[1], 2.0F);
-  EXPECT_FLOAT_EQ(storedAim.position[2], 3.0F);
-  EXPECT_FLOAT_EQ(storedAim.orientation[0], 4.0F);
-  EXPECT_FLOAT_EQ(storedAim.orientation[1], 5.0F);
-  EXPECT_FLOAT_EQ(storedAim.orientation[2], 6.0F);
+  const auto &aimPosition = storedAim.getPosition();
+  const auto &aimRotation = storedAim.getRotation();
+  EXPECT_FLOAT_EQ(aimPosition[0], 1.0F);
+  EXPECT_FLOAT_EQ(aimPosition[1], 2.0F);
+  EXPECT_FLOAT_EQ(aimPosition[2], 3.0F);
+  EXPECT_FLOAT_EQ(aimRotation[0], 4.0F);
+  EXPECT_FLOAT_EQ(aimRotation[1], 5.0F);
+  EXPECT_FLOAT_EQ(aimRotation[2], 6.0F);
+  EXPECT_FLOAT_EQ(aimRotation[3], 7.0F);
 
   const auto storedGrip = event.getGrip();
-  EXPECT_FLOAT_EQ(storedGrip.position[0], -1.0F);
-  EXPECT_FLOAT_EQ(storedGrip.position[1], -2.0F);
-  EXPECT_FLOAT_EQ(storedGrip.position[2], -3.0F);
-  EXPECT_FLOAT_EQ(storedGrip.orientation[0], -4.0F);
-  EXPECT_FLOAT_EQ(storedGrip.orientation[1], -5.0F);
-  EXPECT_FLOAT_EQ(storedGrip.orientation[2], -6.0F);
+  const auto &gripPosition = storedGrip.getPosition();
+  const auto &gripRotation = storedGrip.getRotation();
+  EXPECT_FLOAT_EQ(gripPosition[0], -1.0F);
+  EXPECT_FLOAT_EQ(gripPosition[1], -2.0F);
+  EXPECT_FLOAT_EQ(gripPosition[2], -3.0F);
+  EXPECT_FLOAT_EQ(gripRotation[0], -4.0F);
+  EXPECT_FLOAT_EQ(gripRotation[1], -5.0F);
+  EXPECT_FLOAT_EQ(gripRotation[2], -6.0F);
+  EXPECT_FLOAT_EQ(gripRotation[3], -7.0F);
 }
 
 TEST_F(TestControllerEvent, ThumbStickAxisIsClampedToMinusOneOne) {
@@ -89,7 +98,8 @@ TEST_F(TestControllerEvent, TriggerValueIsClampedToZeroOne) {
 TEST_F(TestControllerEvent, ThumbRestStoresTouchAndProximityStates) {
   utility::event::ControllerThumbRestEvent event;
 
-  event.setControllerType(utility::event::ControllerEvent::ControllerType::Right);
+  event.setControllerType(
+      utility::event::ControllerEvent::ControllerType::Right);
   event.setTouched(true).setProximity(true);
 
   EXPECT_EQ(event.getControllerType(),
@@ -107,7 +117,8 @@ TEST_F(TestControllerEvent, HandEventsStoreExpectedData) {
   EXPECT_NO_THROW((void)pinch);
   EXPECT_NO_THROW((void)poke);
 
-  palm.setPosition({7.0F, 8.0F, 9.0F}).setOrientation({10.0F, 11.0F, 12.0F});
+  palm.setPosition({7.0F, 8.0F, 9.0F})
+      .setOrientation({10.0F, 11.0F, 12.0F, 13.0F});
 
   const auto palmPosition = palm.getPosition();
   const auto palmOrientation = palm.getOrientation();
@@ -117,6 +128,7 @@ TEST_F(TestControllerEvent, HandEventsStoreExpectedData) {
   EXPECT_FLOAT_EQ(palmOrientation[0], 10.0F);
   EXPECT_FLOAT_EQ(palmOrientation[1], 11.0F);
   EXPECT_FLOAT_EQ(palmOrientation[2], 12.0F);
+  EXPECT_FLOAT_EQ(palmOrientation[3], 13.0F);
 }
 
 TEST_F(TestControllerEvent, FactoriesCreateExpectedConcreteTypes) {

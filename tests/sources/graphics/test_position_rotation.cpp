@@ -74,7 +74,8 @@ TEST_F(TestPositionRotation, RotationRotateAndRotatedWork) {
   EXPECT_NEAR(rotation.getW(), delta.getW(), 1e-5F);
 }
 
-TEST_F(TestPositionRotation, RotationDefaultAndNormalizationAreQuaternionBased) {
+TEST_F(TestPositionRotation,
+       RotationDefaultAndNormalizationAreQuaternionBased) {
   utility::graphics::Rotation identity;
   EXPECT_FLOAT_EQ(identity.getX(), 0.0F);
   EXPECT_FLOAT_EQ(identity.getY(), 0.0F);
@@ -89,7 +90,8 @@ TEST_F(TestPositionRotation, RotationDefaultAndNormalizationAreQuaternionBased) 
   EXPECT_NEAR(quaternion.magnitude(), 1.0F, 1e-5F);
 }
 
-TEST_F(TestPositionRotation, RotationInverseProducesIdentityWithMultiplication) {
+TEST_F(TestPositionRotation,
+       RotationInverseProducesIdentityWithMultiplication) {
   const auto quaternion =
       utility::graphics::Rotation::fromEulerDegrees(15.0F, -40.0F, 90.0F)
           .normalizedQuaternion();

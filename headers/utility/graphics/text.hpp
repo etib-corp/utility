@@ -50,9 +50,9 @@ private:
   std::string _fontPath;                            ///< Path to the font file
   float _fontSize;                                  ///< Font size in points
   utility::math::Vector<std::float_t, 3> _position; ///< Text world position
-  utility::graphics::Rotation _rotation;            ///< Text quaternion rotation
-  utility::math::Vector<std::float_t, 3> _scale;    ///< Text local scale
-  utility::graphics::Color<std::uint8_t> _color;    ///< Text RGBA color
+  utility::graphics::Rotation _rotation;         ///< Text quaternion rotation
+  utility::math::Vector<std::float_t, 3> _scale; ///< Text local scale
+  utility::graphics::Color<std::uint8_t> _color; ///< Text RGBA color
 
 public:
   /**

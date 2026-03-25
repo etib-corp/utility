@@ -29,6 +29,9 @@
 
 namespace utility::event {
 
+/**
+ * @brief Combined position and rotation pose used by XR events.
+ */
 class Pose {
 private:
   utility::graphics::Position _position; /**< Position component of the pose */
@@ -86,3 +89,5 @@ public:
     return *this;
   }
 };
+
+} // namespace utility::event
