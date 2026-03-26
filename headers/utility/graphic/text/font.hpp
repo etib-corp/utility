@@ -54,6 +54,15 @@ namespace utility::graphic {
         FontSized &getSize(uint32_t fontSize);
 
         /**
+         * @brief Retrieves a vector of the font sizes that have been processed and are available for rendering.
+         *
+         * This method returns a vector of uint32_t values representing the font sizes that have been processed and are ready for use. This can be useful for determining which font sizes are available for rendering text.
+         *
+         * @return A vector of uint32_t values representing the processed font sizes available for rendering.
+         */
+        std::vector<uint32_t> getProcessedSizes(void) const;
+
+        /**
          * @brief Retrieves the paths of the loaded font assets.
          *
          * This method returns a vector of strings containing the paths of the font assets that were loaded into this Font object. The paths are extracted from the FileAsset objects used to initialize the Font.

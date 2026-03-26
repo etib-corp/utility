@@ -50,6 +50,15 @@ namespace utility::graphic {
         return *_sizes[fontSize];
     }
 
+    std::vector<uint32_t> Font::getProcessedSizes(void) const
+    {
+        std::vector<uint32_t> processedSizes;
+        for (const auto &[size, _] : _sizes) {
+            processedSizes.push_back(size);
+        }
+        return processedSizes;
+    }
+
     const std::vector<std::string> &Font::getFontPaths(void) const
     {
         std::vector<std::string> *fontPaths = new std::vector<std::string>();
