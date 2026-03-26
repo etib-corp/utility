@@ -22,6 +22,8 @@ namespace utility::graphic {
 
         ~Material() = default;
 
+        const std::vector<Texture *> &getTextures() const;
+
         protected:
         std::string _shaderName;
         std::map<std::string, Texture *> _textures;

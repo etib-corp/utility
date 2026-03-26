@@ -31,4 +31,13 @@ namespace utility::graphic {
             _textures[asset.path()]->_pixels = std::vector<uint8_t>(pixels, pixels + (texWidth * texHeight * 4));
         }
     }
+
+    const std::vector<Texture *> &Material::getTextures() const {
+        static std::vector<Texture *> textures;
+        textures.clear();
+        for (const auto &[_, texture] : _textures) {
+            textures.push_back(texture);
+        }
+        return textures;
+    }
 }
