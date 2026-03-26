@@ -33,6 +33,11 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+// Basic macros for component access - can be used for readability in client code
+#define VEC_X 0
+#define VEC_Y 1
+#define VEC_Z 2
+
 namespace utility::math {
 
 using glm::cross;
