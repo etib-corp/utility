@@ -28,6 +28,7 @@ TEST_F(TestCamera, DefaultConstructorInitializesExpectedValues) {
   const auto position = camera.getPosition();
   const auto forward = camera.getForward();
   const auto up = camera.getUp();
+  const auto rotation = camera.getRotation();
 
   EXPECT_FLOAT_EQ(position[0], 0.0F);
   EXPECT_FLOAT_EQ(position[1], 0.0F);
@@ -38,6 +39,10 @@ TEST_F(TestCamera, DefaultConstructorInitializesExpectedValues) {
   EXPECT_FLOAT_EQ(up[0], 0.0F);
   EXPECT_FLOAT_EQ(up[1], 1.0F);
   EXPECT_FLOAT_EQ(up[2], 0.0F);
+  EXPECT_FLOAT_EQ(rotation[0], 0.0F);
+  EXPECT_FLOAT_EQ(rotation[1], 0.0F);
+  EXPECT_FLOAT_EQ(rotation[2], 0.0F);
+  EXPECT_FLOAT_EQ(rotation[3], 1.0F);
 
   EXPECT_FLOAT_EQ(camera.getVerticalFovDegrees(), 60.0F);
   EXPECT_FLOAT_EQ(camera.getAspectRatio(), 16.0F / 9.0F);
@@ -69,6 +74,12 @@ TEST_F(TestCamera, ConstructorValidationRejectsInvalidValues) {
   EXPECT_THROW(
       (utility::graphics::Camera<float>(position, forward, {0.0F, 0.0F, 0.0F},
                                         60.0F, 16.0F / 9.0F, 0.1F, 1000.0F)),
+      std::invalid_argument);
+
+  EXPECT_THROW(
+      (utility::graphics::Camera<float>(
+          position, utility::graphics::Rotation(0.0F, 0.0F, 0.0F, 0.0F), 60.0F,
+          16.0F / 9.0F, 0.1F, 1000.0F)),
       std::invalid_argument);
 }
 
@@ -116,4 +127,19 @@ TEST_F(TestCamera, MoveLookAtAndSetPerspectiveWork) {
   EXPECT_THROW(camera.lookAt({1.0F, 2.0F, 3.0F}), std::runtime_error);
   EXPECT_THROW(camera.setPerspective(181.0F, 4.0F / 3.0F, 0.2F, 500.0F),
                std::invalid_argument);
+}
+
+TEST_F(TestCamera, QuaternionSetRotationIsNormalizedAndAffectsForward) {
+  utility::graphics::Camera<float> camera;
+
+  camera.setRotation(
+      utility::graphics::Rotation::fromEulerDegrees(0.0F, 90.0F, 0.0F));
+
+  const auto rotation = camera.getRotation();
+  EXPECT_NEAR(rotation.magnitude(), 1.0F, 1e-5F);
+
+  const auto forward = camera.getForward();
+  EXPECT_NEAR(forward[0], -1.0F, 1e-5F);
+  EXPECT_NEAR(forward[1], 0.0F, 1e-5F);
+  EXPECT_NEAR(forward[2], 0.0F, 1e-5F);
 }

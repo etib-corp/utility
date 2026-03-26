@@ -122,7 +122,8 @@ public:
    * @param pressed True if the button is pressed, false if released.
    * @return Reference to this MouseButtonEvent for method chaining.
    */
-  MouseButtonEvent &setButtonState(const MouseButton button, const bool pressed) noexcept {
+  MouseButtonEvent &setButtonState(const MouseButton button,
+                                   const bool pressed) noexcept {
     _buttonStates.set(static_cast<std::size_t>(button), pressed);
     return *this;
   }

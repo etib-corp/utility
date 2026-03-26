@@ -20,17 +20,22 @@
  SOFTWARE.
  */
 
-#include "utility/graphics/text.hpp"
+#pragma once
 
-namespace utility::graphics {
+#include <gtest/gtest.h>
 
-Text::Text(void)
-    : _content(""), _fontPath(""), _fontSize(12.0f), _position(0.0f),
-      _rotation(), _scale(1.0f), _color(255, 255, 255, 255) {}
+#include <utility/event/controller_button_event.hpp>
+#include <utility/event/controller_event.hpp>
+#include <utility/event/controller_motion_event.hpp>
+#include <utility/event/controller_thumb_rest_event.hpp>
+#include <utility/event/controller_thumb_stick_event.hpp>
+#include <utility/event/controller_trigger_event.hpp>
+#include <utility/event/hand_pinch_event.hpp>
+#include <utility/event/hand_poke_event.hpp>
+#include <utility/event/palm_event.hpp>
 
-Text::Text(const std::string &content, const std::string &fontPath,
-           float fontSize)
-    : _content(content), _fontPath(fontPath), _fontSize(fontSize),
-      _position(0.0f), _rotation(), _scale(1.0f), _color(255, 255, 255, 255) {}
-
-} // namespace utility::graphics
+class TestControllerEvent : public ::testing::Test {
+protected:
+  void SetUp(void) override {}
+  void TearDown(void) override {}
+};

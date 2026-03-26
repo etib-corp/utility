@@ -39,6 +39,7 @@
 #include <utility>
 
 #include "utility/graphics/ray.hpp"
+#include "utility/graphics/rotation.hpp"
 #include "utility/math/vector.hpp"
 
 namespace utility::graphics {
@@ -65,14 +66,9 @@ protected:
   Vector<Type, 3> _position;
 
   /**
-   * @brief Camera forward direction (kept normalized).
+   * @brief Camera orientation quaternion.
    */
-  Vector<Type, 3> _forward;
-
-  /**
-   * @brief Camera up direction (kept normalized).
-   */
-  Vector<Type, 3> _up;
+  Rotation _rotation;
 
   /**
    * @brief Vertical field-of-view angle in degrees.
@@ -140,13 +136,100 @@ protected:
     }
   }
 
+  /**
+   * @brief Convert and normalize stored quaternion components to camera type.
+   * @return Normalized quaternion components in xyzw order.
+   */
+  Vector<Type, 4> normalizedRotationComponents() const {
+    const auto normalized = _rotation.normalizedQuaternion();
+    return Vector<Type, 4>({static_cast<Type>(normalized.getX()),
+                            static_cast<Type>(normalized.getY()),
+                            static_cast<Type>(normalized.getZ()),
+                            static_cast<Type>(normalized.getW())});
+  }
+
+  /**
+   * @brief Rotate a vector by the camera quaternion.
+   * @param vector Input vector.
+   * @return Rotated vector.
+   */
+  Vector<Type, 3> rotateVectorByRotation(const Vector<Type, 3> &vector) const {
+    const auto q = normalizedRotationComponents();
+    const Vector<Type, 3> u{q[0], q[1], q[2]};
+    const Type s = q[3];
+
+    return u * (Type{2} * u.dot(vector)) + vector * (s * s - u.dot(u)) +
+           u.cross(vector) * (Type{2} * s);
+  }
+
+  /**
+   * @brief Build and set quaternion orientation from forward/up basis vectors.
+   * @param forward Forward direction candidate.
+   * @param up Up direction candidate.
+   * @throws std::invalid_argument if orientation constraints are violated.
+   */
+  void setOrientationFromBasis(const Vector<Type, 3> &forward,
+                               const Vector<Type, 3> &up) {
+    validateOrientation(forward, up);
+
+    const auto normalizedForward = forward.normalized();
+    const auto right = normalizedForward.cross(up).normalized();
+    const auto correctedUp = right.cross(normalizedForward).normalized();
+    const auto back = -normalizedForward;
+
+    const Type m00 = right[0];
+    const Type m01 = correctedUp[0];
+    const Type m02 = back[0];
+    const Type m10 = right[1];
+    const Type m11 = correctedUp[1];
+    const Type m12 = back[1];
+    const Type m20 = right[2];
+    const Type m21 = correctedUp[2];
+    const Type m22 = back[2];
+
+    Type qx{};
+    Type qy{};
+    Type qz{};
+    Type qw{};
+    const Type trace = m00 + m11 + m22;
+
+    if (trace > Type{}) {
+      const Type s = std::sqrt(trace + Type{1}) * Type{2};
+      qw = Type{0.25} * s;
+      qx = (m21 - m12) / s;
+      qy = (m02 - m20) / s;
+      qz = (m10 - m01) / s;
+    } else if (m00 > m11 && m00 > m22) {
+      const Type s = std::sqrt(Type{1} + m00 - m11 - m22) * Type{2};
+      qw = (m21 - m12) / s;
+      qx = Type{0.25} * s;
+      qy = (m01 + m10) / s;
+      qz = (m02 + m20) / s;
+    } else if (m11 > m22) {
+      const Type s = std::sqrt(Type{1} + m11 - m00 - m22) * Type{2};
+      qw = (m02 - m20) / s;
+      qx = (m01 + m10) / s;
+      qy = Type{0.25} * s;
+      qz = (m12 + m21) / s;
+    } else {
+      const Type s = std::sqrt(Type{1} + m22 - m00 - m11) * Type{2};
+      qw = (m10 - m01) / s;
+      qx = (m02 + m20) / s;
+      qy = (m12 + m21) / s;
+      qz = Type{0.25} * s;
+    }
+
+    setRotation(
+        Rotation(static_cast<std::float_t>(qx), static_cast<std::float_t>(qy),
+                 static_cast<std::float_t>(qz), static_cast<std::float_t>(qw)));
+  }
+
 public:
   /**
    * @brief Default constructor with common perspective defaults.
    */
   Camera()
-      : _position(), _forward({Type{}, Type{}, Type{-1}}),
-        _up({Type{}, Type{1}, Type{}}), _verticalFovDegrees(Type{60}),
+      : _position(), _rotation(), _verticalFovDegrees(Type{60}),
         _aspectRatio(Type{16} / Type{9}), _nearPlane(Type{0.1}),
         _farPlane(Type{1000}) {}
 
@@ -163,12 +246,31 @@ public:
   Camera(Vector<Type, 3> position, Vector<Type, 3> forward, Vector<Type, 3> up,
          Type verticalFovDegrees, Type aspectRatio, Type nearPlane,
          Type farPlane)
-      : _position(std::move(position)), _forward(std::move(forward)),
-        _up(std::move(up)), _verticalFovDegrees(verticalFovDegrees),
-        _aspectRatio(aspectRatio), _nearPlane(nearPlane), _farPlane(farPlane) {
-    validateOrientation(_forward, _up);
-    _forward.normalize();
-    _up.normalize();
+      : _position(std::move(position)), _rotation(),
+        _verticalFovDegrees(verticalFovDegrees), _aspectRatio(aspectRatio),
+        _nearPlane(nearPlane), _farPlane(farPlane) {
+    setOrientationFromBasis(forward, up);
+    validatePerspective(_verticalFovDegrees, _aspectRatio, _nearPlane,
+                        _farPlane);
+  }
+
+  /**
+   * @brief Construct camera from explicit quaternion orientation.
+   * @param position Camera world-space position.
+   * @param rotation Camera orientation quaternion.
+   * @param verticalFovDegrees Vertical field-of-view in degrees.
+   * @param aspectRatio Aspect ratio (width/height).
+   * @param nearPlane Near clipping plane distance.
+   * @param farPlane Far clipping plane distance.
+   * @throws std::invalid_argument if perspective values or quaternion are
+   * invalid.
+   */
+  Camera(Vector<Type, 3> position, Rotation rotation, Type verticalFovDegrees,
+         Type aspectRatio, Type nearPlane, Type farPlane)
+      : _position(std::move(position)), _rotation(std::move(rotation)),
+        _verticalFovDegrees(verticalFovDegrees), _aspectRatio(aspectRatio),
+        _nearPlane(nearPlane), _farPlane(farPlane) {
+    setRotation(_rotation);
     validatePerspective(_verticalFovDegrees, _aspectRatio, _nearPlane,
                         _farPlane);
   }
@@ -214,13 +316,25 @@ public:
    * @brief Get normalized forward direction.
    * @return Forward direction vector.
    */
-  Vector<Type, 3> getForward() const { return _forward; }
+  Vector<Type, 3> getForward() const {
+    return rotateVectorByRotation(Vector<Type, 3>({Type{}, Type{}, Type{-1}}))
+        .normalized();
+  }
 
   /**
    * @brief Get normalized up direction.
    * @return Up direction vector.
    */
-  Vector<Type, 3> getUp() const { return _up; }
+  Vector<Type, 3> getUp() const {
+    return rotateVectorByRotation(Vector<Type, 3>({Type{}, Type{1}, Type{}}))
+        .normalized();
+  }
+
+  /**
+   * @brief Get camera orientation quaternion.
+   * @return Rotation quaternion.
+   */
+  Rotation getRotation() const { return _rotation; }
 
   /**
    * @brief Get vertical field-of-view in degrees.
@@ -253,13 +367,26 @@ public:
   void setPosition(const Vector<Type, 3> &position) { _position = position; }
 
   /**
+   * @brief Set camera orientation quaternion.
+   * @param rotation New orientation quaternion.
+   * @throws std::invalid_argument if quaternion has zero norm.
+   */
+  void setRotation(const Rotation &rotation) {
+    try {
+      _rotation = rotation.normalizedQuaternion();
+    } catch (const std::runtime_error &) {
+      throw std::invalid_argument(
+          "Camera rotation quaternion must be non-zero");
+    }
+  }
+
+  /**
    * @brief Set and normalize forward direction.
    * @param forward New forward direction (non-zero, not collinear with up).
    * @throws std::invalid_argument if orientation constraints are violated.
    */
   void setForward(const Vector<Type, 3> &forward) {
-    validateOrientation(forward, _up);
-    _forward = forward.normalized();
+    setOrientationFromBasis(forward, getUp());
   }
 
   /**
@@ -268,8 +395,7 @@ public:
    * @throws std::invalid_argument if orientation constraints are violated.
    */
   void setUp(const Vector<Type, 3> &up) {
-    validateOrientation(_forward, up);
-    _up = up.normalized();
+    setOrientationFromBasis(getForward(), up);
   }
 
   /**
@@ -293,7 +419,10 @@ public:
    * @brief Compute camera right direction from orientation basis.
    * @return Normalized right direction vector.
    */
-  Vector<Type, 3> right() const { return _forward.cross(_up).normalized(); }
+  Vector<Type, 3> right() const {
+    return rotateVectorByRotation(Vector<Type, 3>({Type{1}, Type{}, Type{}}))
+        .normalized();
+  }
 
   /**
    * @brief Translate camera position by an offset.
@@ -323,10 +452,7 @@ public:
               const Vector<Type, 3> &worldUp = Vector<Type, 3>({Type{}, Type{1},
                                                                 Type{}})) {
     const auto newForward = (target - _position).normalized();
-    validateOrientation(newForward, worldUp);
-
-    _forward = newForward;
-    _up = worldUp.normalized();
+    setOrientationFromBasis(newForward, worldUp);
   }
 
   /**
@@ -341,9 +467,9 @@ public:
     const Type halfHeight = std::tan(halfFovRadians);
     const Type halfWidth = halfHeight * _aspectRatio;
 
-    const auto rayDirection =
-        (_forward + right() * (ndcX * halfWidth) + _up * (ndcY * halfHeight))
-            .normalized();
+    const auto rayDirection = (getForward() + right() * (ndcX * halfWidth) +
+                               getUp() * (ndcY * halfHeight))
+                                  .normalized();
 
     return Ray<Type, 3>(_position, rayDirection);
   }
