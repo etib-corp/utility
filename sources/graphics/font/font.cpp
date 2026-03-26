@@ -45,9 +45,9 @@ namespace utility::graphics {
     FontSized &Font::getSize(uint32_t fontSize)
     {
         if (_sizes.find(fontSize) == _sizes.end()) {
-            _sizes[fontSize] = FontSized(fontSize, _faces.begin()->second);
+            _sizes[fontSize] = new FontSized(fontSize, _faces.begin()->second);
         }
-        return _sizes[fontSize];
+        return *_sizes[fontSize];
     }
 
     const std::vector<std::string> &Font::getFontPaths(void) const

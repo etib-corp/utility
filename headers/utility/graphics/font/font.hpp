@@ -37,6 +37,6 @@ namespace utility::graphics {
         FT_Library _ftLibrary;
         std::map<std::string, FT_Face> _faces;
 
-        std::map<uint32_t, FontSized> _sizes;
+        std::map<uint32_t, FontSized *> _sizes;
     };
 }
