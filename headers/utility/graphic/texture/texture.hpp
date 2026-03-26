@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace utility::graphics {
+namespace utility::graphic {
     class Texture {
         public:
         Texture(uint32_t width, uint32_t height);

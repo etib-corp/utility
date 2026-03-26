@@ -13,12 +13,12 @@
 
 #include <utility/asset_manager/file_asset.hpp>
 
-#include <utility/graphics/font/font_sized.hpp>
+#include <utility/graphic/text/font_sized.hpp>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-namespace utility::graphics {
+namespace utility::graphic {
     /**
      * @brief The Font class represents a font resource that can be used to render text.
      *

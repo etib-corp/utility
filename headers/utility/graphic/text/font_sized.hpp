@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include "utility/graphics/texture/texture.hpp"
-#include "utility/math/vector.hpp"
+#include <utility/graphic/texture/texture.hpp>
+#include <utility/math/vector.hpp>
 
 #include <map>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-namespace utility::graphics {
+namespace utility::graphic {
     class FontSized {
     public:
         struct Glyph {
@@ -49,4 +49,4 @@ namespace utility::graphics {
         int _rowHeight;
 
     };
-} // namespace utility::graphics
+} // namespace utility::graphic

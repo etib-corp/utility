@@ -5,9 +5,9 @@
 ** mesh
 */
 
-#include "utility/graphics/mesh.hpp"
+#include <utility/graphic/mesh.hpp>
 
-namespace utility::graphics {
+namespace utility::graphic {
     Mesh::Mesh(const std::vector<Vertex<float, uint8_t>> &vertices, const std::vector<uint32_t> &indices)
     : _vertices(vertices), _indices(indices)
     {
@@ -36,4 +36,4 @@ namespace utility::graphics {
     {
         return _indices;
     }
-} // namespace utility::graphics
+} // namespace utility::graphic

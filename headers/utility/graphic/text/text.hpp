@@ -36,14 +36,16 @@
 #include <utility/graphic/color.hpp>
 #include <utility/graphic/pose.hpp>
 
-#include <utility/graphics/mesh.hpp>
+#include <utility/graphic/mesh.hpp>
 
-#include <utility/graphics/font/font.hpp>
+#include <utility/graphic/text/font.hpp>
+
+#include <utility/graphic/color.hpp>
 #include <utility/math/vector.hpp>
 
 #include <utility/asset_manager/file_asset.hpp>
 
-#define DEFAULT_FONT_COLOR utility::graphics::Color<std::uint8_t>(255, 255, 255, 255)
+#define DEFAULT_FONT_COLOR utility::graphic::Color<std::uint8_t>(255, 255, 255, 255)
 
 namespace utility::graphic {
 
@@ -63,21 +65,12 @@ private:
 
   protected:
 	std::shared_ptr<Font> _font; 					  ///< Shared pointer to the font used for rendering
-	utility::graphics::Mesh _mesh; 					  ///< Mesh for rendering the text
+	utility::graphic::Mesh _mesh; 					  ///< Mesh for rendering the text
 
 	void updateMesh(void); 							  ///< Update the mesh based on current text properties
 	std::vector<uint32_t> utf8ToCodepoints(const std::string& str); //< Convert UTF-8 string to Unicode code points
 
 public:
-  /**
-   * @brief Default constructor.
-   *
-   * Initializes Text with empty content, empty font path, default font size
-   * of 12.0f.
-   */
-  Text(void)
-      : _content(""), _fontPath(""), _fontSize(12.0f), _pose(), _color() {}
-
   /**
    * @brief Constructor with content and font.
    * @param content The text content.
@@ -86,10 +79,8 @@ public:
    * @param pose The pose (position and orientation) of the text.
    * @param color The color of the text.
    */
-  Text(std::string content, std::string fontPath, float fontSize, PoseF pose,
-       graphic::Color32Bit color)
-      : _content(std::move(content)), _fontPath(std::move(fontPath)),
-        _fontSize(fontSize), _pose(std::move(pose)), _color(std::move(color)) {}
+  Text(const std::string &content, const std::vector<FileAsset> &fontAssets,
+           uint32_t fontSize);
 
   /**
    * @brief Copy constructor.
@@ -169,12 +160,6 @@ public:
 	Text &setRotation(const utility::math::Vector<std::float_t, 3> &rotation);
 
   /**
-   * @brief Get the font size.
-   * @return Font size in points.
-   */
-  float getFontSize(void) const { return _fontSize; }
-
-  /**
    * @brief Set the text pose
    * @param pose Text world pose (position and orientation).
    * @return Reference to this Text instance for chaining.
@@ -218,18 +203,6 @@ public:
 	 */
 	Text &setScale(const utility::math::Vector<std::float_t, 3> &scale);
 
-	/**
-	 * @brief Get the text color.
-	 * @return Const reference to the text color.
-	 */
-	const utility::graphics::Color<std::uint8_t> &getColor(void) const;
-
-	/**
-	 * @brief Set the text color.
-	 * @param color Text RGBA color.
-	 * @return Reference to this Text instance for chaining.
-	 */
-	Text &setColor(const utility::graphics::Color<std::uint8_t> &color);
 };
 
 } // namespace utility::graphic

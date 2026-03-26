@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "utility/graphic/vertex.hpp"
+#include <utility/graphic/vertex.hpp>
 
-namespace utility::graphics {
+namespace utility::graphic {
     class Mesh {
     public:
         Mesh(const std::vector<Vertex<float, uint8_t>> &vertices, const std::vector<uint32_t> &indices);
@@ -25,4 +25,4 @@ namespace utility::graphics {
         std::vector<Vertex<float, uint8_t>> _vertices;
         std::vector<uint32_t> _indices;
     };
-} // namespace utility::graphics
+} // namespace utility::graphic

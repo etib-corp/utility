@@ -20,14 +20,14 @@
  SOFTWARE.
  */
 
-#include "utility/graphic/text.hpp"
+#include <utility/graphic/text/text.hpp>
 
 namespace utility::graphic {
     Text::Text(const std::string &content, const std::vector<FileAsset> &fontAssets,
-           uint32_t fontSize)
-    : _content(content), _fontSize(fontSize), _position(0.0f), _rotation(0.0f),
-      _scale(1.0f), _color(DEFAULT_FONT_COLOR), _mesh({}, {})
+           uint32_t fontSize) : _mesh({}, {})
 {
+	_content = content;
+	_fontSize = fontSize;
 	_font = std::make_shared<Font>(fontAssets);
 	updateMesh();
 }
@@ -61,45 +61,12 @@ Text &Text::setFontSize(uint32_t fontSize)
 	return *this;
 }
 
-const utility::math::Vector<std::float_t, 3> &Text::getPosition(void) const
-{
-	return _position;
-}
-
-Text &Text::setPosition(const utility::math::Vector<std::float_t, 3> &position)
-{
-	_position = position;
-	return *this;
-}
-
-const utility::math::Vector<std::float_t, 3> &Text::getRotation(void) const
-{
-	return _rotation;
-}
-
-Text &Text::setRotation(const utility::math::Vector<std::float_t, 3> &rotation)
-{
-	_rotation = rotation;
-	return *this;
-}
-
-const utility::math::Vector<std::float_t, 3> &Text::getScale(void) const
-{
-	return _scale;
-}
-
-Text &Text::setScale(const utility::math::Vector<std::float_t, 3> &scale)
-{
-	_scale = scale;
-	return *this;
-}
-
-const utility::graphics::Color<std::uint8_t> &Text::getColor(void) const
+const utility::graphic::Color<std::uint8_t> &Text::getColor(void) const
 {
 	return _color;
 }
 
-Text &Text::setColor(const utility::graphics::Color<std::uint8_t> &color)
+Text &Text::setColor(const utility::graphic::Color<std::uint8_t> &color)
 {
 	_color = color;
 	return *this;

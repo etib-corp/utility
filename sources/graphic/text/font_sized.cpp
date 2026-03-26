@@ -5,9 +5,9 @@
 ** font_sized
 */
 
-#include "utility/graphics/font/font_sized.hpp"
+#include <utility/graphic/text/font_sized.hpp>
 
-namespace utility::graphics {
+namespace utility::graphic {
     FontSized::FontSized(uint32_t fontSize, FT_Face face) : _fontSize(fontSize), _correspondingFace(face)
     {
         _atlasWidth = 1024;

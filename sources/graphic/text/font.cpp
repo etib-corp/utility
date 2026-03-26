@@ -5,9 +5,9 @@
 ** font
 */
 
-#include "utility/graphics/font/font.hpp"
+#include <utility/graphic/text/font.hpp>
 
-namespace utility::graphics {
+namespace utility::graphic {
 
     Font::Font(const std::vector<FileAsset> &fontAssets)
     {
@@ -94,4 +94,4 @@ namespace utility::graphics {
         }
         return false;
     }
-} // namespace utility::graphics
+} // namespace utility::graphic
