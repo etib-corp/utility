@@ -83,4 +83,9 @@ namespace utility::graphics {
 
         return _glyphs[cp];
     }
+
+    Texture &FontSized::getAtlas() const
+    {
+        return *_atlas;
+    }
 }

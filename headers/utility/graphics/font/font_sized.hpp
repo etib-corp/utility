@@ -31,6 +31,8 @@ namespace utility::graphics {
 
         Glyph& getGlyph(uint32_t cp, const std::vector<FT_Face>& faces);
 
+        Texture &getAtlas() const;
+
         protected:
         Texture *_atlas;
 
