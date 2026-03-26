@@ -63,6 +63,15 @@ namespace utility::graphics {
         const std::vector<std::string> &getFontPaths(void) const;
 
         /**
+         * @brief Retrieves the FreeType face objects for the loaded fonts.
+         *
+         * This method returns a vector of FT_Face objects corresponding to the loaded font faces. These objects can be used to access glyph information and other font properties as needed.
+         *
+         * @return A const vector of FT_Face objects for the loaded font faces.
+         */
+        const std::vector<FT_Face> getFaces(void) const;
+
+        /**
          * @brief Checks if the font has been successfully loaded.
          *
          * This method checks if the FreeType library was initialized and if at least one font face was loaded. It returns true if the font is ready to be used for rendering, and false otherwise.

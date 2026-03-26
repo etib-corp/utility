@@ -60,6 +60,16 @@ namespace utility::graphics {
         return *fontPaths;
     }
 
+    const std::vector<FT_Face> Font::getFaces(void) const
+    {
+        std::vector<FT_Face> *faces = new std::vector<FT_Face>();
+
+        for (const auto &[_, face] : _faces) {
+            faces->push_back(face);
+        }
+        return *faces;
+    }
+
     bool Font::isLoaded(void) const
     {
         if (_faces.empty())
