@@ -9,19 +9,19 @@
 
 namespace utility::graphics {
 
-    Font::Font(const std::map<std::string, LOAD_METHOD> &dataAndLoadMethods)
+    Font::Font(const std::vector<FileAsset> &fontAssets)
     {
         // Initialize FreeType library
         if (FT_Init_FreeType(&_ftLibrary)) {
             throw std::runtime_error("Could not initialize FreeType library.");
         }
 
-        for (const auto &[data, loadMethod] : dataAndLoadMethods) {
-            if (loadMethod == LOAD_FROM_FILE) {
-                loadFromFile(data);
-            } else {
-                loadFromMemory(data);
+        for (const auto &fontAsset : fontAssets) {
+            FT_Face face;
+            if (FT_New_Memory_Face(_ftLibrary, reinterpret_cast<const FT_Byte *>(fontAsset.content().c_str()), fontAsset.content().size(), 0, &face)) {
+                throw std::runtime_error("Could not load font " + fontAsset.path() + ": " + FT_Error_String(FT_Err_Cannot_Open_Resource));
             }
+            _faces[fontAsset.path()] = face;
         }
     }
 
@@ -83,27 +83,5 @@ namespace utility::graphics {
             }
         }
         return false;
-    }
-
-    /////////////////////
-    // Private Methods //
-    /////////////////////
-
-    void Font::loadFromFile(const std::string &fontPath)
-    {
-        FT_Face face;
-        if (FT_New_Face(_ftLibrary, fontPath.c_str(), 0, &face)) {
-            throw std::runtime_error("Could not load font: " + fontPath);
-        }
-        _faces[fontPath] = face;
-    }
-
-    void Font::loadFromMemory(const std::string &fontData)
-    {
-        FT_Face face;
-        if (FT_New_Memory_Face(_ftLibrary, reinterpret_cast<const FT_Byte *>(fontData.c_str()), fontData.size(), 0, &face)) {
-            throw std::runtime_error("Could not load font from memory.");
-        }
-        _faces[fontData] = face;
     }
 } // namespace utility::graphics

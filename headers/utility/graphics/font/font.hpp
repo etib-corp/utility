@@ -11,7 +11,9 @@
 #include <map>
 #include <memory>
 
-#include "utility/graphics/font/font_sized.hpp"
+#include <utility/asset_manager/file_asset.hpp>
+
+#include <utility/graphics/font/font_sized.hpp>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -24,7 +26,7 @@ namespace utility::graphics {
             LOAD_FROM_MEMORY
         };
 
-        Font(const std::map<std::string, LOAD_METHOD> &dataAndLoadMethods);
+        Font(const std::vector<FileAsset> &fontAssets);
 
         ~Font();
 
@@ -41,10 +43,5 @@ namespace utility::graphics {
         std::map<std::string, FT_Face> _faces;
 
         std::map<uint32_t, FontSized> _sizes;
-
-        private:
-        void loadFromFile(const std::string &fontPath);
-        void loadFromMemory(const std::string &fontData);
-
     };
 }
