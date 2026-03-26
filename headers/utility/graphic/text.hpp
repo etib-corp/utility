@@ -36,6 +36,15 @@
 #include <utility/graphic/color.hpp>
 #include <utility/graphic/pose.hpp>
 
+#include <utility/graphics/mesh.hpp>
+
+#include <utility/graphics/font/font.hpp>
+#include <utility/math/vector.hpp>
+
+#include <utility/asset_manager/file_asset.hpp>
+
+#define DEFAULT_FONT_COLOR utility::graphics::Color<std::uint8_t>(255, 255, 255, 255)
+
 namespace utility::graphic {
 
 /**
@@ -51,6 +60,13 @@ private:
   float _fontSize;            ///< Font size in points
   PoseF _pose;                ///< Text pose (position + orientation)
   graphic::Color32Bit _color; ///< Text RGBA color
+
+  protected:
+	std::shared_ptr<Font> _font; 					  ///< Shared pointer to the font used for rendering
+	utility::graphics::Mesh _mesh; 					  ///< Mesh for rendering the text
+
+	void updateMesh(void); 							  ///< Update the mesh based on current text properties
+	std::vector<uint32_t> utf8ToCodepoints(const std::string& str); //< Convert UTF-8 string to Unicode code points
 
 public:
   /**
@@ -101,52 +117,56 @@ public:
    */
   Text &operator=(Text &&other) noexcept = default;
 
-  /**
-   * @brief Destructor.
-   */
-  ~Text(void) = default;
+	/**
+	 * @brief Get the text content.
+	 * @return Reference to the text content string.
+	 */
+	const std::string &getContent(void) const;
 
-  /**
-   * @brief Set the text content.
-   * @param content The new text content.
-   * @return Reference to this Text instance for chaining.
-   */
-  Text &setContent(const std::string &content) {
-    _content = content;
-    return *this;
-  }
+	/**
+	 * @brief Set the text content.
+	 * @param content The new text content.
+	 * @return Reference to this Text instance for chaining.
+	 */
+	Text &setContent(const std::string &content);
 
-  /**
-   * @brief Get the text content.
-   * @return Reference to the text content string.
-   */
-  const std::string &getContent(void) const { return _content; }
+	/**
+	 * @brief Get the font size.
+	 * @return Font size in points.
+	 */
+	uint32_t getFontSize(void) const;
 
-  /**
-   * @brief Set the font path.
-   * @param fontPath Path to the font file.
-   * @return Reference to this Text instance for chaining.
-   */
-  Text &setFontPath(const std::string &fontPath) {
-    _fontPath = fontPath;
-    return *this;
-  }
+	/**
+	 * @brief Set the font size.
+	 * @param fontSize Font size in points.
+	 * @return Reference to this Text instance for chaining.
+	 */
+	Text &setFontSize(uint32_t fontSize);
 
-  /**
-   * @brief Get the font path.
-   * @return Reference to the font path string.
-   */
-  const std::string &getFontPath(void) const { return _fontPath; }
+	/**
+	 * @brief Get the text position.
+	 * @return Const reference to the text position.
+	 */
+	const utility::math::Vector<std::float_t, 3> &getPosition(void) const;
+	/**
+	 * @brief Set the text position.
+	 * @param position Text world position.
+	 * @return Reference to this Text instance for chaining.
+	 */
+	Text &setPosition(const utility::math::Vector<std::float_t, 3> &position);
 
-  /**
-   * @brief Set the font size.
-   * @param fontSize Font size in points.
-   * @return Reference to this Text instance for chaining.
-   */
-  Text &setFontSize(float fontSize) {
-    _fontSize = fontSize;
-    return *this;
-  }
+	/**
+	 * @brief Get the text rotation.
+	 * @return Const reference to the text rotation.
+	 */
+	const utility::math::Vector<std::float_t, 3> &getRotation(void) const;
+
+	/**
+	 * @brief Set the text rotation.
+	 * @param rotation Text euler rotation.
+	 * @return Reference to this Text instance for chaining.
+	 */
+	Text &setRotation(const utility::math::Vector<std::float_t, 3> &rotation);
 
   /**
    * @brief Get the font size.
@@ -185,6 +205,31 @@ public:
    * @return Const reference to the text color.
    */
   const graphic::Color32Bit &getColor(void) const { return _color; }
+	/**
+	 * @brief Get the text scale.
+	 * @return Const reference to the text scale.
+	 */
+	const utility::math::Vector<std::float_t, 3> &getScale(void) const;
+
+	/**
+	 * @brief Set the text scale.
+	 * @param scale Text local scale.
+	 * @return Reference to this Text instance for chaining.
+	 */
+	Text &setScale(const utility::math::Vector<std::float_t, 3> &scale);
+
+	/**
+	 * @brief Get the text color.
+	 * @return Const reference to the text color.
+	 */
+	const utility::graphics::Color<std::uint8_t> &getColor(void) const;
+
+	/**
+	 * @brief Set the text color.
+	 * @param color Text RGBA color.
+	 * @return Reference to this Text instance for chaining.
+	 */
+	Text &setColor(const utility::graphics::Color<std::uint8_t> &color);
 };
 
 } // namespace utility::graphic

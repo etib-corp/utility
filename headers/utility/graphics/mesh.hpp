@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "utility/graphics/vertex.hpp"
+#include "utility/graphic/vertex.hpp"
 
 namespace utility::graphics {
     class Mesh {
