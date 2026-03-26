@@ -25,7 +25,7 @@
 #include <algorithm>
 #include <limits>
 
-utility::FileAsset::FileAsset(const std::string &content) : _content(content) {}
+utility::FileAsset::FileAsset(const std::string &path, const std::string &content) : _content(content), _path(path) {}
 
 utility::FileAsset::~FileAsset() = default;
 
