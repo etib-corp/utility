@@ -21,11 +21,6 @@
 namespace utility::graphics {
     class Font {
         public:
-        enum LOAD_METHOD {
-            LOAD_FROM_FILE,
-            LOAD_FROM_MEMORY
-        };
-
         Font(const std::vector<FileAsset> &fontAssets);
 
         ~Font();
