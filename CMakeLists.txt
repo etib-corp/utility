@@ -63,6 +63,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(freetype)
 
+FetchContent_Declare(stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(stb)
+
 # Set the files directories
 set(HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/headers")
 set(SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sources")
@@ -108,6 +116,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${HEADERS_DIR}>
         $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${stb_SOURCE_DIR}>
 )
 
 # Optional components
