@@ -8,8 +8,8 @@
 #include "utility/graphics/mesh.hpp"
 
 namespace utility::graphics {
-    Mesh::Mesh(const std::vector<Vertex<float, float>> &vertices, const std::vector<uint32_t> &indices)
-        : _vertices(vertices), _indices(indices)
+    Mesh::Mesh(const std::vector<Vertex<float, uint8_t>> &vertices, const std::vector<uint32_t> &indices)
+    : _vertices(vertices), _indices(indices)
     {
     }
 
@@ -17,7 +17,7 @@ namespace utility::graphics {
     {
     }
 
-    void Mesh::addVertex(const Vertex<float, float> &vertex)
+    void Mesh::addVertex(const Vertex<float, uint8_t> &vertex)
     {
         _vertices.push_back(vertex);
     }
@@ -27,7 +27,7 @@ namespace utility::graphics {
         _indices.push_back(index);
     }
 
-    const std::vector<Vertex<float, float>> &Mesh::getVertices() const
+    const std::vector<Vertex<float, uint8_t>> &Mesh::getVertices() const
     {
         return _vertices;
     }
