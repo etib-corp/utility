@@ -38,7 +38,7 @@ template <typename Type>
 concept CanBeOrientationComponent = std::is_floating_point_v<Type>;
 
 /**
- * @brief Represents the current 3D orientation (pose) of an object or camera.
+ * @brief Represents the current 3D orientation (pose) of an object or view.
  * @tparam OrientationComponentType Floating-point type for quaternion
  * components.
  *

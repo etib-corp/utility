@@ -20,6 +20,6 @@
  SOFTWARE.
  */
 
-#include "utility/graphic/camera.hpp"
+#include "utility/graphic/view.hpp"
 
 namespace utility::graphic {} // namespace utility::graphic
