@@ -22,9 +22,11 @@
 
 #pragma once
 
-#include <initializer_list>
+#include <cmath>
 #include <stdexcept>
+#include <string>
 #include <type_traits>
+#include <utility>
 
 #include <glm/mat2x2.hpp>
 #include <glm/mat2x3.hpp>
