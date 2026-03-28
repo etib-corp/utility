@@ -20,450 +20,103 @@
  SOFTWARE.
  */
 
-/**
- * @file vector.hpp
- * @brief Fixed-size arithmetic vector template declaration.
- *
- * Declares `utility::Vector<Type, Dimension>`, a compile-time sized vector
- * supporting common linear algebra operations including addition, subtraction,
- * scaling, dot product, magnitude, normalization, and (for 3D) cross product.
- */
-
 #pragma once
 
-#include <cmath>
-#include <initializer_list>
-#include <ostream>
-#include <stdexcept>
 #include <type_traits>
-#include <utility>
+
+#include <glm/geometric.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 namespace utility::math {
 
+using glm::cross;
+using glm::distance;
+using glm::dot;
+using glm::faceforward;
+using glm::length;
+using glm::normalize;
+using glm::reflect;
+using glm::refract;
+
 /**
- * @brief Concept to ensure the type can be used as a vector component.
- * @tparam Type The type to check.
+ * @brief Concept to constrain vector component type.
+ * @tparam Type Candidate component type.
  */
 template <typename Type>
-concept CanBeVectorComponent = std::is_arithmetic<Type>::value;
+concept CanBeVectorComponent = std::is_floating_point_v<Type>;
 
 /**
- * @brief Fixed-size arithmetic vector supporting common linear operations.
- * @tparam Type Arithmetic component type
- * @tparam Dimension Compile-time vector dimension
+ * @brief 3D vector class inheriting from glm::vec3.
+ *
+ * @tparam Type Floating-point type for vector components.
  */
-template <CanBeVectorComponent Type, size_t Dimension> class Vector {
-private:
-protected:
-  /**
-   * @brief Stored components in Cartesian order.
-   */
-  Type _components[Dimension];
-
+template <typename VectorComponentType, std::size_t VectorDimension,
+          typename =
+              std::enable_if_t<std::is_floating_point_v<VectorComponentType> &&
+                               (VectorDimension > 0) && (VectorDimension <= 4)>>
+class Vector : public glm::vec<VectorDimension, VectorComponentType> {
 public:
   /**
-   * @brief Default constructor initializing all components to zero.
+   * @brief Default constructor initializing vector values to zero.
    */
-  Vector() {
-    for (size_t i = 0; i < Dimension; ++i) {
-      _components[i] = Type{};
+  Vector(void) : glm::vec<VectorDimension, VectorComponentType>(0) {}
+
+  /**
+   * @brief Construct from initializer list of float values.
+   * @param values The initializer list containing vector components.
+   * @throws std::invalid_argument if the list size does not match the vector
+   * dimension.
+   */
+  Vector(std::initializer_list<VectorComponentType> values) {
+    if (values.size() != VectorDimension) {
+      throw std::invalid_argument("Vector requires exactly " +
+                                  std::to_string(VectorDimension) +
+                                  " components");
+    }
+    const auto it = values.begin();
+    for (std::size_t i = 0; i < VectorDimension; ++i) {
+      (*this)[i] = *(it + i);
     }
   }
 
   /**
-   * @brief Construct from initializer list matching the vector dimension.
-   * @param values The initializer list of component values.
-   * @throws std::invalid_argument if the list size doesn't match the dimension.
+   * @brief Construct by filling all components with the same float value.
+   * @param value The float value to fill all components with.
    */
-  Vector(std::initializer_list<Type> values) {
-    if (values.size() != Dimension) {
-      throw std::invalid_argument(
-          "Initializer list size must match vector dimension");
-    }
-    size_t i = 0;
-    for (const auto &value : values) {
-      _components[i++] = value;
-    }
-  }
-
-  /**
-   * @brief Construct by filling all components with the same value.
-   * @param value The value to fill all components with.
-   */
-  explicit Vector(Type value) {
-    for (size_t i = 0; i < Dimension; ++i) {
-      _components[i] = value;
-    }
-  }
-
-  /**
-   * @brief Copy constructor.
-   * @param other The vector to copy from.
-   */
-  Vector(const Vector &other) {
-    for (size_t i = 0; i < Dimension; ++i) {
-      _components[i] = other._components[i];
-    }
-  }
-
-  /**
-   * @brief Move constructor.
-   * @param other The vector to move from.
-   */
-  Vector(Vector &&other) noexcept {
-    for (size_t i = 0; i < Dimension; ++i) {
-      _components[i] = std::move(other._components[i]);
-    }
-  }
-
-  /**
-   * @brief Copy assignment operator.
-   * @param other The vector to copy from.
-   * @return Reference to this vector.
-   */
-  Vector &operator=(const Vector &other) {
-    if (this != &other) {
-      for (size_t i = 0; i < Dimension; ++i) {
-        _components[i] = other._components[i];
-      }
-    }
-    return *this;
-  }
-
-  /**
-   * @brief Move assignment operator.
-   * @param other The vector to move from.
-   * @return Reference to this vector.
-   */
-  Vector &operator=(Vector &&other) noexcept {
-    if (this != &other) {
-      for (size_t i = 0; i < Dimension; ++i) {
-        _components[i] = std::move(other._components[i]);
-      }
-    }
-    return *this;
-  }
-
-  // Destructor
-  ~Vector() = default;
-
-  /**
-   * @brief Mutable element access with bounds checking.
-   * @param index The index of the element to access.
-   * @return Reference to the element at the given index.
-   * @throws std::out_of_range if index is out of bounds.
-   */
-  Type &operator[](size_t index) {
-    if (index >= Dimension) {
-      throw std::out_of_range("Vector index out of range");
-    }
-    return _components[index];
-  }
-
-  /**
-   * @brief Const element access with bounds checking.
-   * @param index The index of the element to access.
-   * @return Const reference to the element at the given index.
-   * @throws std::out_of_range if index is out of bounds.
-   */
-  const Type &operator[](size_t index) const {
-    if (index >= Dimension) {
-      throw std::out_of_range("Vector index out of range");
-    }
-    return _components[index];
-  }
-
-  /**
-   * @brief Compile-time dimension helper.
-   * @return The number of components in the vector.
-   */
-  size_t size() const { return Dimension; }
-
-  /**
-   * @brief Mutable access to internal component array.
-   * @return Pointer to the first component.
-   */
-  Type *data() { return _components; }
-
-  /**
-   * @brief Const access to internal component array.
-   * @return Const pointer to the first component.
-   */
-  const Type *data() const { return _components; }
-
-  /**
-   * @brief Vector addition.
-   * @param other The vector to add.
-   * @return Result of vector addition.
-   */
-  Vector operator+(const Vector &other) const {
-    Vector result;
-    for (size_t i = 0; i < Dimension; ++i) {
-      result._components[i] = _components[i] + other._components[i];
-    }
-    return result;
-  }
-
-  /**
-   * @brief Vector subtraction.
-   * @param other The vector to subtract.
-   * @return Result of vector subtraction.
-   */
-  Vector operator-(const Vector &other) const {
-    Vector result;
-    for (size_t i = 0; i < Dimension; ++i) {
-      result._components[i] = _components[i] - other._components[i];
-    }
-    return result;
-  }
-
-  /**
-   * @brief Scalar multiplication.
-   * @param scalar The scalar to multiply by.
-   * @return Result of scalar multiplication.
-   */
-  Vector operator*(Type scalar) const {
-    Vector result;
-    for (size_t i = 0; i < Dimension; ++i) {
-      result._components[i] = _components[i] * scalar;
-    }
-    return result;
-  }
-
-  /**
-   * @brief Scalar division.
-   * @param scalar The scalar to divide by.
-   * @return Result of scalar division.
-   * @throws std::invalid_argument if scalar is zero.
-   */
-  Vector operator/(Type scalar) const {
-    if (scalar == Type{}) {
-      throw std::invalid_argument("Division by zero");
-    }
-    Vector result;
-    for (size_t i = 0; i < Dimension; ++i) {
-      result._components[i] = _components[i] / scalar;
-    }
-    return result;
-  }
-
-  /**
-   * @brief In-place vector addition.
-   * @param other The vector to add.
-   * @return Reference to this vector.
-   */
-  Vector &operator+=(const Vector &other) {
-    for (size_t i = 0; i < Dimension; ++i) {
-      _components[i] += other._components[i];
-    }
-    return *this;
-  }
-
-  /**
-   * @brief In-place vector subtraction.
-   * @param other The vector to subtract.
-   * @return Reference to this vector.
-   */
-  Vector &operator-=(const Vector &other) {
-    for (size_t i = 0; i < Dimension; ++i) {
-      _components[i] -= other._components[i];
-    }
-    return *this;
-  }
-
-  /**
-   * @brief In-place scalar multiplication.
-   * @param scalar The scalar to multiply by.
-   * @return Reference to this vector.
-   */
-  Vector &operator*=(Type scalar) {
-    for (size_t i = 0; i < Dimension; ++i) {
-      _components[i] *= scalar;
-    }
-    return *this;
-  }
-
-  /**
-   * @brief In-place scalar division.
-   * @param scalar The scalar to divide by.
-   * @return Reference to this vector.
-   * @throws std::invalid_argument if scalar is zero.
-   */
-  Vector &operator/=(Type scalar) {
-    if (scalar == Type{}) {
-      throw std::invalid_argument("Division by zero");
-    }
-    for (size_t i = 0; i < Dimension; ++i) {
-      _components[i] /= scalar;
-    }
-    return *this;
-  }
-
-  /**
-   * @brief Unary negation operator.
-   * @return Negated vector.
-   */
-  Vector operator-() const {
-    Vector result;
-    for (size_t i = 0; i < Dimension; ++i) {
-      result._components[i] = -_components[i];
-    }
-    return result;
-  }
-
-  /**
-   * @brief Equality comparison.
-   * @param other The vector to compare with.
-   * @return True if all components are equal, false otherwise.
-   */
-  bool operator==(const Vector &other) const {
-    for (size_t i = 0; i < Dimension; ++i) {
-      if (_components[i] != other._components[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * @brief Inequality comparison.
-   * @param other The vector to compare with.
-   * @return True if any component is not equal, false otherwise.
-   */
-  bool operator!=(const Vector &other) const { return !(*this == other); }
-
-  /**
-   * @brief Compute the dot product with another vector.
-   * @param other The vector to compute the dot product with.
-   * @return The dot product value.
-   */
-  Type dot(const Vector &other) const {
-    Type result = Type{};
-    for (size_t i = 0; i < Dimension; ++i) {
-      result += _components[i] * other._components[i];
-    }
-    return result;
-  }
-
-  /**
-   * @brief Compute the Euclidean magnitude.
-   * @return The magnitude of the vector.
-   */
-  Type magnitude() const {
-    Type sum = Type{};
-    for (size_t i = 0; i < Dimension; ++i) {
-      sum += _components[i] * _components[i];
-    }
-    return std::sqrt(sum);
-  }
-
-  /**
-   * @brief Compute squared magnitude (avoids sqrt cost).
-   * @return The squared magnitude of the vector.
-   */
-  Type magnitudeSquared() const {
-    Type sum = Type{};
-    for (size_t i = 0; i < Dimension; ++i) {
-      sum += _components[i] * _components[i];
-    }
-    return sum;
-  }
-
-  /**
-   * @brief Return a normalized copy.
-   * @return A normalized version of this vector.
-   * @throws std::runtime_error if the vector has zero magnitude.
-   */
-  Vector normalized() const {
-    Type mag = magnitude();
-    if (mag == Type{}) {
-      throw std::runtime_error("Cannot normalize zero vector");
-    }
-    return *this / mag;
-  }
-
-  /**
-   * @brief Normalize in place.
-   */
-  void normalize() {
-    Type mag = magnitude();
-    if (mag == Type{}) {
-      throw std::runtime_error("Cannot normalize zero vector");
-    }
-    *this /= mag;
-  }
-
-  /**
-   * @brief Cross product (enabled only for 3D vectors).
-   * @param other The vector to compute the cross product with.
-   * @return The cross product vector.
-   */
-  template <size_t D = Dimension>
-  typename std::enable_if<D == 3, Vector>::type
-  cross(const Vector &other) const {
-    Vector result;
-    result._components[0] = _components[1] * other._components[2] -
-                            _components[2] * other._components[1];
-    result._components[1] = _components[2] * other._components[0] -
-                            _components[0] * other._components[2];
-    result._components[2] = _components[0] * other._components[1] -
-                            _components[1] * other._components[0];
-    return result;
-  }
-
-  /**
-   * @brief Euclidean distance to another vector.
-   * @param other The vector to compute distance to.
-   * @return The Euclidean distance.
-   */
-  Type distance(const Vector &other) const {
-    return (*this - other).magnitude();
-  }
-
-  /**
-   * @brief Squared Euclidean distance to another vector.
-   * @param other The vector to compute squared distance to.
-   * @return The squared Euclidean distance.
-   */
-  Type distanceSquared(const Vector &other) const {
-    return (*this - other).magnitudeSquared();
-  }
+  explicit Vector(VectorComponentType value)
+      : glm::vec<VectorDimension, VectorComponentType>(value) {}
 };
 
 /**
- * @brief Scalar multiplication (scalar * vector).
- * @tparam Type Arithmetic component type
- * @tparam Dimension Compile-time vector dimension
- * @param scalar The scalar to multiply by.
- * @param vector The vector to multiply.
- * @return Result of scalar multiplication.
+ * @brief Type alias for 2D single-precision vector.
  */
-template <typename Type, size_t Dimension>
-Vector<Type, Dimension> operator*(Type scalar,
-                                  const Vector<Type, Dimension> &vector) {
-  return vector * scalar;
-}
+using Vector2F = Vector<float, 2>;
 
 /**
- * @brief Stream output as "(a, b, c)".
- * @tparam Type Arithmetic component type
- * @tparam Dimension Compile-time vector dimension
- * @param outputStream The output stream.
- * @param vector The vector to output.
- * @return Reference to the output stream.
+ * @brief Type alias for 2D double-precision vector.
  */
-template <typename Type, size_t Dimension>
-std::ostream &operator<<(std::ostream &outputStream,
-                         const Vector<Type, Dimension> &vector) {
-  outputStream << '(';
-  for (size_t i = 0; i < Dimension; ++i) {
-    outputStream << vector[i];
-    if (i + 1 < Dimension) {
-      outputStream << ", ";
-    }
-  }
-  outputStream << ')';
-  return outputStream;
-}
+using Vector2D = Vector<double, 2>;
+
+/**
+ * @brief Type alias for 3D single-precision vector.
+ */
+using Vector3F = Vector<float, 3>;
+
+/**
+ * @brief Type alias for 3D double-precision vector.
+ */
+using Vector3D = Vector<double, 3>;
+
+/**
+ * @brief Type alias for 4D single-precision vector.
+ */
+using Vector4F = Vector<float, 4>;
+
+/**
+ * @brief Type alias for 4D double-precision vector.
+ */
+using Vector4D = Vector<double, 4>;
 
 } // namespace utility::math

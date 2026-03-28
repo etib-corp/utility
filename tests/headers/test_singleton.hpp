@@ -24,10 +24,10 @@
 
 #include <gtest/gtest.h>
 
-#include <utility/singleton.hpp>
-
+namespace tests::utility {
 class TestSingleton : public ::testing::Test {
 protected:
   void SetUp(void) override {}
   void TearDown(void) override {}
 };
+} // namespace tests::utility

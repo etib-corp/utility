@@ -59,9 +59,6 @@ public:
    */
   static Type &getInstance(void) {
     static Singleton<Type> singleton;
-    if (!singleton._instance) {
-      singleton._instance = Type();
-    }
     return singleton._instance;
   }
 

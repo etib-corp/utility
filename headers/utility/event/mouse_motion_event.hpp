@@ -24,9 +24,9 @@
 
 #include <memory>
 
-#include "utility/event/event.hpp"
-
 #include "utility/math/vector.hpp"
+
+#include "utility/event/event.hpp"
 
 namespace utility::event {
 
@@ -37,7 +37,7 @@ namespace utility::event {
  */
 class MouseMotionEvent : public Event {
 public:
-  using MousePosition = math::Vector<float, 2>; /**< 2D mouse position type */
+  using MousePosition = math::Vector2F; /**< 2D mouse position type */
 
   /**
    * @brief Factory for creating MouseMotionEvent instances.

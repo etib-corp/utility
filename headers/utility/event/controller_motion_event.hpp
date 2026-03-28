@@ -25,7 +25,8 @@
 #include <memory>
 
 #include "utility/event/controller_event.hpp"
-#include "utility/event/pose.hpp"
+
+#include "utility/graphic/pose.hpp"
 
 namespace utility::event {
 
@@ -59,8 +60,8 @@ public:
   };
 
 private:
-  Pose _aim;  /**< Aim pose of the controller */
-  Pose _grip; /**< Grip pose of the controller */
+  graphic::PoseF _aim;  /**< Aim pose of the controller */
+  graphic::PoseF _grip; /**< Grip pose of the controller */
 
 public:
   /**
@@ -78,7 +79,7 @@ public:
    * @param aim Aim pose.
    * @return Reference to this ControllerMotionEvent.
    */
-  ControllerMotionEvent &setAim(const Pose &aim) noexcept {
+  ControllerMotionEvent &setAim(const graphic::PoseF &aim) noexcept {
     _aim = aim;
     return *this;
   }
@@ -87,14 +88,14 @@ public:
    * @brief Get aim pose.
    * @return Aim pose.
    */
-  Pose getAim(void) const noexcept { return _aim; }
+  graphic::PoseF getAim(void) const noexcept { return _aim; }
 
   /**
    * @brief Set grip pose.
    * @param grip Grip pose.
    * @return Reference to this ControllerMotionEvent.
    */
-  ControllerMotionEvent &setGrip(const Pose &grip) noexcept {
+  ControllerMotionEvent &setGrip(const graphic::PoseF &grip) noexcept {
     _grip = grip;
     return *this;
   }
@@ -103,7 +104,7 @@ public:
    * @brief Get grip pose.
    * @return Grip pose.
    */
-  Pose getGrip(void) const noexcept { return _grip; }
+  graphic::PoseF getGrip(void) const noexcept { return _grip; }
 };
 
 } // namespace utility::event

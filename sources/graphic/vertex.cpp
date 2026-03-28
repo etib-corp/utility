@@ -20,14 +20,6 @@
  SOFTWARE.
  */
 
-#pragma once
+#include "utility/graphic/vertex.hpp"
 
-#include <gtest/gtest.h>
-
-namespace tests::utility {
-class TestDemangle : public ::testing::Test {
-protected:
-  void SetUp(void) override {}
-  void TearDown(void) override {}
-};
-} // namespace tests::utility
+namespace utility::graphic {} // namespace utility::graphic

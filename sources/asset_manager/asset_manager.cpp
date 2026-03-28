@@ -41,9 +41,9 @@ utility::AssetManager::open(const std::string &path) const {
   return it->second;
 }
 
-std::vector<utility::graphics::Vertex<float, float>>
+std::vector<utility::graphic::Vertex<float>>
 utility::AssetManager::loadModel(const std::string &path) {
-  std::vector<utility::graphics::Vertex<float, float>> vertices;
+  std::vector<utility::graphic::Vertex<float>> vertices;
   auto asset = open(path);
   if (asset == nullptr) {
     return vertices;
@@ -72,31 +72,33 @@ utility::AssetManager::loadModel(const std::string &path) {
         continue;
       }
 
-      utility::graphics::Vertex<float, float> vertex{};
-      vertex.setPosition({attrib.vertices[vertexBase + 0],
-                          attrib.vertices[vertexBase + 1],
-                          attrib.vertices[vertexBase + 2]});
+      utility::graphic::Vertex<float> vertex{};
+      vertex.setPosition(utility::graphic::Position<float>(
+          attrib.vertices[vertexBase + 0], attrib.vertices[vertexBase + 1],
+          attrib.vertices[vertexBase + 2]));
 
       if (index.texcoord_index >= 0) {
         const size_t texcoordBase =
             static_cast<size_t>(index.texcoord_index) * 2;
         if (texcoordBase + 1 < attrib.texcoords.size()) {
-          vertex.setTextureCoordinates({attrib.texcoords[texcoordBase + 0],
-                                        attrib.texcoords[texcoordBase + 1]});
+          vertex.setTextureCoordinates(utility::math::Vector<float, 2>(
+              {attrib.texcoords[texcoordBase + 0],
+               attrib.texcoords[texcoordBase + 1]}));
         }
       }
 
       if (index.normal_index >= 0) {
         const size_t normalBase = static_cast<size_t>(index.normal_index) * 3;
         if (normalBase + 2 < attrib.normals.size()) {
-          vertex.setColor({attrib.normals[normalBase + 0],
-                           attrib.normals[normalBase + 1],
-                           attrib.normals[normalBase + 2], 1.0f});
+          vertex.setColor(utility::graphic::Color32Bit(
+              static_cast<std::uint8_t>(attrib.normals[normalBase + 0]),
+              static_cast<std::uint8_t>(attrib.normals[normalBase + 1]),
+              static_cast<std::uint8_t>(attrib.normals[normalBase + 2]), 255));
         } else {
-          vertex.setColor({1.0f, 1.0f, 1.0f, 1.0f});
+          vertex.setColor(utility::graphic::Color32Bit(255, 255, 255, 255));
         }
       } else {
-        vertex.setColor({1.0f, 1.0f, 1.0f, 1.0f});
+        vertex.setColor(utility::graphic::Color32Bit(255, 255, 255, 255));
       }
       vertices.push_back(vertex);
     }

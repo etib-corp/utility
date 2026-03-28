@@ -25,7 +25,6 @@
 #include <memory>
 
 #include "utility/event/hand_event.hpp"
-#include "utility/event/pose.hpp"
 
 namespace utility::event {
 
@@ -58,13 +57,6 @@ public:
     }
   };
 
-private:
-  /** @brief Palm position in 3D. */
-  utility::graphics::Position _position{0.0F, 0.0F, 0.0F};
-
-  /** @brief Palm orientation in 3D. */
-  utility::graphics::Rotation _orientation{0.0F, 0.0F, 0.0F, 1.0F};
-
 public:
   /**
    * @brief Default constructor.
@@ -75,43 +67,6 @@ public:
    * @brief Default destructor.
    */
   ~PalmEvent(void) override = default;
-
-  /**
-   * @brief Set palm position.
-   * @param position Position value.
-   * @return Reference to this PalmEvent.
-   */
-  PalmEvent &setPosition(const utility::graphics::Position &position) noexcept {
-    _position = position;
-    return *this;
-  }
-
-  /**
-   * @brief Get palm position.
-   * @return Position value.
-   */
-  utility::graphics::Position getPosition(void) const noexcept {
-    return _position;
-  }
-
-  /**
-   * @brief Set palm orientation.
-   * @param orientation Orientation value.
-   * @return Reference to this PalmEvent.
-   */
-  PalmEvent &
-  setOrientation(const utility::graphics::Rotation &orientation) noexcept {
-    _orientation = orientation;
-    return *this;
-  }
-
-  /**
-   * @brief Get palm orientation.
-   * @return Orientation value.
-   */
-  utility::graphics::Rotation getOrientation(void) const noexcept {
-    return _orientation;
-  }
 };
 
 } // namespace utility::event
