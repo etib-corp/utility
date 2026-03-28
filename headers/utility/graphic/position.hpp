@@ -23,6 +23,9 @@
 #pragma once
 
 #include <cmath>
+#include <stdexcept>
+#include <type_traits>
+#include <utility>
 
 #include "utility/math/vector.hpp"
 

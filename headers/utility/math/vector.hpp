@@ -22,7 +22,11 @@
 
 #pragma once
 
+#include <cmath>
+#include <stdexcept>
+#include <string>
 #include <type_traits>
+#include <utility>
 
 #include <glm/geometric.hpp>
 #include <glm/vec2.hpp>
