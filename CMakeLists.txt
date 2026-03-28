@@ -44,7 +44,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(tinyobjloader)
 
 set(GLM_BUILD_TESTS OFF)
-add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
+ 
+add_compile_definitions(GLM_FORCE_RADIANS)
+add_compile_definitions(GLM_FORCE_DEPTH_ZERO_TO_ONE)
+add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
+
 FetchContent_Declare(glm
     GIT_REPOSITORY https://github.com/g-truc/glm.git
     GIT_TAG 1.0.3

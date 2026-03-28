@@ -38,7 +38,27 @@
 #include <glm/mat4x3.hpp>
 #include <glm/mat4x4.hpp>
 
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
 namespace utility::math {
+
+using glm::frustum;
+using glm::infinitePerspective;
+using glm::ortho;
+using glm::perspective;
+using glm::perspectiveFov;
+using glm::perspectiveLH;
+using glm::perspectiveRH;
+using glm::tweakedInfinitePerspective;
+
+using glm::identity;
+using glm::lookAt;
+using glm::lookAtLH;
+using glm::lookAtRH;
+using glm::rotate;
+using glm::scale;
+using glm::translate;
 
 /**
  * @brief Concept to constrain matrix component type.
