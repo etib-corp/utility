@@ -25,7 +25,6 @@
 #include <memory>
 
 #include "utility/event/hand_event.hpp"
-#include "utility/event/pose.hpp"
 
 namespace utility::event {
 

@@ -32,7 +32,7 @@
 #include <vector>
 
 #include "utility/asset_manager/file_asset.hpp"
-#include "utility/graphics/vertex.hpp"
+#include "utility/graphic/vertex.hpp"
 
 #include <tiny_obj_loader.h>
 
@@ -199,7 +199,7 @@ public:
    * This method is responsible for loading a model from the specified
    * file and returning its vertices as a vector of Vertex objects.
    */
-  std::vector<utility::graphics::Vertex<float, float>>
+  std::vector<utility::graphic::Vertex<float>>
   loadModel(const std::string &path);
 
   /**
@@ -207,7 +207,7 @@ public:
    * @param path The filesystem path to the model file.
    * @return A vector of Vertex objects representing the model.
    */
-  std::vector<utility::graphics::Vertex<float, float>>
+  std::vector<utility::graphic::Vertex<float>>
   loadModel(const std::filesystem::path &path) {
     return loadModel(path.string());
   }

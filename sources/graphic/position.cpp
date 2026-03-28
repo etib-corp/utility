@@ -20,14 +20,8 @@
  SOFTWARE.
  */
 
-#pragma once
+#include "utility/graphic/position.hpp"
 
-#include <gtest/gtest.h>
-
-namespace tests::utility {
-class TestDemangle : public ::testing::Test {
-protected:
-  void SetUp(void) override {}
-  void TearDown(void) override {}
-};
-} // namespace tests::utility
+namespace utility::graphic {
+// Explicit template instantiations or future Scale implementation can go here.
+} // namespace utility::graphic

@@ -26,8 +26,7 @@
 
 #include "utility/event/event.hpp"
 
-#include "utility/graphics/position.hpp"
-#include "utility/graphics/rotation.hpp"
+#include "utility/graphic/pose.hpp"
 
 namespace utility::event {
 
@@ -51,8 +50,8 @@ public:
 
 private:
   HandType _handType{HandType::None}; /**< Type of hand involved in the event */
-  utility::graphics::Position _position; /**< Position of the hand */
-  utility::graphics::Rotation _rotation; /**< Rotation of the hand */
+  graphic::PoseF
+      _pose{}; /**< Pose of the hand, including position and orientation */
 
 public:
   /**
@@ -82,40 +81,20 @@ public:
   HandType getHandType(void) const noexcept { return _handType; }
 
   /**
-   * @brief Set the position of the hand.
-   * @param position The new position of the hand.
+   * @brief Set the pose of the hand involved in the event.
+   * @param pose The new pose of the hand, including position and orientation.
    * @return Reference to this HandEvent for method chaining.
    */
-  HandEvent &setPosition(const utility::graphics::Position &position) noexcept {
-    _position = position;
+  HandEvent &setPose(const graphic::PoseF &pose) noexcept {
+    _pose = pose;
     return *this;
   }
 
   /**
-   * @brief Get the position of the hand.
-   * @return The position of the hand.
+   * @brief Get the pose of the hand involved in the event.
+   * @return The pose of the hand, including position and orientation.
    */
-  utility::graphics::Position getPosition(void) const noexcept {
-    return _position;
-  }
-
-  /**
-   * @brief Set the rotation of the hand.
-   * @param rotation The new rotation of the hand.
-   * @return Reference to this HandEvent for method chaining.
-   */
-  HandEvent &setRotation(const utility::graphics::Rotation &rotation) noexcept {
-    _rotation = rotation;
-    return *this;
-  }
-
-  /**
-   * @brief Get the rotation of the hand.
-   * @return The rotation of the hand.
-   */
-  utility::graphics::Rotation getRotation(void) const noexcept {
-    return _rotation;
-  }
+  graphic::PoseF getPose(void) const noexcept { return _pose; }
 };
 
 } // namespace utility::event
