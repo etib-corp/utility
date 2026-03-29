@@ -45,7 +45,6 @@ FetchContent_MakeAvailable(tinyobjloader)
 
 set(GLM_BUILD_TESTS OFF)
 
-add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
 add_compile_definitions(GLM_FORCE_RADIANS)
 add_compile_definitions(GLM_FORCE_DEPTH_ZERO_TO_ONE)
 
@@ -73,6 +72,11 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 
 # Create the main library
 add_library(${PROJECT_NAME} ${SOURCES})
+
+target_compile_definitions(${PROJECT_NAME}
+    PUBLIC
+        GLM_ENABLE_EXPERIMENTAL
+)
 
 # Link common dependencies
 target_link_libraries(${PROJECT_NAME}
