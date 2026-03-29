@@ -20,6 +20,6 @@
  SOFTWARE.
  */
 
-#include "utility/math/matrix.hpp"
+#include "utility/math/quaternion.hpp"
 
 namespace utility::math {} // namespace utility::math

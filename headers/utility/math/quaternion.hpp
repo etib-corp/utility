@@ -34,6 +34,14 @@ namespace utility::math {
 
 using glm::toMat4;
 
+using glm::conjugate;
+using glm::inverse;
+using glm::isinf;
+using glm::isnan;
+using glm::lerp;
+using glm::mix;
+using glm::slerp;
+
 /**
  * @brief Concept to constrain quaternion component type.
  * @tparam Type Candidate component type.
