@@ -28,7 +28,6 @@
 #include <type_traits>
 #include <utility>
 
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
 namespace utility::math {
