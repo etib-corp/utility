@@ -39,8 +39,9 @@ template <typename Type>
 concept CanBePositionComponent = math::CanBeVectorComponent<Type>;
 
 /**
- * @brief Position in 3D space represented as a vector of three float components
+ * @brief Position in 3D space represented as a vector of three PositionComponentType components
  * (x, y, z).
+ * @tparam PositionComponentType The type of the position components (e.g., float, double).
  */
 template <CanBePositionComponent PositionComponentType>
 class Position : public math::Vector<PositionComponentType, 3> {
@@ -52,7 +53,7 @@ public:
       : math::Vector<PositionComponentType, 3>(PositionComponentType{0}) {}
 
   /**
-   * @brief Construct from three float values (x, y, z).
+   * @brief Construct from three PositionComponentType values (x, y, z).
    * @param x X component.
    * @param y Y component.
    * @param z Z component.
@@ -62,11 +63,11 @@ public:
       : math::Vector<PositionComponentType, 3>({x, y, z}) {}
 
   /**
-   * @brief Construct from initializer list of three float values.
+   * @brief Construct from initializer list of three PositionComponentType values.
    * @param values The initializer list containing x, y, z components.
    * @throws std::invalid_argument if the list size is not 3.
    */
-  Position(std::initializer_list<std::float_t> values)
+  Position(std::initializer_list<PositionComponentType> values)
       : math::Vector<PositionComponentType, 3>(PositionComponentType{0},
                                                PositionComponentType{0},
                                                PositionComponentType{0}) {
@@ -80,10 +81,10 @@ public:
   }
 
   /**
-   * @brief Construct by filling all components with the same float value.
-   * @param value The float value to fill all components with.
+   * @brief Construct by filling all components with the same PositionComponentType value.
+   * @param value The PositionComponentType value to fill all components with.
    */
-  explicit Position(std::float_t value)
+  explicit Position(PositionComponentType value)
       : math::Vector<PositionComponentType, 3>(PositionComponentType{value},
                                                PositionComponentType{value},
                                                PositionComponentType{value}) {}
@@ -92,7 +93,7 @@ public:
    * @brief Construct from a GLM vector.
    * @param value Source vector.
    */
-  Position(const std::initializer_list<std::float_t> &value)
+  Position(const std::initializer_list<PositionComponentType> &value)
       : math::Vector<PositionComponentType, 3>(value) {}
 
   /**
@@ -125,54 +126,6 @@ public:
    * @brief Default destructor for Position.
    */
   ~Position(void) = default;
-
-  /**
-   * @brief Set the X component of the position.
-   * @param value The new X value.
-   * @return A reference to this Position object for method chaining.
-   */
-  Position &setX(const std::float_t value) noexcept {
-    this->x = value;
-    return *this;
-  }
-
-  /**
-   * @brief Get the X component of the position.
-   * @return The X value.
-   */
-  std::float_t getX(void) const noexcept { return this->x; }
-
-  /**
-   * @brief Set the Y component of the position.
-   * @param value The new Y value.
-   * @return A reference to this Position object for method chaining.
-   */
-  Position &setY(const std::float_t value) noexcept {
-    this->y = value;
-    return *this;
-  }
-
-  /**
-   * @brief Get the Y component of the position.
-   * @return The Y value.
-   */
-  std::float_t getY(void) const noexcept { return this->y; }
-
-  /**
-   * @brief Set the Z component of the position.
-   * @param value The new Z value.
-   * @return A reference to this Position object for method chaining.
-   */
-  Position &setZ(const std::float_t value) noexcept {
-    this->z = value;
-    return *this;
-  }
-
-  /**
-   * @brief Get the Z component of the position.
-   * @return The Z value.
-   */
-  std::float_t getZ(void) const noexcept { return this->z; }
 
   /**
    * @brief Translate this position by an offset.

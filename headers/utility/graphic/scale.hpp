@@ -38,7 +38,7 @@ template <typename Type>
 concept CanBeScaleComponent = math::CanBeVectorComponent<Type>;
 
 /**
- * @brief Scale in 3D space represented as a vector of three float components
+ * @brief Scale in 3D space represented as a vector of three ScaleComponentType components
  * (x, y, z).
  *
  * This class provides a 3D scale vector, typically used for scaling objects in
@@ -54,14 +54,24 @@ public:
   /**
    * @brief Default constructor initializing scale to (1, 1, 1).
    */
-  Scale(void) : math::Vector<ScaleComponentType, 3>(1.0F, 1.0F, 1.0F) {}
+  Scale(void) : math::Vector<ScaleComponentType, 3>({ScaleComponentType{1.0F}, ScaleComponentType{1.0F}, ScaleComponentType{1.0F}}) {}
 
   /**
-   * @brief Construct from initializer list of three float values.
+   * @brief Construct from three ScaleComponentType values (x, y, z).
+   * @param x X component.
+   * @param y Y component.
+   * @param z Z component.
+   */
+  Scale(ScaleComponentType x, ScaleComponentType y,
+           ScaleComponentType z)
+      : math::Vector<ScaleComponentType, 3>({x, y, z}) {}
+
+  /**
+   * @brief Construct from initializer list of three ScaleComponentType values.
    * @param values The initializer list containing x, y, z components.
    * @throws std::invalid_argument if the list size is not 3.
    */
-  Scale(std::initializer_list<std::float_t> values)
+  Scale(std::initializer_list<ScaleComponentType> values)
       : math::Vector<ScaleComponentType, 3>(1.0F, 1.0F, 1.0F) {
     if (values.size() != 3) {
       throw std::invalid_argument("Scale requires exactly three components");
@@ -73,8 +83,8 @@ public:
   }
 
   /**
-   * @brief Construct by filling all components with the same float value.
-   * @param value The float value to fill all components with.
+   * @brief Construct by filling all components with the same ScaleComponentType value.
+   * @param value The ScaleComponentType value to fill all components with.
    */
   explicit Scale(ScaleComponentType value)
       : math::Vector<ScaleComponentType, 3>(value, value, value) {}
@@ -122,7 +132,7 @@ public:
    * @param value The new X value.
    * @return A reference to this Scale object for method chaining.
    */
-  Scale &setX(const std::float_t value) noexcept {
+  Scale &setX(const ScaleComponentType value) noexcept {
     this->x = value;
     return *this;
   }
@@ -131,14 +141,14 @@ public:
    * @brief Get the X component of the scale.
    * @return The X value.
    */
-  std::float_t getX(void) const noexcept { return this->x; }
+  ScaleComponentType getX(void) const noexcept { return this->x; }
 
   /**
    * @brief Set the Y component of the scale.
    * @param value The new Y value.
    * @return A reference to this Scale object for method chaining.
    */
-  Scale &setY(const std::float_t value) noexcept {
+  Scale &setY(const ScaleComponentType value) noexcept {
     this->y = value;
     return *this;
   }
@@ -147,14 +157,14 @@ public:
    * @brief Get the Y component of the scale.
    * @return The Y value.
    */
-  std::float_t getY(void) const noexcept { return this->y; }
+  ScaleComponentType getY(void) const noexcept { return this->y; }
 
   /**
    * @brief Set the Z component of the scale.
    * @param value The new Z value.
    * @return A reference to this Scale object for method chaining.
    */
-  Scale &setZ(const std::float_t value) noexcept {
+  Scale &setZ(const ScaleComponentType value) noexcept {
     this->z = value;
     return *this;
   }
@@ -163,7 +173,7 @@ public:
    * @brief Get the Z component of the scale.
    * @return The Z value.
    */
-  std::float_t getZ(void) const noexcept { return this->z; }
+  ScaleComponentType getZ(void) const noexcept { return this->z; }
 
   /**
    * @brief Scale this object by another scale (component-wise multiplication).
