@@ -28,6 +28,7 @@
 #include <type_traits>
 #include <utility>
 
+#include <glm/ext/quaternion_geometric.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 namespace utility::math {
@@ -41,6 +42,11 @@ using glm::isnan;
 using glm::lerp;
 using glm::mix;
 using glm::slerp;
+
+using glm::cross;
+using glm::dot;
+using glm::length;
+using glm::normalize;
 
 /**
  * @brief Concept to constrain quaternion component type.

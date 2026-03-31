@@ -28,6 +28,11 @@
 #include <type_traits>
 #include <utility>
 
+#include <glm/matrix.hpp>
+
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
 #include <glm/mat2x2.hpp>
 #include <glm/mat2x3.hpp>
 #include <glm/mat2x4.hpp>
@@ -38,10 +43,13 @@
 #include <glm/mat4x3.hpp>
 #include <glm/mat4x4.hpp>
 
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
-
 namespace utility::math {
+
+using glm::determinant;
+using glm::inverse;
+using glm::matrixCompMult;
+using glm::outerProduct;
+using glm::transpose;
 
 using glm::frustum;
 using glm::infinitePerspective;

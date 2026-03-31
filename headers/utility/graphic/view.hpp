@@ -41,8 +41,8 @@ namespace utility::graphic {
  */
 template <typename ViewComponentType>
 concept CanBeViewComponent = CanBeFieldOfViewComponent<ViewComponentType> &&
-                               CanBePoseComponent<ViewComponentType> &&
-                               CanBeRayComponent<ViewComponentType>;
+                             CanBePoseComponent<ViewComponentType> &&
+                             CanBeRayComponent<ViewComponentType>;
 
 /**
  * @brief 3D perspective view with floating-point components.
@@ -101,7 +101,7 @@ protected:
         std::numbers::pi_v<ViewComponentType>;
 
     return FieldOfView<ViewComponentType>(halfVertical, halfVertical,
-                                            halfHorizontal, halfHorizontal);
+                                          halfHorizontal, halfHorizontal);
   }
 
   /**
@@ -241,7 +241,7 @@ public:
    * invalid.
    */
   View(Pose<ViewComponentType> pose, ViewComponentType verticalFovDegrees,
-         ViewComponentType aspectRatio)
+       ViewComponentType aspectRatio)
       : _pose(std::move(pose)), _fieldOfView() {
     setPerspective(verticalFovDegrees, aspectRatio);
   }
@@ -303,10 +303,9 @@ public:
    * @return Forward direction vector.
    */
   math::Vector<ViewComponentType, 3> getForward(void) const {
-    return math::normalize(rotateVectorByRotation(
-        math::Vector<ViewComponentType, 3>(ViewComponentType{},
-                                             ViewComponentType{},
-                                             ViewComponentType{-1})));
+    return math::normalize(
+        rotateVectorByRotation(math::Vector<ViewComponentType, 3>(
+            ViewComponentType{}, ViewComponentType{}, ViewComponentType{-1})));
   }
 
   /**
@@ -323,10 +322,9 @@ public:
    * @return Up direction vector.
    */
   math::Vector<ViewComponentType, 3> getUp(void) const {
-    return math::normalize(rotateVectorByRotation(
-        math::Vector<ViewComponentType, 3>(ViewComponentType{},
-                                             ViewComponentType{1},
-                                             ViewComponentType{})));
+    return math::normalize(
+        rotateVectorByRotation(math::Vector<ViewComponentType, 3>(
+            ViewComponentType{}, ViewComponentType{1}, ViewComponentType{})));
   }
 
   /**
@@ -346,9 +344,8 @@ public:
    * @return Aspect ratio.
    */
   ViewComponentType getAspectRatio(void) const {
-    const ViewComponentType vertical =
-        std::tan(_fieldOfView.getUpRadians()) +
-        std::tan(_fieldOfView.getDownRadians());
+    const ViewComponentType vertical = std::tan(_fieldOfView.getUpRadians()) +
+                                       std::tan(_fieldOfView.getDownRadians());
     if (vertical == ViewComponentType{}) {
       return ViewComponentType{};
     }
@@ -365,8 +362,7 @@ public:
   void setFieldOfView(const FieldOfView<ViewComponentType> &fieldOfView) {
     const ViewComponentType vertical =
         fieldOfView.getUpDegrees() + fieldOfView.getDownDegrees();
-    if (vertical <= ViewComponentType{} ||
-        vertical >= ViewComponentType{180}) {
+    if (vertical <= ViewComponentType{} || vertical >= ViewComponentType{180}) {
       throw std::invalid_argument(
           "View vertical FOV must be in range (0, 180)");
     }
@@ -386,10 +382,9 @@ public:
    * @return Normalized right direction vector.
    */
   math::Vector<ViewComponentType, 3> right(void) const {
-    return math::normalize(rotateVectorByRotation(
-        math::Vector<ViewComponentType, 3>(ViewComponentType{1},
-                                             ViewComponentType{},
-                                             ViewComponentType{})));
+    return math::normalize(
+        rotateVectorByRotation(math::Vector<ViewComponentType, 3>(
+            ViewComponentType{1}, ViewComponentType{}, ViewComponentType{})));
   }
 
   /**
@@ -421,12 +416,11 @@ public:
   void lookAt(const math::Vector<ViewComponentType, 3> &target,
               const math::Vector<ViewComponentType, 3> &worldUp =
                   math::Vector<ViewComponentType, 3>(ViewComponentType{},
-                                                       ViewComponentType{1},
-                                                       ViewComponentType{})) {
+                                                     ViewComponentType{1},
+                                                     ViewComponentType{})) {
     const auto targetVector = target - _pose.position();
     if (math::dot(targetVector, targetVector) == ViewComponentType{}) {
-      throw std::runtime_error(
-          "View lookAt target must differ from position");
+      throw std::runtime_error("View lookAt target must differ from position");
     }
     const auto newForward = math::normalize(targetVector);
     setOrientationFromBasis(newForward, worldUp);
@@ -439,7 +433,7 @@ public:
    * @return Ray originating at view position toward projected direction.
    */
   Ray<ViewComponentType> viewRay(ViewComponentType ndcX,
-                                   ViewComponentType ndcY) const {
+                                 ViewComponentType ndcY) const {
     const ViewComponentType horizontalOffset =
         ndcX >= ViewComponentType{}
             ? ndcX * std::tan(_fieldOfView.getRightRadians())
@@ -453,7 +447,7 @@ public:
         (getForward() + right() * horizontalOffset + getUp() * verticalOffset);
 
     return Ray<ViewComponentType>(_pose.position(),
-                                    math::normalize(rayDirection));
+                                  math::normalize(rayDirection));
   }
 };
 

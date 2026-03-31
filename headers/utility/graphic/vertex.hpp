@@ -34,10 +34,11 @@ concept CanBeVectorComponent =
  */
 template <CanBeVectorComponent VectorComponent> class Vertex {
 private:
-  Position<VectorComponent> _position;                    ///< Vertex position in 3D space.
-  math::Vector<VectorComponent, 3> _normal;               ///< Vertex normal.
-  math::Vector<VectorComponent, 2> _textureCoordinates;   ///< Vertex texture coordinates.
-  Color32Bit _color;                                      ///< Vertex color in RGBA.
+  Position<VectorComponent> _position;      ///< Vertex position in 3D space.
+  math::Vector<VectorComponent, 3> _normal; ///< Vertex normal.
+  math::Vector<VectorComponent, 2>
+      _textureCoordinates; ///< Vertex texture coordinates.
+  Color32Bit _color;       ///< Vertex color in RGBA.
 
 public:
   /**
