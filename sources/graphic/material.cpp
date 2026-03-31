@@ -28,7 +28,7 @@ namespace utility::graphic {
             }
 
             _textures[asset.path()] = new Texture(texWidth, texHeight);
-            _textures[asset.path()]->_pixels = std::vector<uint8_t>(pixels, pixels + (texWidth * texHeight * 4));
+            std::copy(pixels, pixels + (texWidth * texHeight * 4), _textures[asset.path()]->_pixels.data());
         }
     }
 
