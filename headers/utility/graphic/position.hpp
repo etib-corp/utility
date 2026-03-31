@@ -39,9 +39,10 @@ template <typename Type>
 concept CanBePositionComponent = math::CanBeVectorComponent<Type>;
 
 /**
- * @brief Position in 3D space represented as a vector of three PositionComponentType components
- * (x, y, z).
- * @tparam PositionComponentType The type of the position components (e.g., float, double).
+ * @brief Position in 3D space represented as a vector of three
+ * PositionComponentType components (x, y, z).
+ * @tparam PositionComponentType The type of the position components (e.g.,
+ * float, double).
  */
 template <CanBePositionComponent PositionComponentType>
 class Position : public math::Vector<PositionComponentType, 3> {
@@ -51,6 +52,22 @@ public:
    */
   Position(void)
       : math::Vector<PositionComponentType, 3>(PositionComponentType{0}) {}
+
+  /**
+   * @brief Construct by filling all components with the same
+   * PositionComponentType value.
+   * @param value The PositionComponentType value to fill all components with.
+   */
+  explicit Position(PositionComponentType value)
+      : math::Vector<PositionComponentType, 3>(value, value, value) {}
+
+  /**
+   * @brief Construct from a vector.
+   * @param vector Vector to use for position.
+   */
+  explicit Position(
+      const utility::math::Vector<PositionComponentType, 3> &vector)
+      : utility::math::Vector<PositionComponentType, 3>(vector) {}
 
   /**
    * @brief Construct from three PositionComponentType values (x, y, z).
@@ -63,7 +80,8 @@ public:
       : math::Vector<PositionComponentType, 3>({x, y, z}) {}
 
   /**
-   * @brief Construct from initializer list of three PositionComponentType values.
+   * @brief Construct from initializer list of three PositionComponentType
+   * values.
    * @param values The initializer list containing x, y, z components.
    * @throws std::invalid_argument if the list size is not 3.
    */
@@ -79,15 +97,6 @@ public:
     this->y = *(it + 1);
     this->z = *(it + 2);
   }
-
-  /**
-   * @brief Construct by filling all components with the same PositionComponentType value.
-   * @param value The PositionComponentType value to fill all components with.
-   */
-  explicit Position(PositionComponentType value)
-      : math::Vector<PositionComponentType, 3>(PositionComponentType{value},
-                                               PositionComponentType{value},
-                                               PositionComponentType{value}) {}
 
   /**
    * @brief Construct from a GLM vector.
@@ -126,6 +135,54 @@ public:
    * @brief Default destructor for Position.
    */
   ~Position(void) = default;
+
+  /**
+   * @brief Set the X component of the position.
+   * @param value The new X value.
+   * @return A reference to this Position object for method chaining.
+   */
+  Position &setX(const PositionComponentType value) noexcept {
+    this->x = value;
+    return *this;
+  }
+
+  /**
+   * @brief Get the X component of the position.
+   * @return The X value.
+   */
+  PositionComponentType getX(void) const noexcept { return this->x; }
+
+  /**
+   * @brief Set the Y component of the position.
+   * @param value The new Y value.
+   * @return A reference to this Position object for method chaining.
+   */
+  Position &setY(const PositionComponentType value) noexcept {
+    this->y = value;
+    return *this;
+  }
+
+  /**
+   * @brief Get the Y component of the position.
+   * @return The Y value.
+   */
+  PositionComponentType getY(void) const noexcept { return this->y; }
+
+  /**
+   * @brief Set the Z component of the position.
+   * @param value The new Z value.
+   * @return A reference to this Position object for method chaining.
+   */
+  Position &setZ(const PositionComponentType value) noexcept {
+    this->z = value;
+    return *this;
+  }
+
+  /**
+   * @brief Get the Z component of the position.
+   * @return The Z value.
+   */
+  PositionComponentType getZ(void) const noexcept { return this->z; }
 
   /**
    * @brief Translate this position by an offset.

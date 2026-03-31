@@ -38,8 +38,8 @@ template <typename Type>
 concept CanBeScaleComponent = math::CanBeVectorComponent<Type>;
 
 /**
- * @brief Scale in 3D space represented as a vector of three ScaleComponentType components
- * (x, y, z).
+ * @brief Scale in 3D space represented as a vector of three ScaleComponentType
+ * components (x, y, z).
  *
  * This class provides a 3D scale vector, typically used for scaling objects in
  * 3D graphic. It supports construction from initializer lists, GLM vectors, and
@@ -54,7 +54,25 @@ public:
   /**
    * @brief Default constructor initializing scale to (1, 1, 1).
    */
-  Scale(void) : math::Vector<ScaleComponentType, 3>({ScaleComponentType{1.0F}, ScaleComponentType{1.0F}, ScaleComponentType{1.0F}}) {}
+  Scale(void)
+      : math::Vector<ScaleComponentType, 3>({ScaleComponentType{1.0f},
+                                             ScaleComponentType{1.0f},
+                                             ScaleComponentType{1.0f}}) {}
+
+  /**
+   * @brief Construct by filling all components with the same
+   * ScaleComponentType value.
+   * @param value The ScaleComponentType value to fill all components with.
+   */
+  explicit Scale(ScaleComponentType value)
+      : math::Vector<ScaleComponentType, 3>(value, value, value) {}
+
+  /**
+   * @brief Construct from a vector.
+   * @param vector Vector to use for scale.
+   */
+  explicit Scale(const utility::math::Vector<ScaleComponentType, 3> &vector)
+      : utility::math::Vector<ScaleComponentType, 3>(vector) {}
 
   /**
    * @brief Construct from three ScaleComponentType values (x, y, z).
@@ -62,8 +80,7 @@ public:
    * @param y Y component.
    * @param z Z component.
    */
-  Scale(ScaleComponentType x, ScaleComponentType y,
-           ScaleComponentType z)
+  Scale(ScaleComponentType x, ScaleComponentType y, ScaleComponentType z)
       : math::Vector<ScaleComponentType, 3>({x, y, z}) {}
 
   /**
@@ -72,7 +89,7 @@ public:
    * @throws std::invalid_argument if the list size is not 3.
    */
   Scale(std::initializer_list<ScaleComponentType> values)
-      : math::Vector<ScaleComponentType, 3>(1.0F, 1.0F, 1.0F) {
+      : math::Vector<ScaleComponentType, 3>(1.0f, 1.0f, 1.0f) {
     if (values.size() != 3) {
       throw std::invalid_argument("Scale requires exactly three components");
     }
@@ -81,13 +98,6 @@ public:
     this->y = *(it + 1);
     this->z = *(it + 2);
   }
-
-  /**
-   * @brief Construct by filling all components with the same ScaleComponentType value.
-   * @param value The ScaleComponentType value to fill all components with.
-   */
-  explicit Scale(ScaleComponentType value)
-      : math::Vector<ScaleComponentType, 3>(value, value, value) {}
 
   /**
    * @brief Construct from a GLM vector.

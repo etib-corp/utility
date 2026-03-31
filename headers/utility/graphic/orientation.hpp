@@ -61,7 +61,17 @@ public:
             OrientationComponentType(0), OrientationComponentType(0)) {}
 
   /**
-   * @brief Construct from a GLM quaternion.
+   * @brief Construct by filling all components with the same
+   * OrientationComponentType value.
+   * @param value The OrientationComponentType value to fill all components
+   * with.
+   */
+  explicit Orientation(OrientationComponentType value)
+      : utility::math::Quaternion<OrientationComponentType>(value, value, value,
+                                                            value) {}
+
+  /**
+   * @brief Construct from a quaternion.
    * @param quaternion Quaternion to use for orientation.
    */
   explicit Orientation(
@@ -78,6 +88,35 @@ public:
   Orientation(OrientationComponentType x, OrientationComponentType y,
               OrientationComponentType z, OrientationComponentType w)
       : utility::math::Quaternion<OrientationComponentType>(w, x, y, z) {}
+
+  /**
+   * @brief Construct from initializer list of three PositionComponentType
+   * values.
+   * @param values The initializer list containing x, y, z components.
+   * @throws std::invalid_argument if the list size is not 3.
+   */
+  Orientation(std::initializer_list<OrientationComponentType> values)
+      : utility::math::Quaternion<OrientationComponentType>(
+            OrientationComponentType(1), OrientationComponentType(0),
+            OrientationComponentType(0), OrientationComponentType(0)) {
+    if (values.size() != 4) {
+      throw std::invalid_argument(
+          "Orientation requires exactly four components");
+    }
+    const auto it = values.begin();
+    this->w() = *it;
+    this->x() = *(it + 1);
+    this->y() = *(it + 2);
+    this->z() = *(it + 3);
+  }
+
+  /**
+   * @brief Construct from a const initializer list of three
+   * PositionComponentType values.
+   * @param value Source vector.
+   */
+  Orientation(const std::initializer_list<OrientationComponentType> &value)
+      : utility::math::Quaternion<OrientationComponentType>(value) {}
 
   /**
    * @brief Copy constructor.
@@ -116,10 +155,11 @@ public:
    */
   utility::math::Vector<OrientationComponentType, 3>
   getForward(void) const noexcept {
-    return utility::math::Quaternion<OrientationComponentType>(this->w(), this->x(), this->y(), this->z()) * utility::math::Vector<OrientationComponentType, 3>(
-                             OrientationComponentType(0),
-                             OrientationComponentType(0),
-                             OrientationComponentType(-1));
+    return utility::math::Quaternion<OrientationComponentType>(
+               this->w(), this->x(), this->y(), this->z()) *
+           utility::math::Vector<OrientationComponentType, 3>(
+               OrientationComponentType(0), OrientationComponentType(0),
+               OrientationComponentType(-1));
   }
 
   /**
@@ -128,10 +168,11 @@ public:
    */
   utility::math::Vector<OrientationComponentType, 3>
   getUp(void) const noexcept {
-    return utility::math::Quaternion<OrientationComponentType>(this->w(), this->x(), this->y(), this->z()) * utility::math::Vector<OrientationComponentType, 3>(
-                             OrientationComponentType(0),
-                             OrientationComponentType(1),
-                             OrientationComponentType(0));
+    return utility::math::Quaternion<OrientationComponentType>(
+               this->w(), this->x(), this->y(), this->z()) *
+           utility::math::Vector<OrientationComponentType, 3>(
+               OrientationComponentType(0), OrientationComponentType(1),
+               OrientationComponentType(0));
   }
 
   /**
@@ -140,10 +181,11 @@ public:
    */
   utility::math::Vector<OrientationComponentType, 3>
   getRight(void) const noexcept {
-    return utility::math::Quaternion<OrientationComponentType>(this->w(), this->x(), this->y(), this->z()) * utility::math::Vector<OrientationComponentType, 3>(
-                             OrientationComponentType(1),
-                             OrientationComponentType(0),
-                             OrientationComponentType(0));
+    return utility::math::Quaternion<OrientationComponentType>(
+               this->w(), this->x(), this->y(), this->z()) *
+           utility::math::Vector<OrientationComponentType, 3>(
+               OrientationComponentType(1), OrientationComponentType(0),
+               OrientationComponentType(0));
   }
 
   /**
@@ -154,7 +196,9 @@ public:
   utility::math::Vector<OrientationComponentType, 3> transformPoint(
       const utility::math::Vector<OrientationComponentType, 3> &local)
       const noexcept {
-    return utility::math::Quaternion<OrientationComponentType>(this->w(), this->x(), this->y(), this->z()) * local;
+    return utility::math::Quaternion<OrientationComponentType>(
+               this->w(), this->x(), this->y(), this->z()) *
+           local;
   }
 
   /**
@@ -163,7 +207,10 @@ public:
    * @return Combined orientation (parent * this).
    */
   Orientation combined(const Orientation &parent) const noexcept {
-    return Orientation(utility::math::Quaternion<OrientationComponentType>(parent.w(), parent.x(), parent.y(), parent.z()) * utility::math::Quaternion<OrientationComponentType>(this->w(), this->x(), this->y(), this->z()));
+    return Orientation(utility::math::Quaternion<OrientationComponentType>(
+                           parent.w(), parent.x(), parent.y(), parent.z()) *
+                       utility::math::Quaternion<OrientationComponentType>(
+                           this->w(), this->x(), this->y(), this->z()));
   }
 
   /**
@@ -175,7 +222,9 @@ public:
    * components. It represents only the rotation defined by the quaternion.
    */
   math::Matrix4x4F toRotationMatrix(void) const noexcept {
-    return math::Matrix4x4F(math::toMat4(utility::math::Quaternion<OrientationComponentType>(this->w(), this->x(), this->y(), this->z())));
+    return math::Matrix4x4F(
+        math::toMat4(utility::math::Quaternion<OrientationComponentType>(
+            this->w(), this->x(), this->y(), this->z())));
   }
 
   /**
@@ -186,11 +235,23 @@ public:
    * without scaling. It can be used for interpolation or when converting to
    * other representations.
    */
-  utility::math::Quaternion<OrientationComponentType> normalizedQuaternion(void) const noexcept {
-    return utility::math::Quaternion<OrientationComponentType>(this->w, this->x, this->y, this->z).normalized();
+  utility::math::Quaternion<OrientationComponentType>
+  normalizedQuaternion(void) const noexcept {
+    return utility::math::Quaternion<OrientationComponentType>(this->w, this->x,
+                                                               this->y, this->z)
+        .normalized();
   }
 
-  Orientation<OrientationComponentType> normalizedOrientation(void) const noexcept {
+  /**
+   * @brief Get a normalized Orientation object representing this orientation.
+   * @return Normalized Orientation.
+   *
+   * @note This is a convenience method that returns a new Orientation object
+   * with the quaternion normalized. It can be used for interpolation or when
+   * converting to other representations while ensuring the rotation is valid.
+   */
+  Orientation<OrientationComponentType>
+  normalizedOrientation(void) const noexcept {
     return Orientation<OrientationComponentType>(this->normalizedQuaternion());
   }
 };
