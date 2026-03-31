@@ -28,7 +28,10 @@
 #include <type_traits>
 #include <utility>
 
+#include <glm/exponential.hpp>
 #include <glm/geometric.hpp>
+#include <glm/vector_relational.hpp> 
+
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -43,6 +46,14 @@ using glm::length;
 using glm::normalize;
 using glm::reflect;
 using glm::refract;
+
+using glm::exp;
+using glm::exp2;
+using glm::inversesqrt;
+using glm::log;
+using glm::log2;
+using glm::pow;
+using glm::sqrt;
 
 /**
  * @brief Concept to constrain vector component type.
