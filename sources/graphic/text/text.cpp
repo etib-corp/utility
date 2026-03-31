@@ -82,7 +82,7 @@ void Text::updateMesh(void)
 	auto faces = _font->getFaces();
 
 	float x = 0;
-	float y = 0;
+	double y = 0;
 
 	uint32_t indexOffset = 0;
 	std::vector<uint32_t> codepoints = utf8ToCodepoints(_content);
@@ -90,27 +90,31 @@ void Text::updateMesh(void)
 	for (uint32_t cp : codepoints) {
 		FontSized::Glyph& g = fontSized.getGlyph(cp, faces);
 
-		float xpos = x + g.bearing[VEC_X];
-		float ypos = y - (g.size[VEC_Y] - g.bearing[VEC_Y]);
+		double xpos = x + g.bearing[VEC_X];
+		double ypos = y - (g.size[VEC_Y] - g.bearing[VEC_Y]);
 
-		float w = g.size[VEC_X];
-		float h = g.size[VEC_Y];
+		double w = g.size[VEC_X];
+		double h = g.size[VEC_Y];
 
-		Vertex v0(utility::math::Vector<float, 3>({xpos,     ypos + h, 0.0f}),
-					utility::math::Vector<float, 3>({g.uvMin[VEC_X], g.uvMax[VEC_Y], 0.0f}),
-					utility::math::Vector<float, 2>({0.0f, 0.0f}),
+		graphic::Vertex<double> v0(
+					graphic::Position<double>(xpos,     ypos + h, 0.0),
+					math::Vector3D({g.uvMin[VEC_X], g.uvMax[VEC_Y], 0.0}),
+					math::Vector2D({0.0, 0.0}),
 					_color);
-		Vertex v1(utility::math::Vector<float, 3>({xpos,     ypos, 0.0f}),
-					utility::math::Vector<float, 3>({g.uvMin[VEC_X], g.uvMin[VEC_Y], 0.0f}),
-					utility::math::Vector<float, 2>({0.0f, 0.0f}),
+		graphic::Vertex<double> v1(
+					graphic::Position<double>(xpos,     ypos, 0.0),
+					math::Vector3D({g.uvMin[VEC_X], g.uvMin[VEC_Y], 0.0}),
+					math::Vector2D({0.0, 0.0}),
 					_color);
-		Vertex v2(utility::math::Vector<float, 3>({xpos + w, ypos, 0.0f}),
-					utility::math::Vector<float, 3>({g.uvMax[VEC_X], g.uvMin[VEC_Y], 0.0f}),
-					utility::math::Vector<float, 2>({0.0f, 0.0f}),
+		graphic::Vertex<double> v2(
+					graphic::Position<double>(xpos + w, ypos, 0.0),
+					math::Vector3D({g.uvMax[VEC_X], g.uvMin[VEC_Y], 0.0}),
+					math::Vector2D({0.0, 0.0}),
 					_color);
-		Vertex v3(utility::math::Vector<float, 3>({xpos + w, ypos + h, 0.0f}),
-					utility::math::Vector<float, 3>({g.uvMax[VEC_X], g.uvMax[VEC_Y], 0.0f}),
-					utility::math::Vector<float, 2>({0.0f, 0.0f}),
+		graphic::Vertex<double> v3(
+					graphic::Position<double>(xpos + w, ypos + h, 0.0),
+					math::Vector3D({g.uvMax[VEC_X], g.uvMax[VEC_Y], 0.0}),
+					math::Vector2D({0.0, 0.0}),
 					_color);
 
 		_mesh.addVertex(v0);

@@ -22,8 +22,8 @@ namespace utility::graphic {
             math::Vector<unsigned int, 2> size;
             math::Vector<int, 2> bearing;
             uint32_t advance;
-            math::Vector<float, 2> uvMin;
-            math::Vector<float, 2> uvMax;
+            math::Vector2F uvMin;
+            math::Vector2F uvMax;
         };
 
         FontSized(uint32_t fontSize, FT_Face face);
