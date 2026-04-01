@@ -79,6 +79,13 @@ public:
   Vector(void) : glm::vec<VectorDimension, VectorComponentType>(0) {}
 
   /**
+   * @brief Construct from a GLM vector.
+   * @param v Source GLM vector.
+   */
+  Vector(const glm::vec<VectorDimension, VectorComponentType>& v)
+      : glm::vec<VectorDimension, VectorComponentType>(v) {}
+
+  /**
    * @brief Construct from initializer list of float values.
    * @param values The initializer list containing vector components.
    * @throws std::invalid_argument if the list size does not match the vector

@@ -96,7 +96,7 @@ public:
       : glm::mat<Cols, Rows, MatrixComponentType>(Cols == Rows ? 1 : 0) {}
 
   /**
-   * @brief Construct from initializer list of Cols*Rows values (column-major
+   * @brief Construct from initializer list of Cols*Rows values (row-major
    * order).
    * @param values The initializer list containing matrix components.
    * @throws std::invalid_argument if the list size is not Cols*Rows.
@@ -107,9 +107,9 @@ public:
                                   std::to_string(Cols * Rows) + " components");
     }
     const auto it = values.begin();
-    for (std::size_t col = 0; col < Cols; ++col) {
-      for (std::size_t row = 0; row < Rows; ++row) {
-        (*this)[col][row] = *(it + col * Rows + row);
+    for (std::size_t row = 0; row < Rows; ++row) {
+      for (std::size_t col = 0; col < Cols; ++col) {
+        (*this)[col][row] = *(it + row * Cols + col);
       }
     }
   }
