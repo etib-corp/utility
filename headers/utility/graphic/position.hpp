@@ -206,14 +206,46 @@ public:
   }
 
   /**
+   * @brief Compute squared Euclidean distance to another position.
+   * @param other Position to measure distance to.
+   * @return Squared distance between the two positions.
+   */
+  PositionComponentType distanceSquaredTo(const Position &other) const {
+    const PositionComponentType dx = this->x - other.x;
+    const PositionComponentType dy = this->y - other.y;
+    const PositionComponentType dz = this->z - other.z;
+    return dx * dx + dy * dy + dz * dz;
+  }
+
+  /**
    * @brief Compute Euclidean distance to another position.
    * @param other Position to measure distance to.
    * @return Distance between the two positions.
    */
   PositionComponentType distanceTo(const Position &other) const {
-    return math::distance(
-        static_cast<const math::Vector<PositionComponentType, 3> &>(*this),
-        static_cast<const math::Vector<PositionComponentType, 3> &>(other));
+    return std::sqrt(distanceSquaredTo(other));
+  }
+
+  /**
+   * @brief Check whether this position is at (or near) the origin.
+   * @param epsilon Absolute tolerance.
+   * @return True when every component is within epsilon of zero.
+   */
+  bool isOrigin(PositionComponentType epsilon = PositionComponentType{
+                    1e-6}) const noexcept {
+    return std::abs(this->x) <= epsilon && std::abs(this->y) <= epsilon &&
+           std::abs(this->z) <= epsilon;
+  }
+
+  /**
+   * @brief Compute midpoint between this position and another.
+   * @param other Other position.
+   * @return Midpoint position.
+   */
+  Position midpoint(const Position &other) const noexcept {
+    return Position((this->x + other.x) / PositionComponentType{2},
+                    (this->y + other.y) / PositionComponentType{2},
+                    (this->z + other.z) / PositionComponentType{2});
   }
 };
 

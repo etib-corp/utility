@@ -207,6 +207,38 @@ public:
     result.scaleBy(factor);
     return result;
   }
+
+  /**
+   * @brief Set all scale components to the same value.
+   * @param value Uniform scale value.
+   * @return A reference to this Scale object for method chaining.
+   */
+  Scale &setUniform(ScaleComponentType value) noexcept {
+    this->x = value;
+    this->y = value;
+    this->z = value;
+    return *this;
+  }
+
+  /**
+   * @brief Check whether all scale components are approximately equal.
+   * @param epsilon Absolute tolerance.
+   * @return True if x~=y and y~=z.
+   */
+  bool isUniform(ScaleComponentType epsilon = ScaleComponentType{
+                     1e-6}) const noexcept {
+    return std::abs(this->x - this->y) <= epsilon &&
+           std::abs(this->y - this->z) <= epsilon;
+  }
+
+  /**
+   * @brief Check whether any component is negative.
+   * @return True if at least one component is below zero.
+   */
+  bool hasNegativeComponent(void) const noexcept {
+    return this->x < ScaleComponentType{} || this->y < ScaleComponentType{} ||
+           this->z < ScaleComponentType{};
+  }
 };
 
 /**

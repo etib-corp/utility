@@ -72,16 +72,16 @@ public:
             QuaternionComponentType(1), QuaternionComponentType(0),
             QuaternionComponentType(0), QuaternionComponentType(0)) {}
 
-    /**
-     * @brief Construct from explicit components (x, y, z, w).
-     * @param x X component.
-     * @param y Y component.
-     * @param z Z component.
-     * @param w W component.
-     */
-    Quaternion(QuaternionComponentType x, QuaternionComponentType y,
-          QuaternionComponentType z, QuaternionComponentType w)
-        : glm::qua<QuaternionComponentType>(w, x, y, z) {}
+  /**
+   * @brief Construct from explicit components (x, y, z, w).
+   * @param x X component.
+   * @param y Y component.
+   * @param z Z component.
+   * @param w W component.
+   */
+  Quaternion(QuaternionComponentType x, QuaternionComponentType y,
+             QuaternionComponentType z, QuaternionComponentType w)
+      : glm::qua<QuaternionComponentType>(w, x, y, z) {}
 
   /**
    * @brief Construct from a GLM quaternion.

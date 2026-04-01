@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <type_traits>
 
 #include "utility/math/matrix.hpp"
@@ -57,8 +58,8 @@ public:
    */
   Orientation(void)
       : utility::math::Quaternion<OrientationComponentType>(
-            OrientationComponentType(1), OrientationComponentType(0),
-            OrientationComponentType(0), OrientationComponentType(0)) {}
+            OrientationComponentType(0), OrientationComponentType(0),
+            OrientationComponentType(0), OrientationComponentType(1)) {}
 
   /**
    * @brief Construct by filling all components with the same
@@ -87,7 +88,7 @@ public:
    */
   Orientation(OrientationComponentType x, OrientationComponentType y,
               OrientationComponentType z, OrientationComponentType w)
-      : utility::math::Quaternion<OrientationComponentType>(w, x, y, z) {}
+      : utility::math::Quaternion<OrientationComponentType>(x, y, z, w) {}
 
   /**
    * @brief Construct from initializer list of three PositionComponentType
@@ -97,17 +98,17 @@ public:
    */
   Orientation(std::initializer_list<OrientationComponentType> values)
       : utility::math::Quaternion<OrientationComponentType>(
-            OrientationComponentType(1), OrientationComponentType(0),
-            OrientationComponentType(0), OrientationComponentType(0)) {
+            OrientationComponentType(0), OrientationComponentType(0),
+            OrientationComponentType(0), OrientationComponentType(1)) {
     if (values.size() != 4) {
       throw std::invalid_argument(
           "Orientation requires exactly four components");
     }
     const auto it = values.begin();
-    this->w() = *it;
-    this->x() = *(it + 1);
-    this->y() = *(it + 2);
-    this->z() = *(it + 3);
+        this->x = *it;
+        this->y = *(it + 1);
+        this->z = *(it + 2);
+        this->w = *(it + 3);
   }
 
   /**
@@ -156,10 +157,10 @@ public:
   utility::math::Vector<OrientationComponentType, 3>
   getForward(void) const noexcept {
     return utility::math::Quaternion<OrientationComponentType>(
-               this->w(), this->x(), this->y(), this->z()) *
-           utility::math::Vector<OrientationComponentType, 3>(
+               this->x, this->y, this->z, this->w) *
+           utility::math::Vector<OrientationComponentType, 3>{
                OrientationComponentType(0), OrientationComponentType(0),
-               OrientationComponentType(-1));
+               OrientationComponentType(-1)};
   }
 
   /**
@@ -169,10 +170,10 @@ public:
   utility::math::Vector<OrientationComponentType, 3>
   getUp(void) const noexcept {
     return utility::math::Quaternion<OrientationComponentType>(
-               this->w(), this->x(), this->y(), this->z()) *
-           utility::math::Vector<OrientationComponentType, 3>(
+               this->x, this->y, this->z, this->w) *
+           utility::math::Vector<OrientationComponentType, 3>{
                OrientationComponentType(0), OrientationComponentType(1),
-               OrientationComponentType(0));
+               OrientationComponentType(0)};
   }
 
   /**
@@ -182,10 +183,10 @@ public:
   utility::math::Vector<OrientationComponentType, 3>
   getRight(void) const noexcept {
     return utility::math::Quaternion<OrientationComponentType>(
-               this->w(), this->x(), this->y(), this->z()) *
-           utility::math::Vector<OrientationComponentType, 3>(
+               this->x, this->y, this->z, this->w) *
+           utility::math::Vector<OrientationComponentType, 3>{
                OrientationComponentType(1), OrientationComponentType(0),
-               OrientationComponentType(0));
+               OrientationComponentType(0)};
   }
 
   /**
@@ -197,9 +198,20 @@ public:
       const utility::math::Vector<OrientationComponentType, 3> &local)
       const noexcept {
     return utility::math::Quaternion<OrientationComponentType>(
-               this->w(), this->x(), this->y(), this->z()) *
+                             this->x, this->y, this->z, this->w) *
            local;
   }
+
+    /**
+     * @brief Rotate a direction vector by this orientation.
+     * @param direction Direction in local space.
+     * @return Rotated direction in world space.
+     */
+    utility::math::Vector<OrientationComponentType, 3>
+    rotateVector(const utility::math::Vector<OrientationComponentType, 3>
+                                     &direction) const noexcept {
+        return transformPoint(direction);
+    }
 
   /**
    * @brief Combine with another orientation (parent * this).
@@ -208,9 +220,9 @@ public:
    */
   Orientation combined(const Orientation &parent) const noexcept {
     return Orientation(utility::math::Quaternion<OrientationComponentType>(
-                           parent.w(), parent.x(), parent.y(), parent.z()) *
+                                                     parent.x, parent.y, parent.z, parent.w) *
                        utility::math::Quaternion<OrientationComponentType>(
-                           this->w(), this->x(), this->y(), this->z()));
+                                                     this->x, this->y, this->z, this->w));
   }
 
   /**
@@ -224,35 +236,39 @@ public:
   math::Matrix4x4F toRotationMatrix(void) const noexcept {
     return math::Matrix4x4F(
         math::toMat4(utility::math::Quaternion<OrientationComponentType>(
-            this->w(), this->x(), this->y(), this->z())));
-  }
+                        this->x, this->y, this->z, this->w)));
+    }
 
-  /**
-   * @brief Get the normalized quaternion representing this orientation.
-   * @return Normalized quaternion.
-   *
-   * @note This is useful for ensuring the quaternion is a valid rotation
-   * without scaling. It can be used for interpolation or when converting to
-   * other representations.
-   */
-  utility::math::Quaternion<OrientationComponentType>
-  normalizedQuaternion(void) const noexcept {
-    return utility::math::Quaternion<OrientationComponentType>(this->w, this->x,
-                                                               this->y, this->z)
-        .normalized();
-  }
+    /**
+     * @brief Return a normalized orientation.
+     * @return Orientation with unit quaternion length.
+     */
+    Orientation normalized(void) const noexcept {
+        return Orientation(utility::math::normalize(
+                static_cast<const utility::math::Quaternion<OrientationComponentType> &>(
+                        *this)));
+    }
 
-  /**
-   * @brief Get a normalized Orientation object representing this orientation.
-   * @return Normalized Orientation.
-   *
-   * @note This is a convenience method that returns a new Orientation object
-   * with the quaternion normalized. It can be used for interpolation or when
-   * converting to other representations while ensuring the rotation is valid.
-   */
-  Orientation<OrientationComponentType>
-  normalizedOrientation(void) const noexcept {
-    return Orientation<OrientationComponentType>(this->normalizedQuaternion());
+    /**
+     * @brief Return inverse orientation.
+     * @return Inverse quaternion orientation.
+     */
+    Orientation inversed(void) const noexcept {
+        return Orientation(utility::math::inverse(
+                static_cast<const utility::math::Quaternion<OrientationComponentType> &>(
+                        *this)));
+    }
+
+    /**
+     * @brief Check whether this is approximately the identity orientation.
+     * @param epsilon Absolute tolerance for each component.
+     * @return True when x,y,z are near 0 and w is near 1.
+     */
+    bool isIdentity(OrientationComponentType epsilon =
+                                            OrientationComponentType{1e-6}) const noexcept {
+        return std::abs(this->x) <= epsilon && std::abs(this->y) <= epsilon &&
+                     std::abs(this->z) <= epsilon &&
+                     std::abs(this->w - OrientationComponentType{1}) <= epsilon;
   }
 };
 

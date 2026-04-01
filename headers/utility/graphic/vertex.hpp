@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <ostream>
 #include <type_traits>
 
@@ -122,6 +123,38 @@ public:
    * @return Color in RGBA.
    */
   Color32Bit getColor(void) const { return _color; }
+
+  /**
+   * @brief Set all vertex attributes at once.
+   * @param position Vertex position.
+   * @param normal Vertex normal.
+   * @param textureCoordinates Vertex texture coordinates.
+   * @param color Vertex color.
+   * @return Reference to this vertex for chaining.
+   */
+  Vertex &
+  setAttributes(const Position<VectorComponent> &position,
+                const math::Vector<VectorComponent, 3> &normal,
+                const math::Vector<VectorComponent, 2> &textureCoordinates,
+                const Color32Bit &color) {
+    _position = position;
+    _normal = normal;
+    _textureCoordinates = textureCoordinates;
+    _color = color;
+    return *this;
+  }
+
+  /**
+   * @brief Check if the normal is approximately unit length.
+   * @param epsilon Absolute tolerance for squared-length comparison.
+   * @return True when ||normal||^2 is close to 1.
+   */
+  bool hasUnitNormal(VectorComponent epsilon = VectorComponent{1e-5}) const {
+    const VectorComponent normSquared = _normal[0] * _normal[0] +
+                                        _normal[1] * _normal[1] +
+                                        _normal[2] * _normal[2];
+    return std::abs(normSquared - VectorComponent{1}) <= epsilon;
+  }
 
   /**
    * @brief Equality comparison.
