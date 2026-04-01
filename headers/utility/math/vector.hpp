@@ -30,7 +30,7 @@
 
 #include <glm/exponential.hpp>
 #include <glm/geometric.hpp>
-#include <glm/vector_relational.hpp> 
+#include <glm/vector_relational.hpp>
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -79,6 +79,13 @@ public:
   Vector(void) : glm::vec<VectorDimension, VectorComponentType>(0) {}
 
   /**
+   * @brief Construct from a GLM vector.
+   * @param v Source GLM vector.
+   */
+  Vector(const glm::vec<VectorDimension, VectorComponentType>& v)
+      : glm::vec<VectorDimension, VectorComponentType>(v) {}
+
+  /**
    * @brief Construct from initializer list of float values.
    * @param values The initializer list containing vector components.
    * @throws std::invalid_argument if the list size does not match the vector
@@ -102,6 +109,222 @@ public:
    */
   explicit Vector(VectorComponentType value)
       : glm::vec<VectorDimension, VectorComponentType>(value) {}
+
+  /**
+   * @brief Copy constructor.
+   * @param other The Vector object to copy from.
+   */
+  Vector(const Vector &other) = default;
+
+  /**
+   * @brief Move constructor.
+   * @param other The Vector object to move from.
+   */
+  Vector(Vector &&other) noexcept = default;
+
+  /**
+   * @brief Default destructor for Vector.
+   */
+  ~Vector(void) = default;
+
+  /**
+   * @brief Copy assignment operator.
+   * @param other The Vector object to copy from.
+   * @return A reference to this Vector object.
+   */
+  Vector &operator=(const Vector &other) = default;
+
+  /**
+   * @brief Move assignment operator.
+   * @param other The Vector object to move from.
+   * @return A reference to this Vector object.
+   */
+  Vector &operator=(Vector &&other) noexcept = default;
+
+  /**
+   * @brief Vector addition.
+   * @param rhs The vector to add.
+   * @return The resulting vector.
+   */
+  Vector operator+(const Vector &rhs) const {
+    return Vector(
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            *this) +
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            rhs));
+  }
+
+  /**
+   * @brief Vector addition assignment.
+   * @param rhs The vector to add.
+   * @return A reference to this vector after addition.
+   */
+  Vector &operator+=(const Vector &rhs) {
+    *static_cast<glm::vec<VectorDimension, VectorComponentType> *>(this) +=
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Vector subtraction.
+   * @param rhs The vector to subtract.
+   * @return The resulting vector.
+   */
+  Vector operator-(const Vector &rhs) const {
+    return Vector(
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            *this) -
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            rhs));
+  }
+
+  /**
+   * @brief Vector subtraction assignment.
+   * @param rhs The vector to subtract.
+   * @return A reference to this vector after subtraction.
+   */
+  Vector &operator-=(const Vector &rhs) {
+    *static_cast<glm::vec<VectorDimension, VectorComponentType> *>(this) -=
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Scalar multiplication.
+   * @param scalar The scalar value to multiply with.
+   * @return The resulting vector.
+   */
+  Vector operator*(VectorComponentType scalar) const {
+    return Vector(
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            *this) *
+        scalar);
+  }
+
+  /**
+   * @brief Scalar multiplication assignment.
+   * @param scalar The scalar value to multiply with.
+   * @return A reference to this vector after multiplication.
+   */
+  Vector &operator*=(VectorComponentType scalar) {
+    *static_cast<glm::vec<VectorDimension, VectorComponentType> *>(this) *=
+        scalar;
+    return *this;
+  }
+
+  /**
+   * @brief Scalar division.
+   * @param scalar The scalar value to divide by.
+   * @return The resulting vector.
+   */
+  Vector operator/(VectorComponentType scalar) const {
+    return Vector(
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            *this) /
+        scalar);
+  }
+
+  /**
+   * @brief Scalar division assignment.
+   * @param scalar The scalar value to divide by.
+   * @return A reference to this vector after division.
+   */
+  Vector &operator/=(VectorComponentType scalar) {
+    *static_cast<glm::vec<VectorDimension, VectorComponentType> *>(this) /=
+        scalar;
+    return *this;
+  }
+
+  /**
+   * @brief Element-wise multiplication.
+   * @param rhs The vector to multiply with.
+   * @return The resulting vector.
+   */
+  Vector operator*(const Vector &rhs) const {
+    return Vector(
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            *this) *
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            rhs));
+  }
+
+  /**
+   * @brief Element-wise multiplication assignment.
+   * @param rhs The vector to multiply with.
+   * @return A reference to this vector after multiplication.
+   */
+  Vector &operator*=(const Vector &rhs) {
+    *static_cast<glm::vec<VectorDimension, VectorComponentType> *>(this) *=
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Element-wise division.
+   * @param rhs The vector to divide by.
+   * @return The resulting vector.
+   */
+  Vector operator/(const Vector &rhs) const {
+    return Vector(
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            *this) /
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            rhs));
+  }
+
+  /**
+   * @brief Element-wise division assignment.
+   * @param rhs The vector to divide by.
+   * @return A reference to this vector after division.
+   */
+  Vector &operator/=(const Vector &rhs) {
+    *static_cast<glm::vec<VectorDimension, VectorComponentType> *>(this) /=
+        static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Equality comparison.
+   * @param rhs The vector to compare with.
+   * @return True if the vectors are equal, false otherwise.
+   */
+  bool operator==(const Vector &rhs) const {
+    return static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+               *this) ==
+           static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+               rhs);
+  }
+
+  /**
+   * @brief Inequality comparison.
+   * @param rhs The vector to compare with.
+   * @return True if the vectors are not equal, false otherwise.
+   */
+  bool operator!=(const Vector &rhs) const { return !(*this == rhs); }
+
+  /**
+   * @brief Unary negation.
+   * @return The negated vector.
+   */
+  Vector operator-() const {
+    return Vector(
+        -static_cast<const glm::vec<VectorDimension, VectorComponentType> &>(
+            *this));
+  }
+
+  /**
+   * @brief Friend function for scalar multiplication with scalar on the left.
+   * @param scalar The scalar value to multiply with.
+   * @param vec The vector to multiply.
+   * @return The resulting vector.
+   */
+  friend Vector operator*(VectorComponentType scalar, const Vector &vec) {
+    return vec * scalar;
+  }
 };
 
 /**
