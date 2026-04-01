@@ -337,6 +337,48 @@ public:
     setRightRadians(rightRadians);
     return *this;
   }
+
+  /**
+   * @brief Get total vertical field-of-view in degrees.
+   * @return Sum of up and down angles in degrees.
+   */
+  Type getVerticalDegrees(void) const noexcept {
+    return _upDegrees + _downDegrees;
+  }
+
+  /**
+   * @brief Get total horizontal field-of-view in degrees.
+   * @return Sum of left and right angles in degrees.
+   */
+  Type getHorizontalDegrees(void) const noexcept {
+    return _leftDegrees + _rightDegrees;
+  }
+
+  /**
+   * @brief Get total vertical field-of-view in radians.
+   * @return Sum of up and down angles in radians.
+   */
+  Type getVerticalRadians(void) const noexcept {
+    return _upRadians + _downRadians;
+  }
+
+  /**
+   * @brief Get total horizontal field-of-view in radians.
+   * @return Sum of left and right angles in radians.
+   */
+  Type getHorizontalRadians(void) const noexcept {
+    return _leftRadians + _rightRadians;
+  }
+
+  /**
+   * @brief Check if this FOV is symmetric around vertical and horizontal axes.
+   * @param epsilon Absolute tolerance used for comparison.
+   * @return True if up~=down and left~=right.
+   */
+  bool isSymmetric(Type epsilon = Type{1e-6}) const noexcept {
+    return std::abs(_upDegrees - _downDegrees) <= epsilon &&
+           std::abs(_leftDegrees - _rightDegrees) <= epsilon;
+  }
 };
 
 /**

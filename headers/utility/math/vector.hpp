@@ -82,7 +82,7 @@ public:
    * @brief Construct from a GLM vector.
    * @param v Source GLM vector.
    */
-  Vector(const glm::vec<VectorDimension, VectorComponentType>& v)
+  Vector(const glm::vec<VectorDimension, VectorComponentType> &v)
       : glm::vec<VectorDimension, VectorComponentType>(v) {}
 
   /**

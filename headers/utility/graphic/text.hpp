@@ -185,6 +185,45 @@ public:
    * @return Const reference to the text color.
    */
   const graphic::Color32Bit &getColor(void) const { return _color; }
+
+  /**
+   * @brief Check if text content is empty.
+   * @return True if content has no characters.
+   */
+  bool empty(void) const noexcept { return _content.empty(); }
+
+  /**
+   * @brief Check if font path is set.
+   * @return True if a non-empty font path is configured.
+   */
+  bool hasFontPath(void) const noexcept { return !_fontPath.empty(); }
+
+  /**
+   * @brief Clear text content.
+   * @return Reference to this Text instance for chaining.
+   */
+  Text &clearContent(void) {
+    _content.clear();
+    return *this;
+  }
+
+  /**
+   * @brief Equality comparison.
+   * @param other Text object to compare with.
+   * @return True when all properties are equal.
+   */
+  bool operator==(const Text &other) const {
+    return _content == other._content && _fontPath == other._fontPath &&
+           _fontSize == other._fontSize && _pose == other._pose &&
+           _color == other._color;
+  }
+
+  /**
+   * @brief Inequality comparison.
+   * @param other Text object to compare with.
+   * @return True when any property differs.
+   */
+  bool operator!=(const Text &other) const { return !(*this == other); }
 };
 
 } // namespace utility::graphic
