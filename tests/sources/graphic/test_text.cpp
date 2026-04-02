@@ -21,7 +21,6 @@ TEST_F(TestText, SettersAndGetters) {
   text.setContent("Hello")
       .setFontPath("/tmp/font.ttf")
       .setFontSize(24.0f)
-      .setPose(pose)
       .setColor(color);
 
   EXPECT_EQ(text.getContent(), "Hello");

@@ -49,7 +49,6 @@ private:
   std::string _content;       ///< Text content to display
   std::string _fontPath;      ///< Path to the font file
   float _fontSize;            ///< Font size in points
-  PoseF _pose;                ///< Text pose (position + orientation)
   graphic::Color32Bit _color; ///< Text RGBA color
 
 public:
@@ -60,20 +59,19 @@ public:
    * of 12.0f.
    */
   Text(void)
-      : _content(""), _fontPath(""), _fontSize(12.0f), _pose(), _color() {}
+      : _content(""), _fontPath(""), _fontSize(12.0f), _color() {}
 
   /**
    * @brief Constructor with content and font.
    * @param content The text content.
    * @param fontPath Path to the font file.
    * @param fontSize Font size in points.
-   * @param pose The pose (position and orientation) of the text.
    * @param color The color of the text.
    */
-  Text(std::string content, std::string fontPath, float fontSize, PoseF pose,
+  Text(std::string content, std::string fontPath, float fontSize,
        graphic::Color32Bit color)
       : _content(std::move(content)), _fontPath(std::move(fontPath)),
-        _fontSize(fontSize), _pose(std::move(pose)), _color(std::move(color)) {}
+        _fontSize(fontSize), _color(std::move(color)) {}
 
   /**
    * @brief Copy constructor.
@@ -155,22 +153,6 @@ public:
   float getFontSize(void) const { return _fontSize; }
 
   /**
-   * @brief Set the text pose
-   * @param pose Text world pose (position and orientation).
-   * @return Reference to this Text instance for chaining.
-   */
-  Text &setPose(const PoseF &pose) {
-    _pose = pose;
-    return *this;
-  }
-
-  /**
-   * @brief Get the text pose
-   * @return Const reference to the text pose (position and orientation).
-   */
-  const PoseF &getPose(void) const { return _pose; }
-
-  /**
    * @brief Set the text color.
    * @param color Text RGBA color.
    * @return Reference to this Text instance for chaining.
@@ -214,8 +196,7 @@ public:
    */
   bool operator==(const Text &other) const {
     return _content == other._content && _fontPath == other._fontPath &&
-           _fontSize == other._fontSize && _pose == other._pose &&
-           _color == other._color;
+           _fontSize == other._fontSize && _color == other._color;
   }
 
   /**
