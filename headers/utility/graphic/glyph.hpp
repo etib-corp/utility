@@ -38,16 +38,26 @@ namespace utility::graphic {
  */
 class Glyph {
   private:
-    std::string _name;          ///< Name or identifier for the glyph (e.g., character code).
+    std::string _name;          ///< Name of the glyph (e.g., character code).
+    std::string _code;          ///< Code representing the glyph (e.g., Unicode code point).
     std::string _fontPath;      ///< Path to the font file containing this glyph.
     utility::math::Vector2F _size; ///< Size of the glyph in pixels.
     graphic::Color32Bit _color;   ///< Color of the glyph.
+
+    static std::string getGlyphCode(const std::string &name) {
+        // Placeholder for actual glyph code retrieval logic
+        return "U+0000"; // Default to null character code
+    }
 
   public:
     /**
      * @brief Default constructor.
      */
-    Glyph(void) = default;
+    Glyph(const std::string &name = "", const std::string &fontPath = "",
+          const utility::math::Vector2F &size = utility::math::Vector2F(0.0f),
+          const graphic::Color32Bit &color = graphic::Color32Bit())
+        : _name(name), _code(getGlyphCode(name)), _fontPath(fontPath),
+        _size(size), _color(color) {}
 
     /**
      * @brief Copy constructor.
@@ -82,7 +92,7 @@ class Glyph {
 
     /**
      * @brief Set the Name object
-     * @param name The name or identifier for the glyph (e.g., character code).
+     * @param name The name of the glyph (e.g., character code).
      * @return Glyph& A reference to this Glyph object for chaining.
      */
     Glyph &setName(const std::string &name) {
