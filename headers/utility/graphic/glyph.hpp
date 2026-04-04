@@ -38,10 +38,10 @@ namespace utility::graphic {
  */
 class Glyph {
   private:
-    std::string _name;
-    std::string _fontPath;
-    utility::math::Vector2F _size;
-    graphic::Color32Bit _color;
+    std::string _name;          ///< Name or identifier for the glyph (e.g., character code).
+    std::string _fontPath;      ///< Path to the font file containing this glyph.
+    utility::math::Vector2F _size; ///< Size of the glyph in pixels.
+    graphic::Color32Bit _color;   ///< Color of the glyph.
 
   public:
     /**
@@ -51,21 +51,27 @@ class Glyph {
 
     /**
      * @brief Copy constructor.
+     * @param other The Glyph object to copy from.
      */
     Glyph(const Glyph &other) = default;
 
     /**
      * @brief Move constructor.
+     * @param other The Glyph object to move from.
      */
     Glyph(Glyph &&other) noexcept = default;
 
     /**
      * @brief Copy assignment operator.
+     * @param other The Glyph object to copy from.
+     * @return Glyph& A reference to this Glyph object for chaining.
      */
     Glyph &operator=(const Glyph &other) = default;
 
     /**
      * @brief Move assignment operator.
+     * @param other The Glyph object to move from.
+     * @return Glyph& A reference to this Glyph object for chaining.
      */
     Glyph &operator=(Glyph &&other) noexcept = default;
 
@@ -74,32 +80,68 @@ class Glyph {
      */
     ~Glyph(void) = default;
 
+    /**
+     * @brief Set the Name object
+     * @param name The name or identifier for the glyph (e.g., character code).
+     * @return Glyph& A reference to this Glyph object for chaining.
+     */
     Glyph &setName(const std::string &name) {
         _name = name;
         return *this;
     }
 
+    /**
+     * @brief Get the Name object
+     * @return const std::string& A reference to the glyph's name.
+     */
     const std::string &getName(void) const { return _name; }
 
+    /**
+     * @brief Set the Font Path object
+     * @param fontPath The path to the font file containing this glyph.
+     * @return Glyph& A reference to this Glyph object for chaining.
+     */
     Glyph &setFontPath(const std::string &fontPath) {
         _fontPath = fontPath;
         return *this;
     }
 
+    /**
+     * @brief Get the Font Path object
+     * @return const std::string& A reference to the font path.
+     */
     const std::string &getFontPath(void) const { return _fontPath; }
 
+    /**
+     * @brief Set the Size object
+     * @param size The size of the glyph in pixels.
+     * @return Glyph& A reference to this Glyph object for chaining.
+     */
     Glyph &setSize(const utility::math::Vector2F &size) {
         _size = size;
         return *this;
     }
 
+    /**
+     * @brief Get the Size object
+     * @return const utility::math::Vector2F& A reference to the glyph's size.
+     */
     const utility::math::Vector2F &getSize(void) const { return _size; }
 
+    /**
+    * @brief Set the Color object
+    * @param color The color of the glyph.
+    * @return Glyph& A reference to this Glyph object for chaining.
+    */
     Glyph &setColor(const graphic::Color32Bit &color) {
         _color = color;
         return *this;
     }
 
+    /**
+     * @brief Get the Color object
+     * @return const graphic::Color32Bit& A reference to the glyph's color.
+     */
     const graphic::Color32Bit &getColor(void) const { return _color; }
 };
 
