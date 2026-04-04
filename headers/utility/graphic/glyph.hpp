@@ -44,6 +44,11 @@ class Glyph {
     utility::math::Vector2F _size; ///< Size of the glyph in pixels.
     graphic::Color32Bit _color;   ///< Color of the glyph.
 
+    /**
+     * @brief Retrieve the glyph code based on its name.
+     * @param name The name of the glyph (e.g., character code).
+     * @return std::string The corresponding glyph code.
+     */
     static std::string getGlyphCode(const std::string &name) {
         // Placeholder for actual glyph code retrieval logic
         return "U+0000"; // Default to null character code
@@ -52,6 +57,10 @@ class Glyph {
   public:
     /**
      * @brief Default constructor.
+     * @param name The name of the glyph (e.g., character code).
+     * @param fontPath The path to the font file containing this glyph.
+     * @param size The size of the glyph in pixels.
+     * @param color The color of the glyph.
      */
     Glyph(const std::string &name = "", const std::string &fontPath = "",
           const utility::math::Vector2F &size = utility::math::Vector2F(0.0f),
