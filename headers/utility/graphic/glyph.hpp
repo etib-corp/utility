@@ -51,7 +51,7 @@ class Glyph {
      */
     static std::string getGlyphCode(const std::string &name) {
         // Placeholder for actual glyph code retrieval logic
-        return "U+0000"; // Default to null character code
+        return "U+E8DC"; // Default to thumbs up emoji code point as an example
     }
 
   public:
