@@ -39,21 +39,10 @@ namespace utility::graphic {
 class Glyph {
   private:
     std::string _name;          ///< Name of the glyph (e.g., character code).
-    std::string _code;          ///< Code representing the glyph (e.g., Unicode code point).
+    uint32_t _code;          ///< Code representing the glyph (e.g., Unicode code point).
     std::string _fontPath;      ///< Path to the font file containing this glyph.
-    utility::math::Vector2F _size; ///< Size of the glyph in pixels.
+    float _size; ///< Size of the glyph in pixels.
     graphic::Color32Bit _color;   ///< Color of the glyph.
-
-    /**
-     * @brief Retrieve the glyph code based on its name.
-     * @param name The name of the glyph.
-     * @return std::string The corresponding glyph code.
-     */
-    void setGlyphCode(const std::string &name) {
-        (void)name;
-        // Placeholder for actual glyph code retrieval logic
-        _code = "U+E8DC"; // Default to thumbs up emoji code point as an example
-    }
 
   public:
     /**
@@ -64,8 +53,7 @@ class Glyph {
      * @param color The color of the glyph.
      */
     Glyph(const std::string &name = "", const std::string &fontPath = "",
-          const utility::math::Vector2F &size = utility::math::Vector2F(0.0f),
-          const graphic::Color32Bit &color = graphic::Color32Bit())
+          float size = 0.0f, const graphic::Color32Bit &color = graphic::Color32Bit())
         : _name(name), _fontPath(fontPath), _size(size), _color(color) {
         setGlyphCode(name);
     }
@@ -101,11 +89,21 @@ class Glyph {
      */
     ~Glyph(void) = default;
 
+    /**
+     * @brief Retrieve the glyph code based on its name.
+     * @param name The name of the glyph.
+     */
+    void setGlyphCode(const std::string &name) {
+        (void)name;
+        // Placeholder for actual glyph code retrieval logic
+        _code = 0xE8DC; // Default to thumbs up emoji code point as an example
+    }
+
      /**
      * @brief Retrieve the glyph code based on its name.
-     * @return std::string The corresponding glyph code.
+     * @return uint32_t The corresponding glyph code.
      */
-    const std::string &getGlyphCode() const { return _code; }
+    const uint32_t &getGlyphCode() const { return _code; }
 
     /**
      * @brief Set the Name object
@@ -144,16 +142,16 @@ class Glyph {
      * @param size The size of the glyph in pixels.
      * @return Glyph& A reference to this Glyph object for chaining.
      */
-    Glyph &setSize(const utility::math::Vector2F &size) {
+    Glyph &setSize(float size) {
         _size = size;
         return *this;
     }
 
     /**
      * @brief Get the Size object
-     * @return const utility::math::Vector2F& A reference to the glyph's size.
+     * @return const float& A reference to the glyph's size.
      */
-    const utility::math::Vector2F &getSize(void) const { return _size; }
+    const float &getSize(void) const { return _size; }
 
     /**
     * @brief Set the Color object
