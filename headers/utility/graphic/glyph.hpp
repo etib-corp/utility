@@ -44,6 +44,17 @@ class Glyph {
     utility::math::Vector2F _size; ///< Size of the glyph in pixels.
     graphic::Color32Bit _color;   ///< Color of the glyph.
 
+    /**
+     * @brief Retrieve the glyph code based on its name.
+     * @param name The name of the glyph.
+     * @return std::string The corresponding glyph code.
+     */
+    void setGlyphCode(const std::string &name) {
+        (void)name;
+        // Placeholder for actual glyph code retrieval logic
+        _code = "U+E8DC"; // Default to thumbs up emoji code point as an example
+    }
+
   public:
     /**
      * @brief Default constructor.
@@ -55,8 +66,9 @@ class Glyph {
     Glyph(const std::string &name = "", const std::string &fontPath = "",
           const utility::math::Vector2F &size = utility::math::Vector2F(0.0f),
           const graphic::Color32Bit &color = graphic::Color32Bit())
-        : _name(name), _code(getGlyphCode()), _fontPath(fontPath),
-        _size(size), _color(color) {}
+        : _name(name), _fontPath(fontPath), _size(size), _color(color) {
+        setGlyphCode(name);
+    }
 
     /**
      * @brief Copy constructor.
@@ -93,13 +105,7 @@ class Glyph {
      * @brief Retrieve the glyph code based on its name.
      * @return std::string The corresponding glyph code.
      */
-    std::string getGlyphCode() {
-        // Placeholder for actual glyph code retrieval logic
-        if (_code == "") {
-            _code = "U+E8DC"; // Default to thumbs up emoji code point as an example
-        }
-        return _code;
-    }
+    const std::string &getGlyphCode() const { return _code; }
 
     /**
      * @brief Set the Name object
