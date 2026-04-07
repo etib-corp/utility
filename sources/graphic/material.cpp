@@ -27,13 +27,21 @@ namespace utility::graphic {
                 throw std::runtime_error("Failed to load texture: " + asset.path());
             }
 
-            _textures[asset.path()] = new Texture(texWidth, texHeight);
+            _textures[asset.path()] = std::make_shared<Texture>(texWidth, texHeight);
             std::copy(pixels, pixels + (texWidth * texHeight * 4), _textures[asset.path()]->_pixels.data());
         }
     }
 
-    const std::vector<Texture *> &Material::getTextures() const {
-        static std::vector<Texture *> textures;
+    std::shared_ptr<Texture> Material::getTexture(const std::string &name) const {
+        auto it = _textures.find(name);
+        if (it != _textures.end()) {
+            return it->second;
+        }
+        return nullptr;
+    }
+
+    const std::vector<std::shared_ptr<Texture>> &Material::getTextures() const {
+        static std::vector<std::shared_ptr<Texture>> textures;
         textures.clear();
         for (const auto &[_, texture] : _textures) {
             textures.push_back(texture);

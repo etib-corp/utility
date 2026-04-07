@@ -43,13 +43,23 @@ namespace utility::graphic {
         ~Material() = default;
 
         /**
+         * @brief Retrieves a texture by its name.
+         *
+         * This method returns a shared pointer to the Texture object associated with the specified name. If the texture does not exist in the material, it returns a nullptr.
+         *
+         * @param name The name of the texture to retrieve.
+         * @return A shared pointer to the Texture object associated with the specified name, or nullptr if the texture does not exist.
+         */
+        std::shared_ptr<Texture> getTexture(const std::string &name) const;
+
+        /**
          * @brief Retrieves the textures associated with this material.
          *
          * This method returns a vector of pointers to Texture objects that are associated with this material. The textures are loaded from the FileAsset objects provided during construction and can be used for rendering operations that require these textures.
          *
          * @return A const reference to a vector of pointers to Texture objects associated with this material.
          */
-        const std::vector<Texture *> &getTextures() const;
+        const std::vector<std::shared_ptr<Texture>> &getTextures() const;
 
         protected:
         /**
@@ -60,6 +70,6 @@ namespace utility::graphic {
         /**
          * @brief A map of texture names to Texture objects associated with this material.
          */
-        std::map<std::string, Texture *> _textures;
+        std::map<std::string, std::shared_ptr<Texture>> _textures;
     };
 }
