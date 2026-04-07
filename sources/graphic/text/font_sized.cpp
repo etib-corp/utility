@@ -20,7 +20,7 @@ namespace utility::graphic {
         FT_Set_Pixel_Sizes(_correspondingFace, 0, _fontSize);
     }
 
-    FontSized::Glyph FontSized::generateGlyph(uint32_t codePoint)
+    Glyph FontSized::generateGlyph(uint32_t codePoint)
     {
         auto it = _generatedGlyphs.find(codePoint);
         if (it != _generatedGlyphs.end())
@@ -81,7 +81,7 @@ namespace utility::graphic {
         return _generatedGlyphs[codePoint];
     }
 
-    std::vector<FontSized::Glyph> FontSized::generateGlyphs(const codePointString &codePoints)
+    std::vector<Glyph> FontSized::generateGlyphs(const codePointString &codePoints)
     {
         std::vector<Glyph> glyphs;
         for (auto codePoint : codePoints) {
