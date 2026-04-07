@@ -48,14 +48,15 @@ class Glyph {
     /**
      * @brief Default constructor.
      * @param name The name of the glyph (e.g., character code).
+     * @param code The code representing the glyph (e.g., Unicode code point).
      * @param fontPath The path to the font file containing this glyph.
      * @param size The size of the glyph in pixels.
      * @param color The color of the glyph.
      */
-    Glyph(const std::string &name = "", const std::string &fontPath = "",
-          float size = 0.0f, const graphic::Color32Bit &color = graphic::Color32Bit())
-        : _name(name), _fontPath(fontPath), _size(size), _color(color) {
-        setGlyphCode(name);
+    Glyph(const std::string &name = "", const uint32_t &code = '?',
+          const std::string &fontPath = "", float size = 0.0f,
+          const graphic::Color32Bit &color = graphic::Color32Bit())
+        : _name(name), _code(code), _fontPath(fontPath), _size(size), _color(color) {
     }
 
     /**
@@ -91,12 +92,13 @@ class Glyph {
 
     /**
      * @brief Retrieve the glyph code based on its name.
-     * @param name The name of the glyph.
+     * @param code The code representing the glyph (e.g., Unicode code point).
+     * @return Glyph& A reference to this Glyph object for chaining.
      */
-    void setGlyphCode(const std::string &name) {
-        (void)name;
+    Glyph &setGlyphCode(const uint32_t &code) {
         // Placeholder for actual glyph code retrieval logic
-        _code = 0xE8DC; // Default to thumbs up emoji code point as an example
+        _code = code;
+        return *this;
     }
 
      /**
