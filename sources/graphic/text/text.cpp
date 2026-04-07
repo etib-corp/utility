@@ -55,7 +55,6 @@ Text &Text::setFontSize(uint32_t fontSize)
 {
 	_fontSize = fontSize;
 
-	_font->getSize(static_cast<uint32_t>(fontSize));
 	updateMesh();
 
 	return *this;
@@ -78,18 +77,14 @@ Text &Text::setColor(const utility::graphic::Color<std::uint8_t> &color)
 
 void Text::updateMesh(void)
 {
-	auto fontSized = _font->getSize(static_cast<uint32_t>(_fontSize));
-	auto faces = _font->getFaces();
-
 	float x = 0;
 	double y = 0;
 
 	uint32_t indexOffset = 0;
 	std::vector<uint32_t> codepoints = utf8ToCodepoints(_content);
+	std::vector<Glyph> glyphs = _font->processCodePoints(_fontSize, codepoints);
 
-	for (uint32_t cp : codepoints) {
-		FontSized::Glyph& g = fontSized.getGlyph(cp, faces);
-
+	for (const auto &g : glyphs) {
 		double xpos = x + g.bearing[VEC_X];
 		double ypos = y - (g.size[VEC_Y] - g.bearing[VEC_Y]);
 

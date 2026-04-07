@@ -45,6 +45,9 @@
 
 #include <utility/asset_manager/file_asset.hpp>
 
+// Types
+#include <utility/graphic/text/code_point.hpp>
+
 #define DEFAULT_FONT_COLOR utility::graphic::Color<std::uint8_t>(255, 255, 255, 255)
 
 namespace utility::graphic {
@@ -68,7 +71,7 @@ private:
 	utility::graphic::Mesh _mesh; 					  ///< Mesh for rendering the text
 
 	void updateMesh(void); 							  ///< Update the mesh based on current text properties
-	std::vector<uint32_t> utf8ToCodepoints(const std::string& str); //< Convert UTF-8 string to Unicode code points
+	codePointString utf8ToCodepoints(const std::string& str); //< Convert UTF-8 string to Unicode code points
 
 public:
   /**
@@ -134,31 +137,6 @@ public:
 	 */
 	Text &setFontSize(uint32_t fontSize);
 
-	/**
-	 * @brief Get the text position.
-	 * @return Const reference to the text position.
-	 */
-	const utility::math::Vector<std::float_t, 3> &getPosition(void) const;
-	/**
-	 * @brief Set the text position.
-	 * @param position Text world position.
-	 * @return Reference to this Text instance for chaining.
-	 */
-	Text &setPosition(const utility::math::Vector<std::float_t, 3> &position);
-
-	/**
-	 * @brief Get the text rotation.
-	 * @return Const reference to the text rotation.
-	 */
-	const utility::math::Vector<std::float_t, 3> &getRotation(void) const;
-
-	/**
-	 * @brief Set the text rotation.
-	 * @param rotation Text euler rotation.
-	 * @return Reference to this Text instance for chaining.
-	 */
-	Text &setRotation(const utility::math::Vector<std::float_t, 3> &rotation);
-
   /**
    * @brief Set the text pose
    * @param pose Text world pose (position and orientation).
@@ -190,18 +168,6 @@ public:
    * @return Const reference to the text color.
    */
   const graphic::Color32Bit &getColor(void) const { return _color; }
-	/**
-	 * @brief Get the text scale.
-	 * @return Const reference to the text scale.
-	 */
-	const utility::math::Vector<std::float_t, 3> &getScale(void) const;
-
-	/**
-	 * @brief Set the text scale.
-	 * @param scale Text local scale.
-	 * @return Reference to this Text instance for chaining.
-	 */
-	Text &setScale(const utility::math::Vector<std::float_t, 3> &scale);
 
 };
 
