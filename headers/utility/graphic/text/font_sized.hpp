@@ -7,29 +7,21 @@
 
 #pragma once
 
-#include <utility/graphic/texture/texture.hpp>
-#include <utility/math/vector.hpp>
-
 #include <map>
+
+#include <utility/graphic/texture/texture.hpp>
 
 // FreeType
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-// Types
+// Types & structs
 #include <utility/graphic/text/code_point.hpp>
+#include <utility/graphic/text/glyph.hpp>
 
 namespace utility::graphic {
     class FontSized {
     public:
-        struct Glyph {
-            math::Vector<float, 2> size;
-            math::Vector<float, 2> bearing;
-            uint32_t advance;
-            math::Vector2F uvMin;
-            math::Vector2F uvMax;
-        };
-
         FontSized(uint32_t fontSize, FT_Face face);
 
         ~FontSized() = default;
