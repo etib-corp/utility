@@ -16,25 +16,22 @@ namespace utility::graphic {
         _penY = 0;
         _rowHeight = 0;
 
-        _atlas = new Texture(_atlasWidth, _atlasHeight);
+        _generatedAtlas = std::make_shared<Texture>(_atlasWidth, _atlasHeight);
         FT_Set_Pixel_Sizes(_correspondingFace, 0, _fontSize);
     }
 
-    FontSized::Glyph& FontSized::getGlyph(uint32_t cp, const std::vector<FT_Face>& faces)
+    FontSized::Glyph FontSized::generateGlyph(uint32_t codePoint)
     {
-        auto it = _glyphs.find(cp);
-        if (it != _glyphs.end())
+        auto it = _generatedGlyphs.find(codePoint);
+        if (it != _generatedGlyphs.end())
             return it->second;
 
         FT_GlyphSlot g = nullptr;
 
-        for (auto face : faces) {
-            FT_Set_Pixel_Sizes(face, 0, _fontSize);
+        FT_Set_Pixel_Sizes(_correspondingFace, 0, _fontSize);
 
-            if (FT_Load_Char(face, cp, FT_LOAD_RENDER) == 0) {
-                g = face->glyph;
-                break;
-            }
+        if (FT_Load_Char(_correspondingFace, codePoint, FT_LOAD_RENDER) == 0) {
+            g = _correspondingFace->glyph;
         }
 
         if (!g) {
@@ -56,15 +53,15 @@ namespace utility::graphic {
                 int atlasIndex =
                     (_penY + y) * _atlasWidth + (_penX + x);
 
-                _atlas->_pixels[atlasIndex] =
+                _generatedAtlas->_pixels[atlasIndex] =
                     g->bitmap.buffer[y * g->bitmap.pitch + x];
             }
         }
 
         Glyph glyph;
-        glyph.size = {g->bitmap.width, g->bitmap.rows};
-        glyph.bearing = {g->bitmap_left, g->bitmap_top};
-        glyph.advance = g->advance.x;
+        glyph.size = {(float)g->bitmap.width, (float)g->bitmap.rows};
+        glyph.bearing = {(float)g->bitmap_left, (float)g->bitmap_top};
+        glyph.advance = (float)g->advance.x;
 
         glyph.uvMin = {
             (float)_penX / _atlasWidth,
@@ -76,16 +73,35 @@ namespace utility::graphic {
             (float)(_penY + g->bitmap.rows) / _atlasHeight
         };
 
-        _glyphs[cp] = glyph;
+        _generatedGlyphs[codePoint] = glyph;
 
         _penX += g->bitmap.width;
         _rowHeight = std::max(_rowHeight, (int)g->bitmap.rows);
 
-        return _glyphs[cp];
+        return _generatedGlyphs[codePoint];
     }
 
-    Texture &FontSized::getAtlas() const
+    std::vector<FontSized::Glyph> FontSized::generateGlyphs(const codePointString &codePoints)
     {
-        return *_atlas;
+        std::vector<Glyph> glyphs;
+        for (auto codePoint : codePoints) {
+            glyphs.push_back(generateGlyph(codePoint));
+        }
+        return glyphs;
+    }
+
+    std::shared_ptr<Texture> FontSized::getAtlas(bool shouldRegenerate)
+    {
+        if (shouldRegenerate || !_generatedAtlas) {
+            if (!_generatedAtlas)
+                _generatedAtlas = std::make_shared<Texture>(_atlasWidth, _atlasHeight);
+            generateAtlas();
+        }
+        return _generatedAtlas;
+    }
+
+    void FontSized::generateAtlas()
+    {
+        std::copy(_generatedAtlas->_pixels.begin(), _generatedAtlas->_pixels.end(), _generatedAtlas->_pixels.begin());
     }
 }
