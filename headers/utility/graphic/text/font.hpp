@@ -42,16 +42,7 @@ namespace utility::graphic {
          */
         ~Font();
 
-        /**
-         * @brief Retrieves a FontSized object for the specified font size.
-         *
-         * If a FontSized object for the requested size does not already exist, it will be created and stored for future use.
-         *
-         * @param fontSize The desired font size in points.
-         *
-         * @return A reference to the FontSized object corresponding to the requested font size.
-         */
-        FontSized &getSize(uint32_t fontSize);
+        std::vector<Glyph> processCodePoints(uint32_t fontSize, const codePointString &codePoints);
 
         /**
          * @brief Retrieves a vector of the font sizes that have been processed and are available for rendering.
@@ -70,15 +61,6 @@ namespace utility::graphic {
          * @return A const reference to a vector of strings containing the paths of the loaded font assets.
          */
         const std::vector<std::string> &getFontPaths(void) const;
-
-        /**
-         * @brief Retrieves the FreeType face objects for the loaded fonts.
-         *
-         * This method returns a vector of FT_Face objects corresponding to the loaded font faces. These objects can be used to access glyph information and other font properties as needed.
-         *
-         * @return A const vector of FT_Face objects for the loaded font faces.
-         */
-        const std::vector<FT_Face> getFaces(void) const;
 
         /**
          * @brief Checks if the font has been successfully loaded.
@@ -101,6 +83,8 @@ namespace utility::graphic {
         bool hasGlyph(char32_t codepoint) const;
 
         protected:
+        std::string _getFaceNameForGlyph(uint32_t codePoint) const;
+
         /**
          * @brief FreeType library instance used for managing font resources.
          *
@@ -124,6 +108,6 @@ namespace utility::graphic {
          *
          * FontSized objects are created on demand when the getSize method is called, and they are stored in this map for future retrieval. The Font class is responsible for managing the lifetime of these FontSized objects to ensure proper resource management.
          */
-        std::map<uint32_t, FontSized *> _sizes;
+        std::map<uint32_t, std::pair<std::string, std::shared_ptr<FontSized>>> _sizes;
     };
 }

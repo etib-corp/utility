@@ -42,12 +42,29 @@ namespace utility::graphic {
     // Public Methods //
     ////////////////////
 
-    FontSized &Font::getSize(uint32_t fontSize)
+    std::vector<Glyph> Font::processCodePoints(uint32_t fontSize, const codePointString &codePoints)
     {
-        if (_sizes.find(fontSize) == _sizes.end()) {
-            _sizes[fontSize] = new FontSized(fontSize, _faces.begin()->second);
+        std::vector<Glyph> glyphs;
+
+        for (const auto &codePoint : codePoints) {
+            std::string faceName = _getFaceNameForGlyph(codePoint);
+
+            if (faceName.empty()) {
+                continue;
+            }
+
+            auto fontSizedIt = _sizes.find(fontSize);
+            std::shared_ptr<FontSized> fontSized;
+
+            if (fontSizedIt == _sizes.end()) {
+                fontSized = std::make_shared<FontSized>(fontSize, _faces.at(faceName));
+                _sizes[fontSize] = {faceName, fontSized};
+            } else {
+                fontSized = fontSizedIt->second.second;
+            }
+            glyphs.push_back(fontSized->generateGlyph(codePoint));
         }
-        return *_sizes[fontSize];
+        return glyphs;
     }
 
     std::vector<uint32_t> Font::getProcessedSizes(void) const
@@ -67,16 +84,6 @@ namespace utility::graphic {
             fontPaths->push_back(fontPath);
         }
         return *fontPaths;
-    }
-
-    const std::vector<FT_Face> Font::getFaces(void) const
-    {
-        std::vector<FT_Face> *faces = new std::vector<FT_Face>();
-
-        for (const auto &[_, face] : _faces) {
-            faces->push_back(face);
-        }
-        return *faces;
     }
 
     bool Font::isLoaded(void) const
@@ -103,4 +110,19 @@ namespace utility::graphic {
         }
         return false;
     }
+
+    ///////////////////////
+    // Protected Methods //
+    ///////////////////////
+
+    std::string Font::_getFaceNameForGlyph(uint32_t codePoint) const
+    {
+        for (const auto &[faceName, face] : _faces) {
+            if (FT_Get_Char_Index(face, codePoint) != 0) {
+                return faceName;
+            }
+        }
+        return "";
+    }
+
 } // namespace utility::graphic
