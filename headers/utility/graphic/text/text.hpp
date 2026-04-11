@@ -44,6 +44,7 @@
 #include <utility/math/vector.hpp>
 
 #include <utility/asset_manager/file_asset.hpp>
+#include <utility/ressource_manager.hpp>
 
 // Types
 #include <utility/graphic/text/code_point.hpp>
@@ -68,7 +69,7 @@ private:
 
   protected:
 	std::shared_ptr<Font> _font; 					  ///< Shared pointer to the font used for rendering
-	utility::graphic::Mesh _mesh; 					  ///< Mesh for rendering the text
+	std::shared_ptr<Mesh> _mesh; 					  ///< Mesh for rendering the text
 
 	void updateMesh(void); 							  ///< Update the mesh based on current text properties
 	codePointString utf8ToCodepoints(const std::string& str); //< Convert UTF-8 string to Unicode code points
@@ -82,8 +83,7 @@ public:
    * @param pose The pose (position and orientation) of the text.
    * @param color The color of the text.
    */
-  Text(const std::string &content, const std::vector<FileAsset> &fontAssets,
-           uint32_t fontSize);
+  Text(RessourceManager &ressourceManager, AssetManager &assetManager, const std::string &content, uint32_t fontSize, const std::string &font = "assets/fonts/Roboto.ttf");
 
   /**
    * @brief Copy constructor.
@@ -96,6 +96,28 @@ public:
    * @param other The Text object to move from.
    */
   Text(Text &&other) noexcept = default;
+
+  /**
+   * @brief Get the mesh for rendering the text.
+   *
+   * This method returns a shared pointer to the Mesh object that represents the geometry of the text for rendering.
+   * The mesh is generated based on the current text content, font, and font size,
+   * and it is updated whenever the text properties change (e.g., when the content or font size is modified).
+   *
+   * @return A shared pointer to the Mesh object for rendering the text.
+   */
+  std::shared_ptr<Mesh> getMesh() const;
+
+  /**
+   * @brief Get the font family (path) used for rendering the text.
+   *
+   * This method returns the path to the font file that is currently being used to render the text.
+   * The font family is determined by the font file specified during the construction of the Text object
+   * or when the font is changed. It can be used to identify the font being used for rendering or to retrieve additional font information if needed.
+   *
+   * @return A const reference to the string containing the path to the font file used for rendering the text.
+   */
+  const std::string &getFontFamily(void) const;
 
   /**
    * @brief Copy assignment operator.
@@ -142,32 +164,26 @@ public:
    * @param pose Text world pose (position and orientation).
    * @return Reference to this Text instance for chaining.
    */
-  Text &setPose(const PoseF &pose) {
-    _pose = pose;
-    return *this;
-  }
+  Text &setPose(const PoseF &pose);
 
   /**
    * @brief Get the text pose
    * @return Const reference to the text pose (position and orientation).
    */
-  const PoseF &getPose(void) const { return _pose; }
+  const PoseF &getPose(void) const;
 
   /**
    * @brief Set the text color.
    * @param color Text RGBA color.
    * @return Reference to this Text instance for chaining.
    */
-  Text &setColor(const graphic::Color32Bit &color) {
-    _color = color;
-    return *this;
-  }
+  Text &setColor(const graphic::Color32Bit &color);
 
   /**
    * @brief Get the text color.
    * @return Const reference to the text color.
    */
-  const graphic::Color32Bit &getColor(void) const { return _color; }
+  const graphic::Color32Bit &getColor(void) const;
 
 };
 

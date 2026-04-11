@@ -38,23 +38,26 @@ namespace utility::graphic {
             throw std::runtime_error("Glyph not found");
         }
 
-        if (_penX + g->bitmap.width >= _atlasWidth) {
+        if (_penX + static_cast<int>(g->bitmap.width) >= _atlasWidth) {
             _penX = 0;
             _penY += _rowHeight;
             _rowHeight = 0;
         }
 
-        if (_penY + g->bitmap.rows >= _atlasHeight) {
+        if (_penY + static_cast<int>(g->bitmap.rows) >= _atlasHeight) {
             throw std::runtime_error("Atlas full");
         }
 
-        for (int y = 0; y < g->bitmap.rows; y++) {
-            for (int x = 0; x < g->bitmap.width; x++) {
-                int atlasIndex =
-                    (_penY + y) * _atlasWidth + (_penX + x);
+        for (unsigned int y = 0; y < g->bitmap.rows; ++y) {
+            for (unsigned int x = 0; x < g->bitmap.width; ++x) {
+                int pixelIndex = (_penY + y) * _atlasWidth + (_penX + x);
+                int atlasIndex = pixelIndex * 4;
+                uint8_t value = static_cast<uint8_t>(g->bitmap.buffer[y * g->bitmap.pitch + x]);
 
-                _generatedAtlas->_pixels[atlasIndex] =
-                    g->bitmap.buffer[y * g->bitmap.pitch + x];
+                _generatedAtlas->_pixels[atlasIndex + 0] = 255;
+                _generatedAtlas->_pixels[atlasIndex + 1] = 255;
+                _generatedAtlas->_pixels[atlasIndex + 2] = 255;
+                _generatedAtlas->_pixels[atlasIndex + 3] = value;
             }
         }
 

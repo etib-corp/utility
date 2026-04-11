@@ -26,7 +26,7 @@ namespace utility::graphic {
          *
          * This constructor initializes the TextMaterial with a reference to a Font object. The TextMaterial will use this Font to manage its textures and ensure that they are synchronized with the font's glyph atlases.
          */
-        TextMaterial(const std::shared_ptr<Font> &syncedFont);
+        TextMaterial();
 
         /**
          * @brief Destructs the TextMaterial object, releasing any allocated resources.
@@ -34,20 +34,13 @@ namespace utility::graphic {
         ~TextMaterial() = default;
 
         /**
-         * @brief Synchronizes the TextMaterial's textures with the associated Font object.
+         * @brief Synchronizes the TextMaterial with the provided Font object.
          *
-         * This method updates the TextMaterial's textures based on the font sizes and paths available in the associated Font object. It ensures that the correct textures are associated with the appropriate uniform names for rendering text using the shader.
+         * This method updates the TextMaterial's textures based on the processed sizes and paths of the provided Font object. It ensures that the correct textures are available for rendering text with the specified font, allowing for efficient rendering of text using the associated shader.
          *
-         * If the associated Font object is not set or does not contain any processed sizes, this method will not perform any updates.
+         * @param font The Font object to synchronize with this TextMaterial.
          */
-        void syncFont();
+        void addAtlas(const std::string &name, std::shared_ptr<Texture> atlas);
 
-        private:
-        /**
-         * @brief A shared pointer to the Font object that this TextMaterial is synchronized with.
-         *
-         * This member variable holds a reference to the Font object that the TextMaterial uses to manage its textures. The TextMaterial will synchronize its textures with the glyph atlases of this Font, allowing for efficient rendering of text using the associated shader.
-         */
-        std::shared_ptr<Font> _syncedFont;
     };
 } // namespace utility::graphic

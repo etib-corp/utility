@@ -7,28 +7,20 @@
 
 #include <utility/graphic/material.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include <utility/ressource_manager.hpp>
 
 namespace utility::graphic {
-    Material::Material(const std::string &shaderName, const std::vector<FileAsset> &textureAssets)
-        : _shaderName(shaderName) {
-        for (const auto &asset : textureAssets) {
-            int texWidth	= 0;
-            int texHeight	= 0;
-            int texChannels = 0;
+    Material::Material(RessourceManager &ressourceManager, const std::string &shaderName, const std::vector<FileAsset> &textureAssets)
+        : _shaderName(shaderName)
+    {
+        for (const auto &textureAsset : textureAssets) {
+            auto texture = ressourceManager.loadTextureFromAsset(std::make_shared<FileAsset>(textureAsset));
 
-            stbi_uc *pixels			= stbi_load_from_memory(
-                reinterpret_cast<const stbi_uc *>(asset.content().c_str()),
-                asset.size(), &texWidth, &texHeight, &texChannels,
-                STBI_rgb_alpha);
-
-            if (!pixels) {
-                throw std::runtime_error("Failed to load texture: " + asset.path());
+            if (!texture) {
+                throw std::runtime_error("Failed to load texture asset: " + textureAsset.path());
             }
 
-            _textures[asset.path()] = std::make_shared<Texture>(texWidth, texHeight);
-            std::copy(pixels, pixels + (texWidth * texHeight * 4), _textures[asset.path()]->_pixels.data());
+            _textures[textureAsset.path()] = texture;
         }
     }
 

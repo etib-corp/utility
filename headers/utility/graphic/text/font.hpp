@@ -10,6 +10,8 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <functional>
+#include <iostream>
 
 #include <utility/asset_manager/file_asset.hpp>
 
@@ -45,22 +47,13 @@ namespace utility::graphic {
         std::vector<Glyph> processCodePoints(uint32_t fontSize, const codePointString &codePoints);
 
         /**
-         * @brief Retrieves a vector of the font sizes that have been processed and are available for rendering.
-         *
-         * This method returns a vector of uint32_t values representing the font sizes that have been processed and are ready for use. This can be useful for determining which font sizes are available for rendering text.
-         *
-         * @return A vector of uint32_t values representing the processed font sizes available for rendering.
-         */
-        std::vector<uint32_t> getProcessedSizes(void) const;
-
-        /**
          * @brief Retrieves the paths of the loaded font assets.
          *
          * This method returns a vector of strings containing the paths of the font assets that were loaded into this Font object. The paths are extracted from the FileAsset objects used to initialize the Font.
          *
          * @return A const reference to a vector of strings containing the paths of the loaded font assets.
          */
-        const std::vector<std::string> &getFontPaths(void) const;
+        std::vector<std::string> getFontPaths(void) const;
 
         /**
          * @brief Checks if the font has been successfully loaded.
@@ -81,6 +74,8 @@ namespace utility::graphic {
          * @return true if the font contains a glyph for the specified code point, false otherwise.
          */
         bool hasGlyph(char32_t codepoint) const;
+
+        std::function<void (std::string, std::shared_ptr<Texture>)> onNewTextureCreated;
 
         protected:
         std::string _getFaceNameForGlyph(uint32_t codePoint) const;

@@ -15,7 +15,12 @@
 
 #include <utility/graphic/texture.hpp>
 
+namespace utility {
+    class RessourceManager;
+}
+
 namespace utility::graphic {
+
     /**
      * @brief The Material class represents a material that can be used for rendering objects in a graphics application.
      *
@@ -26,21 +31,29 @@ namespace utility::graphic {
     class Material {
         public:
         /**
+         * @brief Constructs an empty Material.
+         *
+         * This constructor initializes a Material object without any shader or textures. It can be used when the shader and textures will be set up later, allowing for more flexible material creation and management.
+         */
+        Material() = default;
+
+        /**
          * @brief Constructs a Material object with the specified shader name and texture assets.
          *
          * This constructor initializes the Material with a shader name and loads the textures from the provided FileAsset objects. The textures are loaded using the stb_image library, and the pixel data is stored in Texture objects for later use in rendering operations.
          *
+         * @param ressourceManager A reference to the RessourceManager instance.
          * @param shaderName The name of the shader associated with this material.
          * @param textureAssets A vector of FileAsset objects representing the textures to be loaded for this material.
          *
          * @throws std::runtime_error if any of the textures fail to load from the provided FileAsset objects.
          */
-        Material(const std::string &shaderName, const std::vector<FileAsset> &textureAssets);
+        Material(RessourceManager &ressourceManager, const std::string &shaderName, const std::vector<FileAsset> &textureAssets);
 
         /**
          * @brief Destructs the Material object, releasing any allocated resources.
          */
-        ~Material() = default;
+        virtual ~Material() = default;
 
         /**
          * @brief Retrieves a texture by its name.
