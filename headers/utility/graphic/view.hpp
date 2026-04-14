@@ -41,8 +41,8 @@ namespace utility::graphic {
  */
 template <typename ViewComponentType>
 concept CanBeViewComponent = CanBeFieldOfViewComponent<ViewComponentType> &&
-                               CanBePoseComponent<ViewComponentType> &&
-                               CanBeRayComponent<ViewComponentType>;
+                             CanBePoseComponent<ViewComponentType> &&
+                             CanBeRayComponent<ViewComponentType>;
 
 /**
  * @brief 3D perspective view with floating-point components.
@@ -101,7 +101,7 @@ protected:
         std::numbers::pi_v<ViewComponentType>;
 
     return FieldOfView<ViewComponentType>(halfVertical, halfVertical,
-                                            halfHorizontal, halfHorizontal);
+                                          halfHorizontal, halfHorizontal);
   }
 
   /**
@@ -131,12 +131,12 @@ protected:
    * @return Normalized quaternion components in xyzw order.
    */
   math::Vector<ViewComponentType, 4> normalizedRotationComponents() const {
-    const auto normalized = _pose.getOrientation().normalizedQuaternion();
-    return math::Vector<ViewComponentType, 4>(
-        static_cast<ViewComponentType>(normalized.getX()),
-        static_cast<ViewComponentType>(normalized.getY()),
-        static_cast<ViewComponentType>(normalized.getZ()),
-        static_cast<ViewComponentType>(normalized.getW()));
+    const auto normalized = _pose.getOrientation().normalized();
+    return math::Vector<ViewComponentType, 4>{
+      static_cast<ViewComponentType>(normalized.x),
+      static_cast<ViewComponentType>(normalized.y),
+      static_cast<ViewComponentType>(normalized.z),
+      static_cast<ViewComponentType>(normalized.w)};
   }
 
   /**
@@ -221,9 +221,8 @@ protected:
       qz = ViewComponentType{0.25} * s;
     }
 
-    _pose.getOrientation(Orientation(
-        static_cast<std::float_t>(qx), static_cast<std::float_t>(qy),
-        static_cast<std::float_t>(qz), static_cast<std::float_t>(qw)));
+    _pose.setOrientation(
+      Orientation<ViewComponentType>(qx, qy, qz, qw).normalized());
   }
 
 public:
@@ -241,7 +240,7 @@ public:
    * invalid.
    */
   View(Pose<ViewComponentType> pose, ViewComponentType verticalFovDegrees,
-         ViewComponentType aspectRatio)
+       ViewComponentType aspectRatio)
       : _pose(std::move(pose)), _fieldOfView() {
     setPerspective(verticalFovDegrees, aspectRatio);
   }
@@ -303,10 +302,9 @@ public:
    * @return Forward direction vector.
    */
   math::Vector<ViewComponentType, 3> getForward(void) const {
-    return math::normalize(rotateVectorByRotation(
-        math::Vector<ViewComponentType, 3>(ViewComponentType{},
-                                             ViewComponentType{},
-                                             ViewComponentType{-1})));
+    return math::normalize(
+        rotateVectorByRotation(math::Vector<ViewComponentType, 3>(
+            ViewComponentType{}, ViewComponentType{}, ViewComponentType{-1})));
   }
 
   /**
@@ -323,10 +321,9 @@ public:
    * @return Up direction vector.
    */
   math::Vector<ViewComponentType, 3> getUp(void) const {
-    return math::normalize(rotateVectorByRotation(
-        math::Vector<ViewComponentType, 3>(ViewComponentType{},
-                                             ViewComponentType{1},
-                                             ViewComponentType{})));
+    return math::normalize(
+        rotateVectorByRotation(math::Vector<ViewComponentType, 3>(
+            ViewComponentType{}, ViewComponentType{1}, ViewComponentType{})));
   }
 
   /**
@@ -346,9 +343,8 @@ public:
    * @return Aspect ratio.
    */
   ViewComponentType getAspectRatio(void) const {
-    const ViewComponentType vertical =
-        std::tan(_fieldOfView.getUpRadians()) +
-        std::tan(_fieldOfView.getDownRadians());
+    const ViewComponentType vertical = std::tan(_fieldOfView.getUpRadians()) +
+                                       std::tan(_fieldOfView.getDownRadians());
     if (vertical == ViewComponentType{}) {
       return ViewComponentType{};
     }
@@ -365,8 +361,7 @@ public:
   void setFieldOfView(const FieldOfView<ViewComponentType> &fieldOfView) {
     const ViewComponentType vertical =
         fieldOfView.getUpDegrees() + fieldOfView.getDownDegrees();
-    if (vertical <= ViewComponentType{} ||
-        vertical >= ViewComponentType{180}) {
+    if (vertical <= ViewComponentType{} || vertical >= ViewComponentType{180}) {
       throw std::invalid_argument(
           "View vertical FOV must be in range (0, 180)");
     }
@@ -386,10 +381,9 @@ public:
    * @return Normalized right direction vector.
    */
   math::Vector<ViewComponentType, 3> right(void) const {
-    return math::normalize(rotateVectorByRotation(
-        math::Vector<ViewComponentType, 3>(ViewComponentType{1},
-                                             ViewComponentType{},
-                                             ViewComponentType{})));
+    return math::normalize(
+        rotateVectorByRotation(math::Vector<ViewComponentType, 3>(
+            ViewComponentType{1}, ViewComponentType{}, ViewComponentType{})));
   }
 
   /**
@@ -397,7 +391,7 @@ public:
    * @param offset Translation vector.
    */
   void move(const math::Vector<ViewComponentType, 3> &offset) {
-    _pose.position() += offset;
+    _pose.translate(Position<ViewComponentType>(offset));
   }
 
   /**
@@ -421,12 +415,11 @@ public:
   void lookAt(const math::Vector<ViewComponentType, 3> &target,
               const math::Vector<ViewComponentType, 3> &worldUp =
                   math::Vector<ViewComponentType, 3>(ViewComponentType{},
-                                                       ViewComponentType{1},
-                                                       ViewComponentType{})) {
-    const auto targetVector = target - _pose.position();
+                                                     ViewComponentType{1},
+                                                     ViewComponentType{})) {
+    const auto targetVector = target - _pose.getPosition();
     if (math::dot(targetVector, targetVector) == ViewComponentType{}) {
-      throw std::runtime_error(
-          "View lookAt target must differ from position");
+      throw std::runtime_error("View lookAt target must differ from position");
     }
     const auto newForward = math::normalize(targetVector);
     setOrientationFromBasis(newForward, worldUp);
@@ -439,7 +432,7 @@ public:
    * @return Ray originating at view position toward projected direction.
    */
   Ray<ViewComponentType> viewRay(ViewComponentType ndcX,
-                                   ViewComponentType ndcY) const {
+                                 ViewComponentType ndcY) const {
     const ViewComponentType horizontalOffset =
         ndcX >= ViewComponentType{}
             ? ndcX * std::tan(_fieldOfView.getRightRadians())
@@ -452,9 +445,60 @@ public:
     const auto rayDirection =
         (getForward() + right() * horizontalOffset + getUp() * verticalOffset);
 
-    return Ray<ViewComponentType>(_pose.position(),
-                                    math::normalize(rayDirection));
+    return Ray<ViewComponentType>(_pose.getPosition(),
+                                  math::normalize(rayDirection));
   }
+
+  /**
+   * @brief Get total vertical field-of-view in degrees.
+   * @return Vertical FOV in degrees.
+   */
+  ViewComponentType getVerticalFovDegrees(void) const noexcept {
+    return _fieldOfView.getVerticalDegrees();
+  }
+
+  /**
+   * @brief Get total horizontal field-of-view in degrees.
+   * @return Horizontal FOV in degrees.
+   */
+  ViewComponentType getHorizontalFovDegrees(void) const noexcept {
+    return _fieldOfView.getHorizontalDegrees();
+  }
+
+  /**
+   * @brief Check whether current field-of-view is symmetric.
+   * @param epsilon Absolute tolerance.
+   * @return True when up/down and left/right are approximately equal.
+   */
+  bool isFieldOfViewSymmetric(
+      ViewComponentType epsilon = ViewComponentType{1e-6}) const noexcept {
+    return _fieldOfView.isSymmetric(epsilon);
+  }
+
+  /**
+   * @brief Create a ray going through the center of the viewport.
+   * @return Center view ray.
+   */
+  Ray<ViewComponentType> centerRay(void) const { return viewRay(0, 0); }
+
+  /**
+   * @brief Equality comparison.
+   * @param other View to compare with.
+   * @return True when pose and field-of-view are equal.
+   */
+  bool operator==(const View &other) const noexcept {
+    return _pose == other._pose && _fieldOfView.getUpDegrees() == other._fieldOfView.getUpDegrees() &&
+           _fieldOfView.getDownDegrees() == other._fieldOfView.getDownDegrees() &&
+           _fieldOfView.getLeftDegrees() == other._fieldOfView.getLeftDegrees() &&
+           _fieldOfView.getRightDegrees() == other._fieldOfView.getRightDegrees();
+  }
+
+  /**
+   * @brief Inequality comparison.
+   * @param other View to compare with.
+   * @return True when pose or field-of-view differ.
+   */
+  bool operator!=(const View &other) const noexcept { return !(*this == other); }
 };
 
 /**

@@ -139,6 +139,45 @@ public:
   const Orientation<PoseComponentType> &getOrientation(void) const noexcept {
     return _orientation;
   }
+
+  /**
+   * @brief Translate pose position by an offset.
+   * @param offset Position offset to apply.
+   * @return Reference to this pose for chaining.
+   */
+  Pose &translate(const Position<PoseComponentType> &offset) noexcept {
+    _position.translate(offset);
+    return *this;
+  }
+
+  /**
+   * @brief Return translated copy of this pose.
+   * @param offset Position offset to apply.
+   * @return A translated pose copy.
+   */
+  Pose translated(const Position<PoseComponentType> &offset) const noexcept {
+    Pose result(*this);
+    result.translate(offset);
+    return result;
+  }
+
+  /**
+   * @brief Equality comparison.
+   * @param other Pose to compare with.
+   * @return True when position and orientation are equal.
+   */
+  bool operator==(const Pose &other) const noexcept {
+    return _position == other._position && _orientation == other._orientation;
+  }
+
+  /**
+   * @brief Inequality comparison.
+   * @param other Pose to compare with.
+   * @return True when either position or orientation differs.
+   */
+  bool operator!=(const Pose &other) const noexcept {
+    return !(*this == other);
+  }
 };
 
 /**

@@ -28,6 +28,11 @@
 #include <type_traits>
 #include <utility>
 
+#include <glm/matrix.hpp>
+
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
 #include <glm/mat2x2.hpp>
 #include <glm/mat2x3.hpp>
 #include <glm/mat2x4.hpp>
@@ -38,10 +43,13 @@
 #include <glm/mat4x3.hpp>
 #include <glm/mat4x4.hpp>
 
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
-
 namespace utility::math {
+
+using glm::determinant;
+using glm::inverse;
+using glm::matrixCompMult;
+using glm::outerProduct;
+using glm::transpose;
 
 using glm::frustum;
 using glm::infinitePerspective;
@@ -88,7 +96,7 @@ public:
       : glm::mat<Cols, Rows, MatrixComponentType>(Cols == Rows ? 1 : 0) {}
 
   /**
-   * @brief Construct from initializer list of Cols*Rows values (column-major
+   * @brief Construct from initializer list of Cols*Rows values (row-major
    * order).
    * @param values The initializer list containing matrix components.
    * @throws std::invalid_argument if the list size is not Cols*Rows.
@@ -99,9 +107,9 @@ public:
                                   std::to_string(Cols * Rows) + " components");
     }
     const auto it = values.begin();
-    for (std::size_t col = 0; col < Cols; ++col) {
-      for (std::size_t row = 0; row < Rows; ++row) {
-        (*this)[col][row] = *(it + col * Rows + row);
+    for (std::size_t row = 0; row < Rows; ++row) {
+      for (std::size_t col = 0; col < Cols; ++col) {
+        (*this)[col][row] = *(it + row * Cols + col);
       }
     }
   }
@@ -133,6 +141,11 @@ public:
   Matrix(Matrix &&other) noexcept = default;
 
   /**
+   * @brief Default destructor for Matrix.
+   */
+  ~Matrix(void) = default;
+
+  /**
    * @brief Copy assignment operator.
    * @param other The Matrix object to copy from.
    * @return A reference to this Matrix object.
@@ -147,9 +160,150 @@ public:
   Matrix &operator=(Matrix &&other) noexcept = default;
 
   /**
-   * @brief Default destructor for Matrix.
+   * @brief Matrix addition.
+   * @param rhs The matrix to add.
+   * @return The resulting matrix.
    */
-  ~Matrix(void) = default;
+  Matrix operator+(const Matrix &rhs) const {
+    return Matrix(
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(*this) +
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs));
+  }
+
+  /**
+   * @brief Matrix addition assignment.
+   * @param rhs The matrix to add.
+   * @return A reference to this matrix after addition.
+   */
+  Matrix &operator+=(const Matrix &rhs) {
+    *static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) +=
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Matrix subtraction.
+   * @param rhs The matrix to subtract.
+   * @return The resulting matrix.
+   */
+  Matrix operator-(const Matrix &rhs) const {
+    return Matrix(
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(*this) -
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs));
+  }
+
+  /**
+   * @brief Matrix subtraction assignment.
+   * @param rhs The matrix to subtract.
+   * @return A reference to this matrix after subtraction.
+   */
+  Matrix &operator-=(const Matrix &rhs) {
+    *static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) -=
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Scalar multiplication.
+   * @param scalar The scalar value to multiply with.
+   * @return The resulting matrix.
+   */
+  Matrix operator*(MatrixComponentType scalar) const {
+    return Matrix(
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(*this) *
+        scalar);
+  }
+
+  /**
+   * @brief Scalar multiplication assignment.
+   * @param scalar The scalar value to multiply with.
+   * @return A reference to this matrix after multiplication.
+   */
+  Matrix &operator*=(MatrixComponentType scalar) {
+    *static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) *= scalar;
+    return *this;
+  }
+
+  /**
+   * @brief Scalar division.
+   * @param scalar The scalar value to divide by.
+   * @return The resulting matrix.
+   */
+  Matrix operator/(MatrixComponentType scalar) const {
+    return Matrix(
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(*this) /
+        scalar);
+  }
+
+  /**
+   * @brief Scalar division assignment.
+   * @param scalar The scalar value to divide by.
+   * @return A reference to this matrix after division.
+   */
+  Matrix &operator/=(MatrixComponentType scalar) {
+    *static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) /= scalar;
+    return *this;
+  }
+
+  /**
+   * @brief Matrix multiplication.
+   * @param rhs The matrix to multiply with.
+   * @return The resulting matrix.
+   */
+  Matrix operator*(const Matrix &rhs) const {
+    return Matrix(
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(*this) *
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs));
+  }
+
+  /**
+   * @brief Matrix multiplication assignment.
+   * @param rhs The matrix to multiply with.
+   * @return A reference to this matrix after multiplication.
+   */
+  Matrix &operator*=(const Matrix &rhs) {
+    *static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) =
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(*this) *
+        static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Equality comparison.
+   * @param rhs The matrix to compare with.
+   * @return True if the matrices are equal, false otherwise.
+   */
+  bool operator==(const Matrix &rhs) const {
+    return static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
+               *this) ==
+           static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs);
+  }
+
+  /**
+   * @brief Inequality comparison.
+   * @param rhs The matrix to compare with.
+   * @return True if the matrices are not equal, false otherwise.
+   */
+  bool operator!=(const Matrix &rhs) const { return !(*this == rhs); }
+
+  /**
+   * @brief Unary negation.
+   * @return The negated matrix.
+   */
+  Matrix operator-(void) const {
+    return Matrix(
+        -static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(*this));
+  }
+
+  /**
+   * @brief Friend function for scalar multiplication with scalar on the left.
+   * @param scalar The scalar value to multiply with.
+   * @param mat The matrix to multiply.
+   * @return The resulting matrix.
+   */
+  friend Matrix operator*(MatrixComponentType scalar, const Matrix &mat) {
+    return mat * scalar;
+  }
 };
 
 /**

@@ -64,8 +64,8 @@ private:
   std::string _content;       ///< Text content to display
   std::string _fontPath;      ///< Path to the font file
   float _fontSize;            ///< Font size in points
-  PoseF _pose;                ///< Text pose (position + orientation)
   graphic::Color32Bit _color; ///< Text RGBA color
+  PoseF _pose;                ///< World pose (position and orientation) of the text
 
   protected:
 	std::shared_ptr<Font> _font; 					  ///< Shared pointer to the font used for rendering
@@ -80,7 +80,6 @@ public:
    * @param content The text content.
    * @param fontPath Path to the font file.
    * @param fontSize Font size in points.
-   * @param pose The pose (position and orientation) of the text.
    * @param color The color of the text.
    */
   Text(RessourceManager &ressourceManager, AssetManager &assetManager, const std::string &content, uint32_t fontSize, const std::string &font = "assets/fonts/Roboto.ttf");
@@ -185,6 +184,43 @@ public:
    */
   const graphic::Color32Bit &getColor(void) const;
 
+  /**
+   * @brief Check if text content is empty.
+   * @return True if content has no characters.
+   */
+  bool empty(void) const noexcept { return _content.empty(); }
+
+  /**
+   * @brief Check if font path is set.
+   * @return True if a non-empty font path is configured.
+   */
+  bool hasFontPath(void) const noexcept { return !_fontPath.empty(); }
+
+  /**
+   * @brief Clear text content.
+   * @return Reference to this Text instance for chaining.
+   */
+  Text &clearContent(void) {
+    _content.clear();
+    return *this;
+  }
+
+  /**
+   * @brief Equality comparison.
+   * @param other Text object to compare with.
+   * @return True when all properties are equal.
+   */
+  bool operator==(const Text &other) const {
+    return _content == other._content && _fontPath == other._fontPath &&
+           _fontSize == other._fontSize && _color == other._color;
+  }
+
+  /**
+   * @brief Inequality comparison.
+   * @param other Text object to compare with.
+   * @return True when any property differs.
+   */
+  bool operator!=(const Text &other) const { return !(*this == other); }
 };
 
 } // namespace utility::graphic

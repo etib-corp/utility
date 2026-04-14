@@ -380,6 +380,35 @@ public:
     factor = clamp(factor);
     return lerp(Color(Type{}, Type{}, Type{}, _alpha), factor);
   }
+
+  /**
+   * @brief Return a copy with a different alpha value.
+   * @param alpha Alpha value to apply (clamped).
+   * @return New color with updated alpha.
+   */
+  Color withAlpha(Type alpha) const {
+    return Color(_red, _green, _blue, alpha);
+  }
+
+  /**
+   * @brief Check whether alpha is fully opaque.
+   * @return True when alpha equals max component value.
+   */
+  bool isOpaque(void) const { return _alpha == maxValue(); }
+
+  /**
+   * @brief Check whether alpha is fully transparent.
+   * @return True when alpha equals zero.
+   */
+  bool isTransparent(void) const { return _alpha == Type{}; }
+
+  /**
+   * @brief Get alpha normalized to [0, 1].
+   * @return Alpha as double regardless of component type.
+   */
+  double alpha01(void) const {
+    return static_cast<double>(_alpha) / static_cast<double>(maxValue());
+  }
 };
 
 /**

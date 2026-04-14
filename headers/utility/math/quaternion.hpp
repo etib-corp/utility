@@ -28,6 +28,7 @@
 #include <type_traits>
 #include <utility>
 
+#include <glm/ext/quaternion_geometric.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 namespace utility::math {
@@ -41,6 +42,11 @@ using glm::isnan;
 using glm::lerp;
 using glm::mix;
 using glm::slerp;
+
+using glm::cross;
+using glm::dot;
+using glm::length;
+using glm::normalize;
 
 /**
  * @brief Concept to constrain quaternion component type.
@@ -67,14 +73,14 @@ public:
             QuaternionComponentType(0), QuaternionComponentType(0)) {}
 
   /**
-   * @brief Construct from explicit components (w, x, y, z).
-   * @param w W component.
+   * @brief Construct from explicit components (x, y, z, w).
    * @param x X component.
    * @param y Y component.
    * @param z Z component.
+   * @param w W component.
    */
-  Quaternion(QuaternionComponentType w, QuaternionComponentType x,
-             QuaternionComponentType y, QuaternionComponentType z)
+  Quaternion(QuaternionComponentType x, QuaternionComponentType y,
+             QuaternionComponentType z, QuaternionComponentType w)
       : glm::qua<QuaternionComponentType>(w, x, y, z) {}
 
   /**
@@ -97,6 +103,11 @@ public:
   Quaternion(Quaternion &&other) noexcept = default;
 
   /**
+   * @brief Default destructor for Quaternion.
+   */
+  ~Quaternion() = default;
+
+  /**
    * @brief Copy assignment operator.
    * @param other The Quaternion object to copy from.
    * @return A reference to this Quaternion object.
@@ -111,9 +122,128 @@ public:
   Quaternion &operator=(Quaternion &&other) noexcept = default;
 
   /**
-   * @brief Default destructor for Quaternion.
+   * @brief Quaternion addition.
+   * @param rhs The quaternion to add.
+   * @return The resulting quaternion.
    */
-  ~Quaternion() = default;
+  Quaternion operator+(const Quaternion &rhs) const {
+    return Quaternion(
+        static_cast<const glm::qua<QuaternionComponentType> &>(*this) +
+        static_cast<const glm::qua<QuaternionComponentType> &>(rhs));
+  }
+
+  /**
+   * @brief Quaternion addition assignment.
+   * @param rhs The quaternion to add.
+   * @return A reference to this quaternion after addition.
+   */
+  Quaternion &operator+=(const Quaternion &rhs) {
+    *static_cast<glm::qua<QuaternionComponentType> *>(this) +=
+        static_cast<const glm::qua<QuaternionComponentType> &>(rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Quaternion subtraction.
+   * @param rhs The quaternion to subtract.
+   * @return The resulting quaternion.
+   */
+  Quaternion operator-(const Quaternion &rhs) const {
+    return Quaternion(
+        static_cast<const glm::qua<QuaternionComponentType> &>(*this) -
+        static_cast<const glm::qua<QuaternionComponentType> &>(rhs));
+  }
+
+  /**
+   * @brief Quaternion subtraction assignment.
+   * @param rhs The quaternion to subtract.
+   * @return A reference to this quaternion after subtraction.
+   */
+  Quaternion &operator-=(const Quaternion &rhs) {
+    *static_cast<glm::qua<QuaternionComponentType> *>(this) -=
+        static_cast<const glm::qua<QuaternionComponentType> &>(rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Quaternion multiplication (Hamilton product).
+   * @param rhs The quaternion to multiply with.
+   * @return The resulting quaternion.
+   */
+  Quaternion operator*(const Quaternion &rhs) const {
+    return Quaternion(
+        static_cast<const glm::qua<QuaternionComponentType> &>(*this) *
+        static_cast<const glm::qua<QuaternionComponentType> &>(rhs));
+  }
+
+  /**
+   * @brief Quaternion multiplication assignment (Hamilton product).
+   * @param rhs The quaternion to multiply with.
+   * @return A reference to this quaternion after multiplication.
+   */
+  Quaternion &operator*=(const Quaternion &rhs) {
+    *static_cast<glm::qua<QuaternionComponentType> *>(this) =
+        static_cast<const glm::qua<QuaternionComponentType> &>(*this) *
+        static_cast<const glm::qua<QuaternionComponentType> &>(rhs);
+    return *this;
+  }
+
+  /**
+   * @brief Scalar multiplication.
+   * @param scalar The scalar value to multiply with.
+   * @return The resulting quaternion.
+   */
+  Quaternion operator*(QuaternionComponentType scalar) const {
+    return Quaternion(
+        static_cast<const glm::qua<QuaternionComponentType> &>(*this) * scalar);
+  }
+
+  /**
+   * @brief Scalar multiplication assignment.
+   * @param scalar The scalar value to multiply with.
+   * @return A reference to this quaternion after multiplication.
+   */
+  Quaternion &operator*=(QuaternionComponentType scalar) {
+    *static_cast<glm::qua<QuaternionComponentType> *>(this) *= scalar;
+    return *this;
+  }
+
+  /**
+   * @brief Equality comparison.
+   * @param rhs The quaternion to compare with.
+   * @return True if the quaternions are equal, false otherwise.
+   */
+  bool operator==(const Quaternion &rhs) const {
+    return static_cast<const glm::qua<QuaternionComponentType> &>(*this) ==
+           static_cast<const glm::qua<QuaternionComponentType> &>(rhs);
+  }
+
+  /**
+   * @brief Inequality comparison.
+   * @param rhs The quaternion to compare with.
+   * @return True if the quaternions are not equal, false otherwise.
+   */
+  bool operator!=(const Quaternion &rhs) const { return !(*this == rhs); }
+
+  /**
+   * @brief Unary negation.
+   * @return The negated quaternion.
+   */
+  Quaternion operator-(void) const {
+    return Quaternion(
+        -static_cast<const glm::qua<QuaternionComponentType> &>(*this));
+  }
+
+  /**
+   * @brief Friend function for scalar multiplication with scalar on the left.
+   * @param scalar The scalar value to multiply with.
+   * @param q The quaternion to multiply.
+   * @return The resulting quaternion.
+   */
+  friend Quaternion operator*(QuaternionComponentType scalar,
+                              const Quaternion &q) {
+    return q * scalar;
+  }
 };
 
 /**

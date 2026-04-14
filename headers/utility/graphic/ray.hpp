@@ -74,7 +74,10 @@ protected:
    */
   static void
   validateDirection(const math::Vector<RayComponentType, 3> &direction) {
-    if (math::dot(direction, direction) == RayComponentType{}) {
+    const RayComponentType squaredLength = direction[0] * direction[0] +
+                                           direction[1] * direction[1] +
+                                           direction[2] * direction[2];
+    if (squaredLength == RayComponentType{}) {
       throw std::invalid_argument("Ray direction must be non-zero");
     }
   }
@@ -149,8 +152,14 @@ public:
    * @param origin New origin vector.
    */
   void setOrigin(const math::Vector<RayComponentType, 3> &origin) {
-    _origin = origin;
+    _origin = Position<RayComponentType>(origin);
   }
+
+  /**
+   * @brief Set the ray origin using a Position value.
+   * @param origin New origin position.
+   */
+  void setOrigin(const Position<RayComponentType> &origin) { _origin = origin; }
 
   /**
    * @brief Get the ray origin.
@@ -177,6 +186,22 @@ public:
   }
 
   /**
+   * @brief Access the ray origin by const reference.
+   * @return Const reference to origin.
+   */
+  const Position<RayComponentType> &origin(void) const noexcept {
+    return _origin;
+  }
+
+  /**
+   * @brief Access the ray direction by const reference.
+   * @return Const reference to direction.
+   */
+  const math::Vector<RayComponentType, 3> &direction(void) const noexcept {
+    return _direction;
+  }
+
+  /**
    * @brief Get a normalized copy of the ray direction.
    * @return Unit-length direction vector.
    */
@@ -192,6 +217,16 @@ public:
   math::Vector<RayComponentType, 3>
   pointAt(RayComponentType distanceParameter) const {
     return _origin + (_direction * distanceParameter);
+  }
+
+  /**
+   * @brief Alias for pointAt to match common ray APIs.
+   * @param distanceParameter Parameter value measured along direction.
+   * @return Point computed as origin + direction * parameter.
+   */
+  math::Vector<RayComponentType, 3>
+  at(RayComponentType distanceParameter) const {
+    return pointAt(distanceParameter);
   }
 
   /**
