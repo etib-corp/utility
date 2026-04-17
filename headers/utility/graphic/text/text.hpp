@@ -49,6 +49,9 @@
 // Types
 #include <utility/graphic/text/code_point.hpp>
 
+/**
+ * @brief Default font color (white).
+ */
 #define DEFAULT_FONT_COLOR utility::graphic::Color<std::uint8_t>(255, 255, 255, 255)
 
 namespace utility::graphic {
