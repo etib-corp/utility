@@ -8,6 +8,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 
 #include <utility/graphic/texture.hpp>
 
