@@ -20,6 +20,18 @@
  SOFTWARE.
  */
 
-#include "utility/graphic/text.hpp"
+/**
+ * @file code_point.hpp
+ * @brief Code point definitions for text rendering.
+ *
+ * Defines types and utilities for handling Unicode code points in text rendering.
+ */
 
-namespace utility::graphic {} // namespace utility::graphic
+#pragma once
+
+#include <vector>
+
+/**
+ * @brief A type representing a string of Unicode code points.
+ */
+typedef std::vector<uint32_t> codePointString;

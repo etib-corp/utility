@@ -55,9 +55,10 @@ public:
 
   /**
    * @brief Constructs a FileAsset object with its content and size.
+   * @param path The path to the file.
    * @param content The content of the file.
    */
-  FileAsset(const std::string &content);
+  FileAsset(const std::string &path, const std::string &content);
 
   /**
    * @brief Destructs the FileAsset object.
@@ -117,6 +118,25 @@ public:
   [[nodiscard]] inline const std::string &content() const { return _content; }
 
   /**
+   * @brief Returns the path of the file.
+   *
+   * This method returns the path of the file as a string. The path is stored in
+   * the _path member variable and can be accessed using this method.
+   * @return The path of the file.
+   */
+  [[nodiscard]] inline const std::string &path() const { return _path; }
+
+  /**
+   * @brief Returns the size of the file content.
+   *
+   * This method returns the size of the file content by returning the size of
+   * the _content member variable. The size is returned as a size_t value.
+   *
+   * @return The size of the file content.
+   */
+  [[nodiscard]] inline size_t size() const { return _content.size(); }
+
+  /**
    * @brief Clears the content of the file.
    *
    * This method clears the content of the file by resetting the _content
@@ -141,6 +161,11 @@ protected:
    * @brief In-memory content of the asset.
    */
   std::string _content;
+
+  /**
+   * @brief Path to the file.
+   */
+  std::string _path;
 
   /**
    * @brief Current read/write cursor position in the content buffer.

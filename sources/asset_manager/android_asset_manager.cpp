@@ -84,7 +84,7 @@ utility::AndroidAssetManager::add(const std::string &path) {
   }
   AAsset_close(file);
 
-  auto asset = std::make_shared<utility::FileAsset>(content);
+  auto asset = std::make_shared<utility::FileAsset>(path, content);
   _assets[key] = asset;
   return asset;
 }

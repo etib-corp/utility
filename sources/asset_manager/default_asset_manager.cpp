@@ -93,7 +93,7 @@ utility::DefaultAssetManager::add(const std::string &path) {
   }
   file.close();
 
-  auto asset = std::make_shared<utility::FileAsset>(content);
+  auto asset = std::make_shared<utility::FileAsset>(path, content);
   if (!asset) {
     std::cerr << "Failed to create FileAsset for: " << key << std::endl;
     return nullptr;

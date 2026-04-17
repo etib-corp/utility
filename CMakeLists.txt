@@ -56,6 +56,23 @@ FetchContent_Declare(glm
 )
 FetchContent_MakeAvailable(glm)
 
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
+FetchContent_Declare(
+    freetype
+    GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
+    GIT_TAG VER-2-13-0
+)
+FetchContent_MakeAvailable(freetype)
+
+FetchContent_Declare(stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(stb)
+
 # Set the files directories
 set(HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/headers")
 set(SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sources")
@@ -83,6 +100,7 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
         tinyobjloader
         glm
+        freetype
 )
 
 if(WIN32)
@@ -100,6 +118,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${HEADERS_DIR}>
         $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${stb_SOURCE_DIR}>
 )
 
 # Optional components
@@ -194,4 +213,10 @@ if(BUILD_UTILITY_DOCS)
     )
 else()
     message(STATUS "Skipping docs...")
+endif()
+
+if(BUILD_GRAPHICAL_TESTS)
+    add_subdirectory(graphical_tests)
+else()
+    message(STATUS "Skipping graphical tests...")
 endif()
