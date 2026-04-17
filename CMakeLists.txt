@@ -56,6 +56,8 @@ FetchContent_Declare(glm
 )
 FetchContent_MakeAvailable(glm)
 
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
 FetchContent_Declare(
     freetype
     GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
