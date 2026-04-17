@@ -31,4 +31,7 @@
 
 #include <vector>
 
+/**
+ * @brief A type representing a string of Unicode code points.
+ */
 typedef std::vector<uint32_t> codePointString;
