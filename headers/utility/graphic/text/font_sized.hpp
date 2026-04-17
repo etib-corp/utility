@@ -34,6 +34,9 @@ namespace utility::graphic {
          *
          * This constructor initializes the FontSized object with the specified font size and the corresponding FreeType face.
          * It sets up the necessary data structures for managing glyphs and the texture atlas for rendering text at the specified size.
+         *
+         * @param fontSize The font size in points for this FontSized object.
+         * @param face The corresponding FreeType face associated with this FontSized object.
          */
         FontSized(uint32_t fontSize, FT_Face face);
 
@@ -70,13 +73,15 @@ namespace utility::graphic {
         Glyph generateGlyph(uint32_t codePoint);
 
         /**
-         * @brief Retrieves the generated glyph information for a specific Unicode code point.
+         * @brief Generates glyphs for a string of Unicode code points and adds them to the texture atlas.
          *
-         * This method retrieves the Glyph information for the specified Unicode code point from the map of generated glyphs.
-         * If the glyph has not been generated yet, it will call the generateGlyph method to create the glyph and add it to the atlas before returning the information.
+         * This method takes a string of Unicode code points and generates the corresponding glyphs for each code point using the FreeType library.
+         * It renders each glyph and adds them to the texture atlas managed by this FontSized object.
+         * The generated glyph information is stored in a map for later retrieval when rendering text.
          *
-         * @param codePoint The Unicode code point for which to retrieve the glyph information.
-         * @return A Glyph object containing the information about the requested glyph.
+         * @param codePoints A string of Unicode code points representing the characters for which to generate glyphs.
+         *
+         * @return A vector of Glyph objects containing the information about the generated glyphs for each code point, including their size, bearing, advance, and texture coordinates in the atlas.
          */
         std::vector<Glyph> generateGlyphs(const codePointString &codePoints);
 

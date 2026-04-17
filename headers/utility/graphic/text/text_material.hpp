@@ -34,11 +34,15 @@ namespace utility::graphic {
         ~TextMaterial() = default;
 
         /**
-         * @brief Synchronizes the TextMaterial with the provided Font object.
+         * @brief Add a texture atlas to the material with the specified name and Texture object.
          *
-         * This method updates the TextMaterial's textures based on the processed sizes and paths of the provided Font object. It ensures that the correct textures are available for rendering text with the specified font, allowing for efficient rendering of text using the associated shader.
+         * This method allows adding a texture atlas to the material by associating it with a specific name.
+         * The texture atlas is represented by a shared pointer to a Texture object,
+         * which contains the pixel data for the glyphs in the font.
+         * This method is used to manage the textures that are required for rendering text with the associated shader.
          *
-         * @param font The Font object to synchronize with this TextMaterial.
+         * @param name The name to associate with the texture atlas.
+         * @param atlas A shared pointer to the Texture object representing the texture atlas to be added to the material.
          */
         void addAtlas(const std::string &name, std::shared_ptr<Texture> atlas);
 

@@ -23,6 +23,14 @@ namespace utility::graphic {
         public:
         /**
          * @brief Constructs a Texture object with the specified width and height.
+         *
+         * This constructor initializes a Texture object with the given width and height,
+         * and it sets up the internal pixel data storage for the texture.
+         * The pixel data is stored as a vector of bytes in RGBA format,
+         * allowing for efficient management of texture data for rendering purposes.
+         *
+         * @param width The width of the texture in pixels.
+         * @param height The height of the texture in pixels.
          */
         Texture(uint32_t width, uint32_t height);
 
@@ -33,11 +41,19 @@ namespace utility::graphic {
 
         /**
          * @brief Retrieves the width of the texture.
+         *
+         * This method returns the width of the texture in pixels, which is stored as a member variable in the Texture class. The width is an important property of the texture that is used for rendering operations and managing texture data.
+         *
+         * @return The width of the texture in pixels.
          */
         [[nodiscard]] uint32_t width() const { return _width; }
 
         /**
          * @brief Retrieves the height of the texture.
+         *
+         * This method returns the height of the texture in pixels, which is stored as a member variable in the Texture class. The height is an important property of the texture that is used for rendering operations and managing texture data.
+         *
+         * @return The height of the texture in pixels.
          */
         [[nodiscard]] uint32_t height() const { return _height; }
 

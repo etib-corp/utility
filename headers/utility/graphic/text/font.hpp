@@ -44,6 +44,18 @@ namespace utility::graphic {
          */
         ~Font();
 
+        /**
+         * @brief Processes a string of Unicode code points to generate glyphs for rendering text.
+         *
+         * This method takes a string of Unicode code points and generates the corresponding glyphs for rendering text.
+         * It uses the FreeType library to load and render the glyphs,
+         * and it returns a vector of Glyph objects containing the necessary information for rendering each character.
+         *
+         * @param fontSize The font size to use for generating the glyphs.
+         * @param codePoints A string of Unicode code points representing the characters for which to generate glyphs.
+         *
+         * @return A vector of Glyph objects containing the information needed to render each character in the input string.
+         */
         std::vector<Glyph> processCodePoints(uint32_t fontSize, const codePointString &codePoints);
 
         /**
@@ -75,9 +87,26 @@ namespace utility::graphic {
          */
         bool hasGlyph(char32_t codepoint) const;
 
+        /**
+         * @brief Member function to set a callback that is called when a new texture atlas is created for a font size.
+         *
+         * This callback function is invoked whenever a new texture atlas is generated for a specific font size.
+         * It allows the caller to receive the path of the font face associated with the new atlas and a shared pointer to the Texture object representing the atlas.
+         * This can be useful for updating rendering resources or performing additional processing when new glyphs are added to the atlas.
+         */
         std::function<void (std::string, std::shared_ptr<Texture>)> onNewTextureCreated;
 
         protected:
+        /**
+         * @brief Retrieves the font face name associated with a specific Unicode code point.
+         *
+         * This method determines which font face contains the glyph for the given Unicode code point and returns the corresponding font path.
+         * It is used internally to manage multiple font faces and ensure that the correct glyphs are retrieved for rendering text.
+         *
+         * @param codePoint The Unicode code point for which to retrieve the associated font face name.
+         *
+         * @return A string containing the path of the font face associated with the specified Unicode code point.
+         */
         std::string _getFaceNameForGlyph(uint32_t codePoint) const;
 
         /**

@@ -79,6 +79,7 @@ public:
      *
      * @param path The file path to the material resource to be loaded.
      * @param shaderType The type of shader to be associated with the loaded material.
+     * @param assetManager A reference to the AssetManager instance used to load the material asset.
      *
      * @return A shared pointer to the loaded Material object.
      */

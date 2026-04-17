@@ -74,16 +74,40 @@ private:
 	std::shared_ptr<Font> _font; 					  ///< Shared pointer to the font used for rendering
 	std::shared_ptr<Mesh> _mesh; 					  ///< Mesh for rendering the text
 
-	void updateMesh(void); 							  ///< Update the mesh based on current text properties
+  /**
+   * @brief Updates the mesh for rendering the text based on the current content, font, and font size.
+   *
+   * This method regenerates the mesh geometry for the text whenever the content, font, or font size changes.
+   * It uses the Font class to retrieve the necessary glyph information and constructs a new Mesh object that represents the geometry of the text for rendering.
+   */
+	void updateMesh(void);
+
+  /**
+   * @brief Converts a UTF-8 encoded string to a string of Unicode code points.
+   *
+   * This method takes a UTF-8 encoded string as input and converts it to a string of Unicode code points,
+   * which can be used for rendering text with the appropriate glyphs.
+   * It processes the UTF-8 encoding to extract the individual Unicode code points and returns them in a codePointString format,
+   * which is a vector of uint32_t values representing the Unicode code
+   *
+   * @param str The UTF-8 encoded string to convert.
+   *
+   * @return A codePointString containing the Unicode code points extracted from the input UTF-8 string.
+   */
 	codePointString utf8ToCodepoints(const std::string& str); //< Convert UTF-8 string to Unicode code points
 
 public:
   /**
-   * @brief Constructor with content and font.
-   * @param content The text content.
-   * @param fontPath Path to the font file.
-   * @param fontSize Font size in points.
-   * @param color The color of the text.
+   * @brief Constructor.
+   * 
+   * This constructor initializes a Text object with the specified content, font size, and font path.
+   * It also takes references to a RessourceManager and an AssetManager, which are used to load the necessary font resources for rendering the text.
+   * 
+   * @param ressourceManager A reference to the RessourceManager instance used to load font resources.
+   * @param assetManager A reference to the AssetManager instance used to load font assets.
+   * @param content The text content to be displayed.
+   * @param fontSize The font size in points for rendering the text.
+   * @param font The file path to the font resource to be used for rendering the text (default is "assets/fonts/Roboto.ttf").
    */
   Text(RessourceManager &ressourceManager, AssetManager &assetManager, const std::string &content, uint32_t fontSize, const std::string &font = "assets/fonts/Roboto.ttf");
 
