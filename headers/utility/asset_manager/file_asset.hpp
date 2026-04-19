@@ -48,9 +48,10 @@ public:
    * operations.
    */
   enum class Seek {
-    SET, ///> Seek from the beginning of the file
-    CUR, ///> Seek from the current position in the file
-    END  ///> Seek from the end of the file
+    Unknown = 0, ///> Unknown seek mode
+    SET = 0,    ///> Seek from the beginning of the file
+    CUR = 1,    ///> Seek from the current position in the file
+    END = 2     ///> Seek from the end of the file
   };
 
   /**

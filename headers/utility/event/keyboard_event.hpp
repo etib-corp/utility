@@ -28,18 +28,6 @@
 
 #include "utility/event/event.hpp"
 
-#ifdef DELETE
-#pragma push_macro("DELETE")
-#undef DELETE
-#define UTILITY_EVENT_RESTORE_DELETE_MACRO
-#endif
-
-#ifdef OUT
-#pragma push_macro("OUT")
-#undef OUT
-#define UTILITY_EVENT_RESTORE_OUT_MACRO
-#endif
-
 namespace utility::event {
 
 /**
@@ -52,7 +40,7 @@ public:
   /**
    * @brief Key scan codes.
    */
-  enum class ScanCode : const std::uint16_t {
+  enum class ScanCode : std::uint16_t {
     Unknown = 0, /**< Unknown scan code */
 
     A = 4,  /**< A key */
@@ -366,7 +354,7 @@ public:
    * Virtual key codes represent actual keys pressed on the keyboard,
    * including printable characters and special function keys.
    */
-  enum class KeyCode : const std::int32_t {
+  enum class KeyCode : std::int32_t {
     Unknown = 0x00000000u,               /**< Unknown key */
     Return = 0x0000000du,                /**< Return key ('\\r') */
     Escape = 0x0000001bu,                /**< Escape key ('\\x1B') */
@@ -632,8 +620,8 @@ public:
    * Key modifiers represent the state of modifier keys (like Shift, Ctrl, Alt)
    * during keyboard events.
    */
-  enum class KeyModifiers : const std::uint16_t {
-    None = 0x0000u,        /**< No modifier is applicable. */
+  enum class KeyModifiers : std::uint16_t {
+    Unknown = 0x0000u,     /**< Unknown modifier state. */
     LeftShift = 0x0001u,   /**< The left Shift key is down. */
     RightShift = 0x0002u,  /**< The right Shift key is down. */
     Level5Shift = 0x0004u, /**< The Level 5 Shift key is down. */
@@ -661,30 +649,26 @@ public:
    */
   class Factory : public Event::AbstractFactory {
   public:
-    ~Factory(void) override = default;
+    ~Factory(void) override;
 
     /**
      * @brief Create a KeyboardEvent as a base Event pointer.
      * @return Newly created KeyboardEvent as std::unique_ptr<Event>.
      */
-    std::unique_ptr<Event> create(void) const override {
-      return std::make_unique<KeyboardEvent>();
-    }
+    std::unique_ptr<Event> create(void) const override;
 
     /**
      * @brief Create a strongly-typed KeyboardEvent.
      * @return Newly created KeyboardEvent as std::unique_ptr<KeyboardEvent>.
      */
-    std::unique_ptr<KeyboardEvent> createTyped(void) const {
-      return std::make_unique<KeyboardEvent>();
-    }
+    std::unique_ptr<KeyboardEvent> createTyped(void) const;
   };
 
 private:
   ScanCode _scancode{ScanCode::Unknown};
   KeyCode _keycode{KeyCode::Unknown};
   std::bitset<sizeof(KeyModifiers) * 8> _modifiers{
-      static_cast<std::size_t>(KeyModifiers::None)};
+      static_cast<std::size_t>(KeyModifiers::Unknown)};
   bool isDownEvent{true};
   bool isRepeatEvent{false};
 
@@ -692,101 +676,79 @@ public:
   /**
    * @brief Default constructor.
    */
-  explicit KeyboardEvent(void) = default;
+  explicit KeyboardEvent(void);
 
   /**
    * @brief Default destructor.
    */
-  ~KeyboardEvent(void) override = default;
+  ~KeyboardEvent(void) override;
 
   /**
    * @brief Get the keyboard scancode.
    *
    * @return The keyboard scancode.
    */
-  ScanCode getScancode(void) const noexcept { return _scancode; }
+  ScanCode getScancode(void) const noexcept;
+
+  /**
+   * @brief Set the keyboard scancode.
+   * @param scancode The keyboard scancode to set.
+   * @return Reference to this KeyboardEvent for method chaining.
+   */
+  KeyboardEvent &setScancode(const ScanCode scancode) noexcept;
 
   /**
    * @brief Set the virtual key code.
    * @param keycode The virtual key code to set.
    * @return Reference to this KeyboardEvent for method chaining.
    */
-  KeyboardEvent &setKeycode(const KeyCode keycode) noexcept {
-    _keycode = keycode;
-    return *this;
-  }
+  KeyboardEvent &setKeycode(const KeyCode keycode) noexcept;
 
   /**
    * @brief Get the virtual key code.
    * @return The virtual key code.
    */
-  KeyCode getKeycode(void) const noexcept { return _keycode; }
+  KeyCode getKeycode(void) const noexcept;
 
   /**
    * @brief Set the key modifiers.
    * @param modifiers The key modifiers to set.
    * @return Reference to this KeyboardEvent for method chaining.
    */
-  KeyboardEvent &setModifiers(const KeyModifiers modifiers) noexcept {
-    _modifiers = std::bitset<sizeof(KeyModifiers) * 8>(
-        static_cast<std::size_t>(modifiers));
-    return *this;
-  }
+  KeyboardEvent &setModifiers(const KeyModifiers modifiers) noexcept;
 
   /**
    * @brief Check if a specific key modifier is set.
    * @param modifier The key modifier to check.
    * @return True if the specified modifier is set, false otherwise.
    */
-  bool isModifierSet(const KeyModifiers modifier) const noexcept {
-    const auto mask = static_cast<std::size_t>(modifier);
-    if (mask == 0) {
-      return _modifiers.none();
-    }
-    return (_modifiers.to_ulong() & mask) != 0;
-  }
+  bool isModifierSet(const KeyModifiers modifier) const noexcept;
 
   /**
    * @brief Set whether the event is a key down event.
    * @param isDown True if the event is a key down event, false otherwise.
    * @return Reference to this KeyboardEvent for method chaining.
    */
-  KeyboardEvent &setIsDownEvent(const bool isDown) noexcept {
-    isDownEvent = isDown;
-    return *this;
-  }
+  KeyboardEvent &setIsDownEvent(const bool isDown) noexcept;
 
   /**
    * @brief Check if the event is a key down event.
    * @return True if the event is a key down event, false otherwise.
    */
-  bool getIsDownEvent(void) const noexcept { return isDownEvent; }
+  bool getIsDownEvent(void) const noexcept;
 
   /**
    * @brief Set whether the event is a key repeat event.
    * @param isRepeat True if the event is a key repeat event, false otherwise.
    * @return Reference to this KeyboardEvent for method chaining.
    */
-  KeyboardEvent &setIsRepeatEvent(const bool isRepeat) noexcept {
-    isRepeatEvent = isRepeat;
-    return *this;
-  }
+  KeyboardEvent &setIsRepeatEvent(const bool isRepeat) noexcept;
 
   /**
    * @brief Check if the event is a key repeat event.
    * @return True if the event is a key repeat event, false otherwise.
    */
-  bool getIsRepeatEvent(void) const noexcept { return isRepeatEvent; };
+  bool getIsRepeatEvent(void) const noexcept;
 };
-
-#ifdef UTILITY_EVENT_RESTORE_OUT_MACRO
-#pragma pop_macro("OUT")
-#undef UTILITY_EVENT_RESTORE_OUT_MACRO
-#endif
-
-#ifdef UTILITY_EVENT_RESTORE_DELETE_MACRO
-#pragma pop_macro("DELETE")
-#undef UTILITY_EVENT_RESTORE_DELETE_MACRO
-#endif
 
 } // namespace utility::event

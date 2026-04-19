@@ -22,4 +22,70 @@
 
 #include "utility/event/keyboard_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+KeyboardEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> KeyboardEvent::Factory::create(void) const {
+	return std::make_unique<KeyboardEvent>();
+}
+
+std::unique_ptr<KeyboardEvent> KeyboardEvent::Factory::createTyped(void) const {
+	return std::make_unique<KeyboardEvent>();
+}
+
+KeyboardEvent::KeyboardEvent(void) = default;
+
+KeyboardEvent::~KeyboardEvent(void) = default;
+
+KeyboardEvent::ScanCode KeyboardEvent::getScancode(void) const noexcept {
+	return _scancode;
+}
+
+KeyboardEvent &KeyboardEvent::setScancode(const ScanCode scancode) noexcept {
+	_scancode = scancode;
+	return *this;
+}
+
+KeyboardEvent &KeyboardEvent::setKeycode(const KeyCode keycode) noexcept {
+	_keycode = keycode;
+	return *this;
+}
+
+KeyboardEvent::KeyCode KeyboardEvent::getKeycode(void) const noexcept {
+	return _keycode;
+}
+
+KeyboardEvent &
+KeyboardEvent::setModifiers(const KeyModifiers modifiers) noexcept {
+	_modifiers = std::bitset<sizeof(KeyModifiers) * 8>(
+			static_cast<std::size_t>(modifiers));
+	return *this;
+}
+
+bool KeyboardEvent::isModifierSet(const KeyModifiers modifier) const noexcept {
+	const auto mask = static_cast<std::size_t>(modifier);
+	if (mask == 0) {
+		return _modifiers.none();
+	}
+	return (_modifiers.to_ulong() & mask) != 0;
+}
+
+KeyboardEvent &KeyboardEvent::setIsDownEvent(const bool isDown) noexcept {
+	isDownEvent = isDown;
+	return *this;
+}
+
+bool KeyboardEvent::getIsDownEvent(void) const noexcept { return isDownEvent; }
+
+KeyboardEvent &
+KeyboardEvent::setIsRepeatEvent(const bool isRepeat) noexcept {
+	isRepeatEvent = isRepeat;
+	return *this;
+}
+
+bool KeyboardEvent::getIsRepeatEvent(void) const noexcept {
+	return isRepeatEvent;
+}
+
+} // namespace utility::event

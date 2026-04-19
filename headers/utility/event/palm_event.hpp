@@ -38,35 +38,31 @@ public:
    */
   class Factory : public Event::AbstractFactory {
   public:
-    ~Factory(void) override = default;
+    ~Factory(void) override;
 
     /**
      * @brief Create a PalmEvent as base Event pointer.
      * @return Newly created PalmEvent.
      */
-    std::unique_ptr<Event> create(void) const override {
-      return std::make_unique<PalmEvent>();
-    }
+    std::unique_ptr<Event> create(void) const override;
 
     /**
      * @brief Create a strongly-typed PalmEvent.
      * @return Newly created PalmEvent.
      */
-    std::unique_ptr<PalmEvent> createTyped(void) const {
-      return std::make_unique<PalmEvent>();
-    }
+    std::unique_ptr<PalmEvent> createTyped(void) const;
   };
 
 public:
   /**
    * @brief Default constructor.
    */
-  explicit PalmEvent(void) = default;
+  explicit PalmEvent(void);
 
   /**
    * @brief Default destructor.
    */
-  ~PalmEvent(void) override = default;
+  ~PalmEvent(void) override;
 };
 
 } // namespace utility::event

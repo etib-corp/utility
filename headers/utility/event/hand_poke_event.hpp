@@ -38,35 +38,31 @@ public:
    */
   class Factory : public Event::AbstractFactory {
   public:
-    ~Factory(void) override = default;
+    ~Factory(void) override;
 
     /**
      * @brief Create a HandPokeEvent as base Event pointer.
      * @return Newly created HandPokeEvent.
      */
-    std::unique_ptr<Event> create(void) const override {
-      return std::make_unique<HandPokeEvent>();
-    }
+    std::unique_ptr<Event> create(void) const override;
 
     /**
      * @brief Create a strongly-typed HandPokeEvent.
      * @return Newly created HandPokeEvent.
      */
-    std::unique_ptr<HandPokeEvent> createTyped(void) const {
-      return std::make_unique<HandPokeEvent>();
-    }
+    std::unique_ptr<HandPokeEvent> createTyped(void) const;
   };
 
 public:
   /**
    * @brief Default constructor.
    */
-  explicit HandPokeEvent(void) = default;
+  explicit HandPokeEvent(void);
 
   /**
    * @brief Default destructor.
    */
-  ~HandPokeEvent(void) override = default;
+  ~HandPokeEvent(void) override;
 };
 
 } // namespace utility::event

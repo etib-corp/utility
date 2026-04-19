@@ -20,49 +20,46 @@
  SOFTWARE.
  */
 
-#pragma once
-
-#include <memory>
-
-#include "utility/event/hand_event.hpp"
+#include "utility/event/hand_motion_event.hpp"
 
 namespace utility::event {
 
-/**
- * @brief Hand pinch event.
- */
-class HandPinchEvent : public HandEvent {
-public:
-  /**
-   * @brief Factory for creating HandPinchEvent instances.
-   */
-  class Factory : public Event::AbstractFactory {
-  public:
-    ~Factory(void) override;
+HandMotionEvent::Factory::~Factory(void) = default;
 
-    /**
-     * @brief Create a HandPinchEvent as base Event pointer.
-     * @return Newly created HandPinchEvent.
-     */
-    std::unique_ptr<Event> create(void) const override;
+std::unique_ptr<Event> HandMotionEvent::Factory::create(void) const {
+  return std::make_unique<HandMotionEvent>();
+}
 
-    /**
-     * @brief Create a strongly-typed HandPinchEvent.
-     * @return Newly created HandPinchEvent.
-     */
-    std::unique_ptr<HandPinchEvent> createTyped(void) const;
-  };
+std::unique_ptr<HandMotionEvent> HandMotionEvent::Factory::createTyped(void) const {
+  return std::make_unique<HandMotionEvent>();
+}
 
-public:
-  /**
-   * @brief Default constructor.
-   */
-  explicit HandPinchEvent(void);
+HandMotionEvent::HandMotionEvent(void) = default;
 
-  /**
-   * @brief Default destructor.
-   */
-  ~HandPinchEvent(void) override;
-};
+HandMotionEvent::~HandMotionEvent(void) = default;
+
+HandMotionEvent &HandMotionEvent::setAim(const graphic::PoseF &aim) noexcept {
+  _aim = aim;
+  return *this;
+}
+
+graphic::PoseF HandMotionEvent::getAim(void) const noexcept { return _aim; }
+
+HandMotionEvent &HandMotionEvent::setGrip(const graphic::PoseF &grip) noexcept {
+  _grip = grip;
+  return *this;
+}
+
+graphic::PoseF HandMotionEvent::getGrip(void) const noexcept { return _grip; }
+
+HandMotionEvent &
+HandMotionEvent::setGripSurface(const graphic::PoseF &gripSurface) noexcept {
+  _gripSurface = gripSurface;
+  return *this;
+}
+
+graphic::PoseF HandMotionEvent::getGripSurface(void) const noexcept {
+  return _gripSurface;
+}
 
 } // namespace utility::event

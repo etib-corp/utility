@@ -40,34 +40,30 @@ public:
    */
   class Factory : public Event::AbstractFactory {
   public:
-    ~Factory(void) override = default;
+    ~Factory(void) override;
 
     /**
      * @brief Create a QuitEvent as a base Event pointer.
      * @return Newly created QuitEvent as std::unique_ptr<Event>.
      */
-    std::unique_ptr<Event> create(void) const override {
-      return std::make_unique<QuitEvent>();
-    }
+    std::unique_ptr<Event> create(void) const override;
 
     /**
      * @brief Create a strongly-typed QuitEvent.
      * @return Newly created QuitEvent as std::unique_ptr<QuitEvent>.
      */
-    std::unique_ptr<QuitEvent> createTyped(void) const {
-      return std::make_unique<QuitEvent>();
-    }
+    std::unique_ptr<QuitEvent> createTyped(void) const;
   };
 
   /**
    * @brief Default constructor.
    */
-  explicit QuitEvent(void) = default;
+  explicit QuitEvent(void);
 
   /**
    * @brief Default destructor.
    */
-  ~QuitEvent(void) override = default;
+  ~QuitEvent(void) override;
 };
 
 } // namespace utility::event

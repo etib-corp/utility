@@ -20,6 +20,23 @@
  SOFTWARE.
  */
 
-#include "utility/event/controller_motion_event.hpp"
+#include "utility/event/hand_haptic_trigger_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+HandHapticTriggerEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> HandHapticTriggerEvent::Factory::create(void) const {
+  return std::make_unique<HandHapticTriggerEvent>();
+}
+
+std::unique_ptr<HandHapticTriggerEvent>
+HandHapticTriggerEvent::Factory::createTyped(void) const {
+  return std::make_unique<HandHapticTriggerEvent>();
+}
+
+HandHapticTriggerEvent::HandHapticTriggerEvent(void) = default;
+
+HandHapticTriggerEvent::~HandHapticTriggerEvent(void) = default;
+
+} // namespace utility::event

@@ -22,4 +22,46 @@
 
 #include "utility/event/mouse_button_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+MouseButtonEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> MouseButtonEvent::Factory::create(void) const {
+	return std::make_unique<MouseButtonEvent>();
+}
+
+std::unique_ptr<MouseButtonEvent>
+MouseButtonEvent::Factory::createTyped(void) const {
+	return std::make_unique<MouseButtonEvent>();
+}
+
+MouseButtonEvent::MouseButtonEvent(void) = default;
+
+MouseButtonEvent::~MouseButtonEvent(void) = default;
+
+MouseButtonEvent &
+MouseButtonEvent::setPosition(const MousePosition &position) noexcept {
+	_position = position;
+	return *this;
+}
+
+MouseButtonEvent::MousePosition MouseButtonEvent::getPosition(void) const noexcept {
+	return _position;
+}
+
+MouseButtonEvent &
+MouseButtonEvent::setButtonState(const Button button, const bool pressed) noexcept {
+	_buttonStates.set(static_cast<std::size_t>(button), pressed);
+	return *this;
+}
+
+bool MouseButtonEvent::isButtonPressed(const Button button) const noexcept {
+	return _buttonStates.test(static_cast<std::size_t>(button));
+}
+
+const MouseButtonEvent::MouseButtonsState &
+MouseButtonEvent::getButtonsState(void) const noexcept {
+	return _buttonStates;
+}
+
+} // namespace utility::event

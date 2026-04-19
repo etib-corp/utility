@@ -20,6 +20,42 @@
  SOFTWARE.
  */
 
-#include "utility/event/controller_button_event.hpp"
+#pragma once
 
-namespace utility::event {} // namespace utility::event
+#include <memory>
+
+#include "utility/event/hand_haptic_event.hpp"
+
+namespace utility::event {
+
+/**
+ * @brief Hand haptic event for /output/haptic_trigger (XR_VERSION_1_1).
+ */
+class HandHapticTriggerEvent
+  : public HandHapticEvent {
+public:
+  /**
+   * @brief Factory for creating HandHapticTriggerEvent instances.
+   */
+  class Factory : public Event::AbstractFactory {
+  public:
+    ~Factory(void) override;
+
+    /**
+     * @brief Create a HandHapticTriggerEvent as base Event pointer.
+     * @return Newly created HandHapticTriggerEvent.
+     */
+    std::unique_ptr<Event> create(void) const override;
+
+    /**
+     * @brief Create a strongly-typed HandHapticTriggerEvent.
+     * @return Newly created HandHapticTriggerEvent.
+     */
+    std::unique_ptr<HandHapticTriggerEvent> createTyped(void) const;
+  };
+
+  explicit HandHapticTriggerEvent(void);
+  ~HandHapticTriggerEvent(void) override;
+};
+
+} // namespace utility::event

@@ -22,7 +22,9 @@
 
 #pragma once
 
+#include <concepts>
 #include <memory>
+#include <type_traits>
 
 #include "utility/event/event.hpp"
 
@@ -43,13 +45,13 @@ public:
    * Defines the type of hand involved in the event (e.g., left or right).
    */
   enum class HandType {
-    Left,  /**< Left hand */
-    Right, /**< Right hand */
-    None   /**< No hand */
+    Unknown = 0, /**< Unknown hand */
+    Left = 0,    /**< Left hand */
+    Right = 1,   /**< Right hand */
   };
 
 private:
-  HandType _handType{HandType::None}; /**< Type of hand involved in the event */
+  HandType _handType{HandType::Unknown}; /**< Type of hand involved in the event */
   graphic::PoseF
       _pose{}; /**< Pose of the hand, including position and orientation */
 
@@ -57,44 +59,45 @@ public:
   /**
    * @brief Default constructor.
    */
-  explicit HandEvent(void) = default;
+  explicit HandEvent(void);
 
   /**
    * @brief Default destructor.
    */
-  virtual ~HandEvent(void) override = default;
+  virtual ~HandEvent(void) override;
 
   /**
    * @brief Set the type of hand involved in the event.
    * @param handType The type of hand (left or right).
    * @return Reference to this HandEvent for method chaining.
    */
-  HandEvent &setHandType(const HandType handType) noexcept {
-    _handType = handType;
-    return *this;
-  }
+  HandEvent &setHandType(const HandType handType) noexcept;
 
   /**
    * @brief Get the type of hand involved in the event.
    * @return The type of hand (left or right).
    */
-  HandType getHandType(void) const noexcept { return _handType; }
+  HandType getHandType(void) const noexcept;
 
   /**
    * @brief Set the pose of the hand involved in the event.
    * @param pose The new pose of the hand, including position and orientation.
    * @return Reference to this HandEvent for method chaining.
    */
-  HandEvent &setPose(const graphic::PoseF &pose) noexcept {
-    _pose = pose;
-    return *this;
-  }
+  HandEvent &setPose(const graphic::PoseF &pose) noexcept;
 
   /**
    * @brief Get the pose of the hand involved in the event.
    * @return The pose of the hand, including position and orientation.
    */
-  graphic::PoseF getPose(void) const noexcept { return _pose; }
+  graphic::PoseF getPose(void) const noexcept;
 };
+
+/**
+ * @brief Concept to ensure a type inherits from HandEvent.
+ * @tparam Type The type to check.
+ */
+template <typename Type>
+concept InheritFromHandEvent = std::is_base_of_v<HandEvent, Type>;
 
 } // namespace utility::event

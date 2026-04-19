@@ -22,4 +22,42 @@
 
 #include "utility/event/text_editing_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+TextEditingEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> TextEditingEvent::Factory::create(void) const {
+	return std::make_unique<TextEditingEvent>();
+}
+
+std::unique_ptr<TextEditingEvent>
+TextEditingEvent::Factory::createTyped(void) const {
+	return std::make_unique<TextEditingEvent>();
+}
+
+TextEditingEvent::TextEditingEvent(void) = default;
+
+TextEditingEvent::~TextEditingEvent(void) = default;
+
+TextEditingEvent &TextEditingEvent::setText(const std::string &text) {
+	_text = text;
+	return *this;
+}
+
+std::string TextEditingEvent::getText(void) const { return _text; }
+
+TextEditingEvent &TextEditingEvent::setStart(const int start) noexcept {
+	_start = start;
+	return *this;
+}
+
+int TextEditingEvent::getStart(void) const noexcept { return _start; }
+
+TextEditingEvent &TextEditingEvent::setLength(const int length) noexcept {
+	_length = length;
+	return *this;
+}
+
+int TextEditingEvent::getLength(void) const noexcept { return _length; }
+
+} // namespace utility::event

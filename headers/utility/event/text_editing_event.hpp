@@ -44,83 +44,70 @@ public:
    */
   class Factory : public Event::AbstractFactory {
   public:
-    ~Factory(void) override = default;
+    ~Factory(void) override;
 
     /**
      * @brief Create a TextEditingEvent as a base Event pointer.
      * @return Newly created TextEditingEvent as std::unique_ptr<Event>.
      */
-    std::unique_ptr<Event> create(void) const override {
-      return std::make_unique<TextEditingEvent>();
-    }
+    std::unique_ptr<Event> create(void) const override;
 
     /**
      * @brief Create a strongly-typed TextEditingEvent.
      * @return Newly created TextEditingEvent as
      * std::unique_ptr<TextEditingEvent>.
      */
-    std::unique_ptr<TextEditingEvent> createTyped(void) const {
-      return std::make_unique<TextEditingEvent>();
-    }
+    std::unique_ptr<TextEditingEvent> createTyped(void) const;
   };
 
   /**
    * @brief Default constructor.
    */
-  explicit TextEditingEvent(void) = default;
+  explicit TextEditingEvent(void);
 
   /**
    * @brief Default destructor.
    */
-  ~TextEditingEvent(void) override = default;
+  ~TextEditingEvent(void) override;
 
   /**
    * @brief Set preedit UTF-8 text.
    * @param text The preedit text.
    * @return Reference to this TextEditingEvent for method chaining.
    */
-  TextEditingEvent &setText(const std::string &text) {
-    _text = text;
-    return *this;
-  }
+  TextEditingEvent &setText(const std::string &text);
 
   /**
    * @brief Get preedit UTF-8 text.
    * @return The preedit text.
    */
-  std::string getText(void) const { return _text; }
+  std::string getText(void) const;
 
   /**
    * @brief Set cursor start position in preedit text.
    * @param start Cursor start position.
    * @return Reference to this TextEditingEvent for method chaining.
    */
-  TextEditingEvent &setStart(const int start) noexcept {
-    _start = start;
-    return *this;
-  }
+  TextEditingEvent &setStart(const int start) noexcept;
 
   /**
    * @brief Get cursor start position in preedit text.
    * @return Cursor start position.
    */
-  int getStart(void) const noexcept { return _start; }
+  int getStart(void) const noexcept;
 
   /**
    * @brief Set selection length in preedit text.
    * @param length Selection length.
    * @return Reference to this TextEditingEvent for method chaining.
    */
-  TextEditingEvent &setLength(const int length) noexcept {
-    _length = length;
-    return *this;
-  }
+  TextEditingEvent &setLength(const int length) noexcept;
 
   /**
    * @brief Get selection length in preedit text.
    * @return Selection length.
    */
-  int getLength(void) const noexcept { return _length; }
+  int getLength(void) const noexcept;
 };
 
 } // namespace utility::event

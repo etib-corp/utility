@@ -24,55 +24,60 @@
 
 #include <memory>
 
-#include "utility/event/controller_event.hpp"
+#include "utility/event/hand_event.hpp"
 
 namespace utility::event {
 
 /**
- * @brief Controller button event.
+ * @brief Hand button event.
  */
-class ControllerButtonEvent : public ControllerEvent {
+class HandButtonEvent : public HandEvent {
 public:
   /**
-   * @brief Controller button identifier.
+   * @brief Hand button identifier.
    */
   enum class Button {
-    X,      /**< X button */
-    Y,      /**< Y button */
-    A,      /**< A button */
-    B,      /**< B button */
-    Menu,   /**< Menu button */
-    System, /**< System button */
-    None    /**< No button */
+    Unknown = 0, /**< Unknown button */
+    X = 0,      /**< X button */
+    Y = 1,      /**< Y button */
+    A = 2,      /**< A button */
+    B = 3,      /**< B button */
+    Menu = 4,   /**< Menu button */
+    System = 5, /**< System button */
   };
 
   /**
-   * @brief Factory for creating ControllerButtonEvent instances.
+   * @brief Check whether a button is valid for a given hand path.
+   * @param handType Hand side.
+   * @param button Button identifier.
+   * @return True when the button is valid for that hand.
+   */
+  static bool isButtonValidForHand(const HandType handType,
+                                   const Button button) noexcept;
+
+  /**
+   * @brief Factory for creating HandButtonEvent instances.
    */
   class Factory : public Event::AbstractFactory {
   public:
-    ~Factory(void) override = default;
+    ~Factory(void) override;
 
     /**
-     * @brief Create a ControllerButtonEvent as base Event pointer.
-     * @return Newly created ControllerButtonEvent.
+     * @brief Create a HandButtonEvent as base Event pointer.
+     * @return Newly created HandButtonEvent.
      */
-    std::unique_ptr<Event> create(void) const override {
-      return std::make_unique<ControllerButtonEvent>();
-    }
+    std::unique_ptr<Event> create(void) const override;
 
     /**
-     * @brief Create a strongly-typed ControllerButtonEvent.
-     * @return Newly created ControllerButtonEvent.
+     * @brief Create a strongly-typed HandButtonEvent.
+     * @return Newly created HandButtonEvent.
      */
-    std::unique_ptr<ControllerButtonEvent> createTyped(void) const {
-      return std::make_unique<ControllerButtonEvent>();
-    }
+    std::unique_ptr<HandButtonEvent> createTyped(void) const;
   };
 
 private:
-  /** @brief Selected controller button. */
-  Button _button{Button::None};
+  /** @brief Selected hand button. */
+  Button _button{Button::Unknown};
 
   /** @brief True when the button is touched. */
   bool _isTouched{false};
@@ -84,60 +89,57 @@ public:
   /**
    * @brief Default constructor.
    */
-  explicit ControllerButtonEvent(void) = default;
+  explicit HandButtonEvent(void);
 
   /**
    * @brief Default destructor.
    */
-  ~ControllerButtonEvent(void) override = default;
+  ~HandButtonEvent(void) override;
 
   /**
    * @brief Set button value.
-   * @param button Controller button.
-   * @return Reference to this ControllerButtonEvent.
+   * @param button Hand button.
+   * @return Reference to this HandButtonEvent.
    */
-  ControllerButtonEvent &setButton(const Button button) noexcept {
-    _button = button;
-    return *this;
-  }
+  HandButtonEvent &setButton(const Button button) noexcept;
 
   /**
    * @brief Get button value.
    * @return Current button.
    */
-  Button getButton(void) const noexcept { return _button; }
+  Button getButton(void) const noexcept;
+
+  /**
+   * @brief Check whether current hand/button combination is valid.
+   * @return True when current button is valid for current hand type.
+   */
+  bool isValidForCurrentHand(void) const noexcept;
 
   /**
    * @brief Set touched state.
    * @param touched True if touched.
-   * @return Reference to this ControllerButtonEvent.
+   * @return Reference to this HandButtonEvent.
    */
-  ControllerButtonEvent &setTouched(const bool touched) noexcept {
-    _isTouched = touched;
-    return *this;
-  }
+  HandButtonEvent &setTouched(const bool touched) noexcept;
 
   /**
    * @brief Get touched state.
    * @return True if touched.
    */
-  bool isTouched(void) const noexcept { return _isTouched; }
+  bool isTouched(void) const noexcept;
 
   /**
    * @brief Set clicked state.
    * @param clicked True if clicked.
-   * @return Reference to this ControllerButtonEvent.
+   * @return Reference to this HandButtonEvent.
    */
-  ControllerButtonEvent &setClicked(const bool clicked) noexcept {
-    _isClicked = clicked;
-    return *this;
-  }
+  HandButtonEvent &setClicked(const bool clicked) noexcept;
 
   /**
    * @brief Get clicked state.
    * @return True if clicked.
    */
-  bool isClicked(void) const noexcept { return _isClicked; }
+  bool isClicked(void) const noexcept;
 };
 
 } // namespace utility::event

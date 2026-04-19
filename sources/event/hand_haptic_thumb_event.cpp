@@ -20,6 +20,23 @@
  SOFTWARE.
  */
 
-#include "utility/event/controller_thumb_stick_event.hpp"
+#include "utility/event/hand_haptic_thumb_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+HandHapticThumbEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> HandHapticThumbEvent::Factory::create(void) const {
+  return std::make_unique<HandHapticThumbEvent>();
+}
+
+std::unique_ptr<HandHapticThumbEvent>
+HandHapticThumbEvent::Factory::createTyped(void) const {
+  return std::make_unique<HandHapticThumbEvent>();
+}
+
+HandHapticThumbEvent::HandHapticThumbEvent(void) = default;
+
+HandHapticThumbEvent::~HandHapticThumbEvent(void) = default;
+
+} // namespace utility::event
