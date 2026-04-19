@@ -22,4 +22,20 @@
 
 #include "utility/event/hand_pinch_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+HandPinchEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> HandPinchEvent::Factory::create(void) const {
+	return std::make_unique<HandPinchEvent>();
+}
+
+std::unique_ptr<HandPinchEvent> HandPinchEvent::Factory::createTyped(void) const {
+	return std::make_unique<HandPinchEvent>();
+}
+
+HandPinchEvent::HandPinchEvent(void) = default;
+
+HandPinchEvent::~HandPinchEvent(void) = default;
+
+} // namespace utility::event

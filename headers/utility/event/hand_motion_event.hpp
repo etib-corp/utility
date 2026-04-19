@@ -24,87 +24,87 @@
 
 #include <memory>
 
-#include "utility/event/controller_event.hpp"
+#include "utility/event/hand_event.hpp"
 
 #include "utility/graphic/pose.hpp"
 
 namespace utility::event {
 
 /**
- * @brief Controller motion event containing aim and grip poses.
+ * @brief Hand motion event containing aim/grip/grip_surface poses.
  */
-class ControllerMotionEvent : public ControllerEvent {
+class HandMotionEvent : public HandEvent {
 public:
   /**
-   * @brief Factory for creating ControllerMotionEvent instances.
+   * @brief Factory for creating HandMotionEvent instances.
    */
   class Factory : public Event::AbstractFactory {
   public:
-    ~Factory(void) override = default;
+    ~Factory(void) override;
 
     /**
-     * @brief Create a ControllerMotionEvent as base Event pointer.
-     * @return Newly created ControllerMotionEvent.
+     * @brief Create a HandMotionEvent as base Event pointer.
+     * @return Newly created HandMotionEvent.
      */
-    std::unique_ptr<Event> create(void) const override {
-      return std::make_unique<ControllerMotionEvent>();
-    }
+    std::unique_ptr<Event> create(void) const override;
 
     /**
-     * @brief Create a strongly-typed ControllerMotionEvent.
-     * @return Newly created ControllerMotionEvent.
+     * @brief Create a strongly-typed HandMotionEvent.
+     * @return Newly created HandMotionEvent.
      */
-    std::unique_ptr<ControllerMotionEvent> createTyped(void) const {
-      return std::make_unique<ControllerMotionEvent>();
-    }
+    std::unique_ptr<HandMotionEvent> createTyped(void) const;
   };
 
 private:
-  graphic::PoseF _aim;  /**< Aim pose of the controller */
-  graphic::PoseF _grip; /**< Grip pose of the controller */
+  graphic::PoseF _aim{};         /**< Aim pose of the hand */
+  graphic::PoseF _grip{};        /**< Grip pose of the hand */
+  graphic::PoseF _gripSurface{}; /**< Grip-surface pose */
 
 public:
   /**
    * @brief Default constructor.
    */
-  explicit ControllerMotionEvent(void) = default;
-
-  /**
-   * @brief Default destructor.
-   */
-  ~ControllerMotionEvent(void) override = default;
+  explicit HandMotionEvent(void);
+  ~HandMotionEvent(void) override;
 
   /**
    * @brief Set aim pose.
    * @param aim Aim pose.
-   * @return Reference to this ControllerMotionEvent.
+   * @return Reference to this HandMotionEvent.
    */
-  ControllerMotionEvent &setAim(const graphic::PoseF &aim) noexcept {
-    _aim = aim;
-    return *this;
-  }
+  HandMotionEvent &setAim(const graphic::PoseF &aim) noexcept;
 
   /**
    * @brief Get aim pose.
    * @return Aim pose.
    */
-  graphic::PoseF getAim(void) const noexcept { return _aim; }
+  graphic::PoseF getAim(void) const noexcept;
 
   /**
    * @brief Set grip pose.
    * @param grip Grip pose.
-   * @return Reference to this ControllerMotionEvent.
+   * @return Reference to this HandMotionEvent.
    */
-  ControllerMotionEvent &setGrip(const graphic::PoseF &grip) noexcept {
-    _grip = grip;
-    return *this;
-  }
+  HandMotionEvent &setGrip(const graphic::PoseF &grip) noexcept;
 
   /**
    * @brief Get grip pose.
    * @return Grip pose.
    */
-  graphic::PoseF getGrip(void) const noexcept { return _grip; }
+  graphic::PoseF getGrip(void) const noexcept;
+
+  /**
+   * @brief Set grip_surface pose.
+   * @param gripSurface Grip-surface pose.
+   * @return Reference to this HandMotionEvent.
+   */
+  HandMotionEvent &setGripSurface(const graphic::PoseF &gripSurface) noexcept;
+
+  /**
+   * @brief Get grip_surface pose.
+   * @return Grip-surface pose.
+   */
+  graphic::PoseF getGripSurface(void) const noexcept;
 };
 
 } // namespace utility::event

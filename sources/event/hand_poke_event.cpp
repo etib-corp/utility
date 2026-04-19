@@ -22,4 +22,20 @@
 
 #include "utility/event/hand_poke_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+HandPokeEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> HandPokeEvent::Factory::create(void) const {
+	return std::make_unique<HandPokeEvent>();
+}
+
+std::unique_ptr<HandPokeEvent> HandPokeEvent::Factory::createTyped(void) const {
+	return std::make_unique<HandPokeEvent>();
+}
+
+HandPokeEvent::HandPokeEvent(void) = default;
+
+HandPokeEvent::~HandPokeEvent(void) = default;
+
+} // namespace utility::event

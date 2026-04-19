@@ -20,6 +20,41 @@
  SOFTWARE.
  */
 
-#include "utility/event/controller_trigger_event.hpp"
+#include "utility/event/hand_thumb_rest_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+HandThumbRestEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> HandThumbRestEvent::Factory::create(void) const {
+  return std::make_unique<HandThumbRestEvent>();
+}
+
+std::unique_ptr<HandThumbRestEvent>
+HandThumbRestEvent::Factory::createTyped(void) const {
+  return std::make_unique<HandThumbRestEvent>();
+}
+
+HandThumbRestEvent::HandThumbRestEvent(void) = default;
+
+HandThumbRestEvent::~HandThumbRestEvent(void) = default;
+
+HandThumbRestEvent &
+HandThumbRestEvent::setTouched(const bool touched) noexcept {
+  _isTouched = touched;
+  return *this;
+}
+
+bool HandThumbRestEvent::isTouched(void) const noexcept { return _isTouched; }
+
+HandThumbRestEvent &
+HandThumbRestEvent::setProximity(const bool proximity) noexcept {
+  _isProximity = proximity;
+  return *this;
+}
+
+bool HandThumbRestEvent::isProximity(void) const noexcept {
+  return _isProximity;
+}
+
+} // namespace utility::event

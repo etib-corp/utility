@@ -20,49 +20,45 @@
  SOFTWARE.
  */
 
-#pragma once
+#include "utility/event/hand_trigger_event.hpp"
 
-#include <memory>
-
-#include "utility/event/hand_event.hpp"
+#include "utility/math/common.hpp"
 
 namespace utility::event {
 
-/**
- * @brief Hand pinch event.
- */
-class HandPinchEvent : public HandEvent {
-public:
-  /**
-   * @brief Factory for creating HandPinchEvent instances.
-   */
-  class Factory : public Event::AbstractFactory {
-  public:
-    ~Factory(void) override;
+HandTriggerEvent::Factory::~Factory(void) = default;
 
-    /**
-     * @brief Create a HandPinchEvent as base Event pointer.
-     * @return Newly created HandPinchEvent.
-     */
-    std::unique_ptr<Event> create(void) const override;
+std::unique_ptr<Event> HandTriggerEvent::Factory::create(void) const {
+  return std::make_unique<HandTriggerEvent>();
+}
 
-    /**
-     * @brief Create a strongly-typed HandPinchEvent.
-     * @return Newly created HandPinchEvent.
-     */
-    std::unique_ptr<HandPinchEvent> createTyped(void) const;
-  };
+std::unique_ptr<HandTriggerEvent> HandTriggerEvent::Factory::createTyped(void) const {
+  return std::make_unique<HandTriggerEvent>();
+}
 
-public:
-  /**
-   * @brief Default constructor.
-   */
-  explicit HandPinchEvent(void);
+HandTriggerEvent::HandTriggerEvent(void) = default;
 
-  /**
-   * @brief Default destructor.
-   */
-  ~HandPinchEvent(void) override;
-};
+HandTriggerEvent::~HandTriggerEvent(void) = default;
+
+HandTriggerEvent &HandTriggerEvent::setValue(const float value) noexcept {
+  _value = utility::math::clamp(value, 0.0F, 1.0F);
+  return *this;
+}
+
+float HandTriggerEvent::getValue(void) const noexcept { return _value; }
+
+HandTriggerEvent &HandTriggerEvent::setTouched(const bool touched) noexcept {
+  _isTouched = touched;
+  return *this;
+}
+
+bool HandTriggerEvent::isTouched(void) const noexcept { return _isTouched; }
+
+HandTriggerEvent &HandTriggerEvent::setProximity(const bool proximity) noexcept {
+  _isProximity = proximity;
+  return *this;
+}
+
+bool HandTriggerEvent::isProximity(void) const noexcept { return _isProximity; }
 
 } // namespace utility::event

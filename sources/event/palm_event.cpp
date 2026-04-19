@@ -22,4 +22,20 @@
 
 #include "utility/event/palm_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+PalmEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> PalmEvent::Factory::create(void) const {
+	return std::make_unique<PalmEvent>();
+}
+
+std::unique_ptr<PalmEvent> PalmEvent::Factory::createTyped(void) const {
+	return std::make_unique<PalmEvent>();
+}
+
+PalmEvent::PalmEvent(void) = default;
+
+PalmEvent::~PalmEvent(void) = default;
+
+} // namespace utility::event

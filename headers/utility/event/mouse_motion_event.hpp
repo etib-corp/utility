@@ -44,24 +44,20 @@ public:
    */
   class Factory : public Event::AbstractFactory {
   public:
-    ~Factory(void) override = default;
+    ~Factory(void) override;
 
     /**
      * @brief Create a MouseMotionEvent as a base Event pointer.
      * @return Newly created MouseMotionEvent as std::unique_ptr<Event>.
      */
-    std::unique_ptr<Event> create(void) const override {
-      return std::make_unique<MouseMotionEvent>();
-    }
+    std::unique_ptr<Event> create(void) const override;
 
     /**
      * @brief Create a strongly-typed MouseMotionEvent.
      * @return Newly created MouseMotionEvent as
      * std::unique_ptr<MouseMotionEvent>.
      */
-    std::unique_ptr<MouseMotionEvent> createTyped(void) const {
-      return std::make_unique<MouseMotionEvent>();
-    }
+    std::unique_ptr<MouseMotionEvent> createTyped(void) const;
   };
 
 private:
@@ -71,28 +67,25 @@ public:
   /**
    * @brief Default constructor.
    */
-  explicit MouseMotionEvent(void) = default;
+  explicit MouseMotionEvent(void);
 
   /**
    * @brief Default destructor.
    */
-  ~MouseMotionEvent(void) override = default;
+  ~MouseMotionEvent(void) override;
 
   /**
    * @brief Set the current mouse position.
    * @param position The mouse position as a 2D vector (x, y).
    * @return Reference to this MouseMotionEvent for method chaining.
    */
-  MouseMotionEvent &setPosition(const MousePosition &position) noexcept {
-    _position = position;
-    return *this;
-  }
+  MouseMotionEvent &setPosition(const MousePosition &position) noexcept;
 
   /**
    * @brief Get the current mouse position.
    * @return The mouse position as a 2D vector (x, y).
    */
-  MousePosition getPosition(void) const noexcept { return _position; }
+  MousePosition getPosition(void) const noexcept;
 };
 
 } // namespace utility::event

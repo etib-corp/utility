@@ -22,4 +22,31 @@
 
 #include "utility/event/mouse_motion_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+MouseMotionEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> MouseMotionEvent::Factory::create(void) const {
+	return std::make_unique<MouseMotionEvent>();
+}
+
+std::unique_ptr<MouseMotionEvent>
+MouseMotionEvent::Factory::createTyped(void) const {
+	return std::make_unique<MouseMotionEvent>();
+}
+
+MouseMotionEvent::MouseMotionEvent(void) = default;
+
+MouseMotionEvent::~MouseMotionEvent(void) = default;
+
+MouseMotionEvent &
+MouseMotionEvent::setPosition(const MousePosition &position) noexcept {
+	_position = position;
+	return *this;
+}
+
+MouseMotionEvent::MousePosition MouseMotionEvent::getPosition(void) const noexcept {
+	return _position;
+}
+
+} // namespace utility::event

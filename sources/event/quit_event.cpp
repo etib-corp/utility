@@ -22,4 +22,20 @@
 
 #include "utility/event/quit_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+QuitEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> QuitEvent::Factory::create(void) const {
+	return std::make_unique<QuitEvent>();
+}
+
+std::unique_ptr<QuitEvent> QuitEvent::Factory::createTyped(void) const {
+	return std::make_unique<QuitEvent>();
+}
+
+QuitEvent::QuitEvent(void) = default;
+
+QuitEvent::~QuitEvent(void) = default;
+
+} // namespace utility::event

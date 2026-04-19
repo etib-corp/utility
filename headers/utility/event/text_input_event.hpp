@@ -42,50 +42,43 @@ public:
    */
   class Factory : public Event::AbstractFactory {
   public:
-    ~Factory(void) override = default;
+    ~Factory(void) override;
 
     /**
      * @brief Create a TextInputEvent as a base Event pointer.
      * @return Newly created TextInputEvent as std::unique_ptr<Event>.
      */
-    std::unique_ptr<Event> create(void) const override {
-      return std::make_unique<TextInputEvent>();
-    }
+    std::unique_ptr<Event> create(void) const override;
 
     /**
      * @brief Create a strongly-typed TextInputEvent.
      * @return Newly created TextInputEvent as std::unique_ptr<TextInputEvent>.
      */
-    std::unique_ptr<TextInputEvent> createTyped(void) const {
-      return std::make_unique<TextInputEvent>();
-    }
+    std::unique_ptr<TextInputEvent> createTyped(void) const;
   };
 
   /**
    * @brief Default constructor.
    */
-  explicit TextInputEvent(void) = default;
+  explicit TextInputEvent(void);
 
   /**
    * @brief Default destructor.
    */
-  ~TextInputEvent(void) override = default;
+  ~TextInputEvent(void) override;
 
   /**
    * @brief Set committed UTF-8 text.
    * @param text The committed text.
    * @return Reference to this TextInputEvent for method chaining.
    */
-  TextInputEvent &setText(const std::string &text) {
-    _text = text;
-    return *this;
-  }
+  TextInputEvent &setText(const std::string &text);
 
   /**
    * @brief Get committed UTF-8 text.
    * @return The committed text.
    */
-  std::string getText(void) const { return _text; }
+  std::string getText(void) const;
 };
 
 } // namespace utility::event

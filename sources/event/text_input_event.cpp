@@ -22,4 +22,27 @@
 
 #include "utility/event/text_input_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+TextInputEvent::Factory::~Factory(void) = default;
+
+std::unique_ptr<Event> TextInputEvent::Factory::create(void) const {
+	return std::make_unique<TextInputEvent>();
+}
+
+std::unique_ptr<TextInputEvent> TextInputEvent::Factory::createTyped(void) const {
+	return std::make_unique<TextInputEvent>();
+}
+
+TextInputEvent::TextInputEvent(void) = default;
+
+TextInputEvent::~TextInputEvent(void) = default;
+
+TextInputEvent &TextInputEvent::setText(const std::string &text) {
+	_text = text;
+	return *this;
+}
+
+std::string TextInputEvent::getText(void) const { return _text; }
+
+} // namespace utility::event

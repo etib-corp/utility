@@ -22,4 +22,26 @@
 
 #include "utility/event/hand_event.hpp"
 
-namespace utility::event {} // namespace utility::event
+namespace utility::event {
+
+HandEvent::HandEvent(void) = default;
+
+HandEvent::~HandEvent(void) = default;
+
+HandEvent &HandEvent::setHandType(const HandType handType) noexcept {
+  _handType = handType;
+  return *this;
+}
+
+HandEvent::HandType HandEvent::getHandType(void) const noexcept {
+  return _handType;
+}
+
+HandEvent &HandEvent::setPose(const graphic::PoseF &pose) noexcept {
+  _pose = pose;
+  return *this;
+}
+
+graphic::PoseF HandEvent::getPose(void) const noexcept { return _pose; }
+
+} // namespace utility::event
