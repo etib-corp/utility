@@ -1,0 +1,104 @@
+/*
+ Copyright (c) 2026 ETIB Corporation
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy of
+ this software and associated documentation files (the "Software"), to deal in
+ the Software without restriction, including without limitation the rights to
+ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ of the Software, and to permit persons to whom the Software is furnished to do
+ so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+
+#pragma once
+
+#include <memory>
+#include <ostream>
+
+#include "utility/math/vector.hpp"
+
+#include "utility/event/event.hpp"
+
+namespace utility::event
+{
+
+	/**
+	 * @brief Mouse motion event.
+	 *
+	 * Represents mouse movement with position.
+	 */
+	class MouseMotionEvent: public Event
+	{
+		public:
+		using MousePosition = math::Vector2F; /**< 2D mouse position type */
+
+		/**
+		 * @brief Factory for creating MouseMotionEvent instances.
+		 */
+		class Factory: public Event::AbstractFactory
+		{
+			public:
+			~Factory(void) override;
+
+			/**
+			 * @brief Create a MouseMotionEvent as a base Event pointer.
+			 * @return Newly created MouseMotionEvent as std::shared_ptr<Event>.
+			 */
+			std::shared_ptr<Event> create(void) const override;
+
+			/**
+			 * @brief Create a strongly-typed MouseMotionEvent.
+			 * @return Newly created MouseMotionEvent as
+			 * std::shared_ptr<MouseMotionEvent>.
+			 */
+			std::shared_ptr<MouseMotionEvent> createTyped(void) const;
+		};
+
+		private:
+		MousePosition _position { 0, 0 };
+
+		public:
+		/**
+		 * @brief Default constructor.
+		 */
+		explicit MouseMotionEvent(void);
+
+		/**
+		 * @brief Default destructor.
+		 */
+		~MouseMotionEvent(void) override;
+
+		/**
+		 * @brief Set the current mouse position.
+		 * @param position The mouse position as a 2D vector (x, y).
+		 * @return Reference to this MouseMotionEvent for method chaining.
+		 */
+		MouseMotionEvent &setPosition(const MousePosition &position) noexcept;
+
+		/**
+		 * @brief Get the current mouse position.
+		 * @return The mouse position as a 2D vector (x, y).
+		 */
+		MousePosition getPosition(void) const noexcept;
+	};
+
+	/**
+	 * @brief Stream insertion operator for MouseMotionEvent.
+	 * @param stream The output stream.
+	 * @param mouseMotionEvent The MouseMotionEvent to output.
+	 * @return Reference to the output stream.
+	 */
+	std::ostream &operator<<(std::ostream &stream,
+							 const MouseMotionEvent &mouseMotionEvent);
+
+}	 // namespace utility::event

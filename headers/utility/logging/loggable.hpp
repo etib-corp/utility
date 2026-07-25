@@ -1,0 +1,119 @@
+/*
+ Copyright (c) 2026 ETIB Corporation
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy of
+ this software and associated documentation files (the "Software"), to deal in
+ the Software without restriction, including without limitation the rights to
+ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ of the Software, and to permit persons to whom the Software is furnished to do
+ so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+
+/**
+ * @file loggable.hpp
+ * @brief Mixin class to provide logging capabilities to derived classes.
+ *
+ * Defines the `utility::Loggable` base class that can be inherited by any class
+ * that needs logging functionality. Derived classes gain access to logging
+ * methods through an internal Logger instance.
+ */
+
+#pragma once
+
+#include <memory>
+#include <string>
+#include <typeinfo>
+
+#include "utility/demangle.hpp"
+
+#include "utility/logging/logger.hpp"
+
+namespace utility::logging
+{
+
+	/**
+	 * @brief Mixin base class providing logging capabilities to derived
+	 * classes.
+	 * @tparam ClassType The derived class type.
+	 * @tparam LoggerType The logger type, must inherit from `Logger`.
+	 *
+	 * Any class that inherits from `Loggable` can use logging methods to output
+	 * debug, info, warning, and error messages.
+	 */
+	template<typename ClassType, InheritFromLogger LoggerType> class Loggable
+	{
+		private:
+		std::string _name;						///< Logger name
+		std::unique_ptr<LoggerType> _logger;	///< Internal logger instance
+
+		protected:
+		/**
+		 * @brief Construct a Loggable with the specified LoggerType.
+		 */
+		explicit Loggable(void)
+			: _name(utility::demangle<ClassType>())
+			, _logger(std::make_unique<LoggerType>(_name))
+		{
+		}
+
+		/**
+		 * @brief Move constructor for Loggable.
+		 * @param other The Loggable instance to move from.
+		 */
+		Loggable(Loggable &&other) noexcept
+			: _name(std::move(other._name))
+			, _logger(std::move(other._logger))
+		{
+		}
+
+		/**
+		 * @brief Move assignment operator for Loggable.
+		 * @param other The Loggable instance to move from.
+		 * @return Reference to this Loggable instance.
+		 */
+		Loggable &operator=(Loggable &&other) noexcept
+		{
+			if (this != &other) {
+				_name	= std::move(other._name);
+				_logger = std::move(other._logger);
+			}
+			return *this;
+		}
+
+		/**
+		 * @brief Get the internal logger.
+		 * @return Reference to the internal Logger instance.
+		 */
+		LoggerType &getLogger(void)
+		{
+			return *_logger;
+		}
+
+		/**
+		 * @brief Get the internal logger.
+		 * @return Reference to the internal Logger instance.
+		 */
+		LoggerType &getLogger(void) const
+		{
+			return *_logger;
+		}
+
+		public:
+		/**
+		 * @brief Virtual destructor for proper cleanup.
+		 */
+		virtual ~Loggable(void) = default;
+	};
+
+}	 // namespace utility::logging
