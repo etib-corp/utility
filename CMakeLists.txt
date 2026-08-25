@@ -128,11 +128,6 @@ if(NOT BUILD_DOCS_ONLY)
     set(HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/headers")
     set(SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sources")
 
-    # Add the headers directories
-    include_directories(
-        ${HEADERS_DIR}
-    )
-
     # Add the source files
     file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
         "${SOURCES_DIR}/*.cpp"
