@@ -54,3 +54,13 @@ TEST_F(TestQuaternion, Equality)
 	EXPECT_TRUE(a == b);
 	EXPECT_FALSE(a != b);
 }
+
+TEST_F(TestQuaternion, ConstructorMapsXyzwComponents)
+{
+	// The public API takes (x, y, z, w); the scalar component is last.
+	QuaternionF q { 1.0f, 2.0f, 3.0f, 4.0f };
+	EXPECT_FLOAT_EQ(q.x, 1.0f);
+	EXPECT_FLOAT_EQ(q.y, 2.0f);
+	EXPECT_FLOAT_EQ(q.z, 3.0f);
+	EXPECT_FLOAT_EQ(q.w, 4.0f);
+}

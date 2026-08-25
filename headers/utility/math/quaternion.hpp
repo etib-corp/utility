@@ -77,7 +77,13 @@ namespace utility::math
 		}
 
 		/**
-		 * @brief Construct from explicit components (x, y, z, w).
+		 * @brief Construct from explicit components in (x, y, z, w) order.
+		 *
+		 * Note: this library exposes the parameter order (x, y, z, w) with the
+		 * scalar component (w) last. This deliberately differs from GLM's
+		 * `glm::qua(w, x, y, z)` constructor, which places the scalar component
+		 * first. The arguments are remapped internally; pass (x, y, z, w).
+		 *
 		 * @param x X component.
 		 * @param y Y component.
 		 * @param z Z component.
