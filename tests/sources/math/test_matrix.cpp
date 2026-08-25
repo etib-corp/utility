@@ -149,3 +149,13 @@ TEST_F(TestMatrix, Equality)
 	EXPECT_TRUE(a == b);
 	EXPECT_FALSE(a != b);
 }
+
+TEST_F(TestMatrix, NonSquareMultiplication)
+{
+	Matrix2x3F lhs { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f };
+	Matrix3x2F rhs { 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f };
+	auto result = lhs * rhs;
+	EXPECT_NEAR(result[0][0], 27.0f, 1e-5f);
+	EXPECT_NEAR(result[1][1], 68.0f, 1e-5f);
+	EXPECT_NEAR(result[2][2], 117.0f, 1e-5f);
+}
