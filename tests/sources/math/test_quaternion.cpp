@@ -54,3 +54,24 @@ TEST_F(TestQuaternion, Equality)
 	EXPECT_TRUE(a == b);
 	EXPECT_FALSE(a != b);
 }
+
+TEST_F(TestQuaternion, ExactEqualityRejectsRounding)
+{
+	QuaternionF a { 1.0f, 2.0f, 3.0f, 4.0f };
+	QuaternionF b { 1.0f, 2.0f, 3.0f, 4.000001f };
+	EXPECT_FALSE(a == b);
+}
+
+TEST_F(TestQuaternion, EpsilonEqualityAcceptsTinyDifference)
+{
+	QuaternionF a { 1.0f, 2.0f, 3.0f, 4.0f };
+	QuaternionF b { 1.0f, 2.0f, 3.0f, 4.000001f };
+	EXPECT_TRUE(a.equalsEpsilon(b));
+}
+
+TEST_F(TestQuaternion, EpsilonEqualityRejectsLargeDifference)
+{
+	QuaternionF a { 1.0f, 2.0f, 3.0f, 4.0f };
+	QuaternionF b { 1.5f, 2.0f, 3.0f, 4.0f };
+	EXPECT_FALSE(a.equalsEpsilon(b));
+}

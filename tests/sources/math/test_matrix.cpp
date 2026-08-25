@@ -69,3 +69,24 @@ TEST_F(TestMatrix, Equality)
 	EXPECT_TRUE(a == b);
 	EXPECT_FALSE(a != b);
 }
+
+TEST_F(TestMatrix, ExactEqualityRejectsRounding)
+{
+	Matrix3x3F a { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f };
+	Matrix3x3F b { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.000001f };
+	EXPECT_FALSE(a == b);
+}
+
+TEST_F(TestMatrix, EpsilonEqualityAcceptsTinyDifference)
+{
+	Matrix3x3F a { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f };
+	Matrix3x3F b { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.000001f };
+	EXPECT_TRUE(a.equalsEpsilon(b));
+}
+
+TEST_F(TestMatrix, EpsilonEqualityRejectsLargeDifference)
+{
+	Matrix3x3F a { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f };
+	Matrix3x3F b { 2.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f };
+	EXPECT_FALSE(a.equalsEpsilon(b));
+}
