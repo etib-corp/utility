@@ -54,3 +54,34 @@ TEST_F(TestQuaternion, Equality)
 	EXPECT_TRUE(a == b);
 	EXPECT_FALSE(a != b);
 }
+
+TEST_F(TestQuaternion, Multiplication)
+{
+	QuaternionF a { 1.0f, 2.0f, 3.0f, 4.0f };
+	QuaternionF b { 5.0f, 6.0f, 7.0f, 8.0f };
+	QuaternionF c = a * b;
+	EXPECT_FLOAT_EQ(c.x, 24.0f);
+	EXPECT_FLOAT_EQ(c.y, 48.0f);
+	EXPECT_FLOAT_EQ(c.z, 48.0f);
+	EXPECT_FLOAT_EQ(c.w, -6.0f);
+}
+
+TEST_F(TestQuaternion, MultiplicationNotCommutative)
+{
+	QuaternionF a { 1.0f, 0.0f, 0.0f, 0.0f };
+	QuaternionF b { 0.0f, 1.0f, 0.0f, 0.0f };
+	EXPECT_NE(a * b, b * a);
+}
+
+TEST_F(TestQuaternion, AdditiveInverse)
+{
+	QuaternionF a { 1.0f, 2.0f, 3.0f, 4.0f };
+	QuaternionF zero{ 0.0f, 0.0f, 0.0f, 0.0f };
+	EXPECT_EQ(a + (-a), zero);
+}
+
+TEST_F(TestQuaternion, ScalarIdentity)
+{
+	QuaternionF a { 1.0f, 2.0f, 3.0f, 4.0f };
+	EXPECT_EQ(a * 1.0f, a);
+}
