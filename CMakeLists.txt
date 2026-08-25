@@ -159,6 +159,51 @@ if(NOT BUILD_DOCS_ONLY)
             $<BUILD_INTERFACE:${stb_SOURCE_DIR}>
             $<BUILD_INTERFACE:${dr_libs_SOURCE_DIR}>
     )
+
+    # 10. Install & export rules
+    # Allow downstream projects to consume the library via find_package().
+
+    include(GNUInstallDirs)
+    include(CMakePackageConfigHelpers)
+
+    set(UTILITY_INSTALL_CMAKEDIR
+        "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+
+    install(TARGETS ${PROJECT_NAME}
+        EXPORT ${PROJECT_NAME}Targets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+    install(DIRECTORY ${HEADERS_DIR}/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "*.hpp"
+    )
+
+    install(EXPORT ${PROJECT_NAME}Targets
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION ${UTILITY_INSTALL_CMAKEDIR}
+    )
+
+    configure_package_config_file(
+        cmake/${PROJECT_NAME}Config.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        INSTALL_DESTINATION ${UTILITY_INSTALL_CMAKEDIR}
+    )
+
+    write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+
+    install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        DESTINATION ${UTILITY_INSTALL_CMAKEDIR}
+    )
 endif()
 
 # 08. Documentations
