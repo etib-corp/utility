@@ -163,7 +163,7 @@ namespace utility::math
 		 * @param rhs The vector to add.
 		 * @return The resulting vector.
 		 */
-		Vector operator+(const Vector &rhs) const
+		Vector operator+(const Vector &rhs) const noexcept
 		{
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
@@ -178,7 +178,7 @@ namespace utility::math
 		 * @param rhs The vector to add.
 		 * @return A reference to this vector after addition.
 		 */
-		Vector &operator+=(const Vector &rhs)
+		Vector &operator+=(const Vector &rhs) noexcept
 		{
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) +=
@@ -193,7 +193,7 @@ namespace utility::math
 		 * @param rhs The vector to subtract.
 		 * @return The resulting vector.
 		 */
-		Vector operator-(const Vector &rhs) const
+		Vector operator-(const Vector &rhs) const noexcept
 		{
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
@@ -208,7 +208,7 @@ namespace utility::math
 		 * @param rhs The vector to subtract.
 		 * @return A reference to this vector after subtraction.
 		 */
-		Vector &operator-=(const Vector &rhs)
+		Vector &operator-=(const Vector &rhs) noexcept
 		{
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) -=
@@ -223,7 +223,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return The resulting vector.
 		 */
-		Vector operator*(VectorComponentType scalar) const
+		Vector operator*(VectorComponentType scalar) const noexcept
 		{
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
@@ -236,7 +236,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return A reference to this vector after multiplication.
 		 */
-		Vector &operator*=(VectorComponentType scalar)
+		Vector &operator*=(VectorComponentType scalar) noexcept
 		{
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) *= scalar;
@@ -273,7 +273,7 @@ namespace utility::math
 		 * @param rhs The vector to multiply with.
 		 * @return The resulting vector.
 		 */
-		Vector operator*(const Vector &rhs) const
+		Vector operator*(const Vector &rhs) const noexcept
 		{
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
@@ -288,7 +288,7 @@ namespace utility::math
 		 * @param rhs The vector to multiply with.
 		 * @return A reference to this vector after multiplication.
 		 */
-		Vector &operator*=(const Vector &rhs)
+		Vector &operator*=(const Vector &rhs) noexcept
 		{
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) *=
@@ -333,7 +333,7 @@ namespace utility::math
 		 * @param rhs The vector to compare with.
 		 * @return True if the vectors are equal, false otherwise.
 		 */
-		bool operator==(const Vector &rhs) const
+		bool operator==(const Vector &rhs) const noexcept
 		{
 			return static_cast<
 					   const glm::vec<VectorDimension, VectorComponentType> &>(
@@ -348,7 +348,7 @@ namespace utility::math
 		 * @param rhs The vector to compare with.
 		 * @return True if the vectors are not equal, false otherwise.
 		 */
-		bool operator!=(const Vector &rhs) const
+		bool operator!=(const Vector &rhs) const noexcept
 		{
 			return !(*this == rhs);
 		}
@@ -357,7 +357,7 @@ namespace utility::math
 		 * @brief Unary negation.
 		 * @return The negated vector.
 		 */
-		Vector operator-() const
+		Vector operator-() const noexcept
 		{
 			return Vector(
 				-static_cast<

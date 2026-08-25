@@ -1,9 +1,21 @@
 #include "math/test_vector.hpp"
 
+#include <type_traits>
+
 #include "utility/math/vector.hpp"
 
 using namespace utility::math;
 using namespace tests::utility::math;
+
+TEST_F(TestVector, ArithmeticOperatorsAreNoexcept)
+{
+	Vector3F a { 1.0f, 0.0f, 0.0f };
+	Vector3F b { 0.0f, 1.0f, 0.0f };
+	EXPECT_TRUE(noexcept(a + b));
+	EXPECT_TRUE(noexcept(a - b));
+	EXPECT_TRUE(noexcept(a * 2.0f));
+	EXPECT_TRUE(noexcept(-a));
+}
 
 TEST_F(TestVector, Addition)
 {

@@ -134,7 +134,7 @@ namespace utility::math
 		 * @param rhs The quaternion to add.
 		 * @return The resulting quaternion.
 		 */
-		Quaternion operator+(const Quaternion &rhs) const
+		Quaternion operator+(const Quaternion &rhs) const noexcept
 		{
 			return Quaternion(
 				static_cast<const glm::qua<QuaternionComponentType> &>(*this)
@@ -146,7 +146,7 @@ namespace utility::math
 		 * @param rhs The quaternion to add.
 		 * @return A reference to this quaternion after addition.
 		 */
-		Quaternion &operator+=(const Quaternion &rhs)
+		Quaternion &operator+=(const Quaternion &rhs) noexcept
 		{
 			*static_cast<glm::qua<QuaternionComponentType> *>(this) +=
 				static_cast<const glm::qua<QuaternionComponentType> &>(rhs);
@@ -158,7 +158,7 @@ namespace utility::math
 		 * @param rhs The quaternion to subtract.
 		 * @return The resulting quaternion.
 		 */
-		Quaternion operator-(const Quaternion &rhs) const
+		Quaternion operator-(const Quaternion &rhs) const noexcept
 		{
 			return Quaternion(
 				static_cast<const glm::qua<QuaternionComponentType> &>(*this)
@@ -170,7 +170,7 @@ namespace utility::math
 		 * @param rhs The quaternion to subtract.
 		 * @return A reference to this quaternion after subtraction.
 		 */
-		Quaternion &operator-=(const Quaternion &rhs)
+		Quaternion &operator-=(const Quaternion &rhs) noexcept
 		{
 			*static_cast<glm::qua<QuaternionComponentType> *>(this) -=
 				static_cast<const glm::qua<QuaternionComponentType> &>(rhs);
@@ -182,7 +182,7 @@ namespace utility::math
 		 * @param rhs The quaternion to multiply with.
 		 * @return The resulting quaternion.
 		 */
-		Quaternion operator*(const Quaternion &rhs) const
+		Quaternion operator*(const Quaternion &rhs) const noexcept
 		{
 			return Quaternion(
 				static_cast<const glm::qua<QuaternionComponentType> &>(*this)
@@ -194,7 +194,7 @@ namespace utility::math
 		 * @param rhs The quaternion to multiply with.
 		 * @return A reference to this quaternion after multiplication.
 		 */
-		Quaternion &operator*=(const Quaternion &rhs)
+		Quaternion &operator*=(const Quaternion &rhs) noexcept
 		{
 			*static_cast<glm::qua<QuaternionComponentType> *>(this) =
 				static_cast<const glm::qua<QuaternionComponentType> &>(*this)
@@ -207,7 +207,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return The resulting quaternion.
 		 */
-		Quaternion operator*(QuaternionComponentType scalar) const
+		Quaternion operator*(QuaternionComponentType scalar) const noexcept
 		{
 			return Quaternion(
 				static_cast<const glm::qua<QuaternionComponentType> &>(*this)
@@ -219,7 +219,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return A reference to this quaternion after multiplication.
 		 */
-		Quaternion &operator*=(QuaternionComponentType scalar)
+		Quaternion &operator*=(QuaternionComponentType scalar) noexcept
 		{
 			*static_cast<glm::qua<QuaternionComponentType> *>(this) *= scalar;
 			return *this;
@@ -230,7 +230,7 @@ namespace utility::math
 		 * @param rhs The quaternion to compare with.
 		 * @return True if the quaternions are equal, false otherwise.
 		 */
-		bool operator==(const Quaternion &rhs) const
+		bool operator==(const Quaternion &rhs) const noexcept
 		{
 			return static_cast<const glm::qua<QuaternionComponentType> &>(*this)
 				== static_cast<const glm::qua<QuaternionComponentType> &>(rhs);
@@ -241,7 +241,7 @@ namespace utility::math
 		 * @param rhs The quaternion to compare with.
 		 * @return True if the quaternions are not equal, false otherwise.
 		 */
-		bool operator!=(const Quaternion &rhs) const
+		bool operator!=(const Quaternion &rhs) const noexcept
 		{
 			return !(*this == rhs);
 		}
@@ -250,7 +250,7 @@ namespace utility::math
 		 * @brief Unary negation.
 		 * @return The negated quaternion.
 		 */
-		Quaternion operator-(void) const
+		Quaternion operator-(void) const noexcept
 		{
 			return Quaternion(
 				-static_cast<const glm::qua<QuaternionComponentType> &>(*this));
