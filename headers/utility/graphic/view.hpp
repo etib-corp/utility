@@ -67,7 +67,7 @@ namespace utility::graphic
 
 		/**
 		 * @brief Validate perspective parameter constraints.
-		 * @param verticalFovDegrees Vertical field-of-view in degrees.
+		 * @param verticalFovRadians Vertical field-of-view in radians.
 		 * @param aspectRatio Aspect ratio (width/height).
 		 * @throws std::invalid_argument if any perspective parameter is
 		 * invalid.
@@ -91,7 +91,7 @@ namespace utility::graphic
 		/**
 		 * @brief Build symmetric per-direction FOV from vertical angle and
 		 * aspect.
-		 * @param verticalFovDegrees Vertical field-of-view in degrees.
+		 * @param verticalFovRadians Vertical field-of-view in radians.
 		 * @param aspectRatio Aspect ratio (width/height).
 		 * @return Symmetric field-of-view values for all directions.
 		 */
