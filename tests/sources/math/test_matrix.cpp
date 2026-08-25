@@ -5,6 +5,21 @@
 using namespace utility::math;
 using namespace tests::utility::math;
 
+TEST_F(TestMatrix, DefaultConstructsIdentityForSquare)
+{
+	Matrix3x3F m;
+	Matrix3x3F expected{ 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
+	EXPECT_EQ(m, expected);
+}
+
+TEST_F(TestMatrix, DefaultConstructsZeroForNonSquare)
+{
+	Matrix4x3F m;
+	Matrix4x3F expected{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+						 0.0f, 0.0f, 0.0f, 0.0f };
+	EXPECT_EQ(m, expected);
+}
+
 TEST_F(TestMatrix, Addition)
 {
 	Matrix3x3F a { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f };
