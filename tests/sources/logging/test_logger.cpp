@@ -141,6 +141,12 @@ TEST(LoggerTest, LogLevelValueOrder)
 			  Logger::levelValue(LogLevel::ERROR_LEVEL));
 }
 
+TEST(LoggerTest, UnknownLevelMapsToHighSentinel)
+{
+	auto unknown = static_cast<LogLevel>(999);
+	EXPECT_GT(Logger::levelValue(unknown), Logger::levelValue(LogLevel::ERROR_LEVEL));
+}
+
 TEST(LoggerTest, DefaultLoggerIsStandardLogger)
 {
 	static_assert(
