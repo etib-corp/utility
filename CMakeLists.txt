@@ -11,7 +11,20 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# 01. Policy & standard setup
+# 01. Platform-specific configuration
+# Load the matching config module for the current platform. These modules
+# apply compiler warnings, debug/release flags, and platform defines.
+if(ANDROID OR CMAKE_SYSTEM_NAME STREQUAL "Android")
+    include(cmake/ConfigAndroid.cmake)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    include(cmake/ConfigMacOS.cmake)
+elseif(WIN32)
+    include(cmake/ConfigWindows.cmake)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    include(cmake/ConfigLinux.cmake)
+else()
+    message(WARNING "No platform configuration found for system '${CMAKE_SYSTEM_NAME}'")
+endif()
 
 # 02. Options & configuration
 option(BUILD_DOCS "Build Doxygen documentation" OFF)
