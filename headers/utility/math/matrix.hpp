@@ -92,13 +92,18 @@ namespace utility::math
 	{
 		public:
 		/**
-		 * @brief Default constructor initializing matrix to identity (if
-		 * square) or zero (if not square).
+		 * @brief Default constructor initializing square matrices to identity
+		 * and non-square matrices to zero.
 		 */
 		Matrix(void)
 			: glm::mat<Cols, Rows, MatrixComponentType>(
 				  MatrixComponentType { 0 })
 		{
+			if constexpr (Cols == Rows) {
+				*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this)
+					= glm::mat<Cols, Rows, MatrixComponentType>(
+						MatrixComponentType { 1 });
+			}
 		}
 
 		/**
