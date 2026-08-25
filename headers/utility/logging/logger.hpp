@@ -35,6 +35,8 @@
 
 #pragma once
 
+#include <memory>
+#include <mutex>
 #include <source_location>
 #include <sstream>
 #include <string>
@@ -80,6 +82,9 @@ namespace utility::logging
 		private:
 		std::string _name;	  ///< Logger name
 		LogLevel _minLevel = LogLevel::DEBUG_LEVEL;
+
+		protected:
+		mutable std::mutex _mutex;	  ///< Serializes output and level access
 
 		public:
 		/**
@@ -160,6 +165,7 @@ namespace utility::logging
 					record.line		= static_cast<int>(_location.line());
 					record.function = _location.function_name();
 				}
+				std::lock_guard<std::mutex> guard(_logger->_mutex);
 				_logger->output(record);
 			}
 		};

@@ -21,7 +21,10 @@
  */
 
 #include <chrono>
+#include <ctime>
 #include <iomanip>
+#include <limits>
+#include <mutex>
 #include <sstream>
 
 #include "utility/logging/logger.hpp"
@@ -69,8 +72,15 @@ namespace utility::logging
 						now.time_since_epoch())
 			% 1000;
 
+		std::tm local {};
+#if defined(_WIN32)
+		localtime_s(&local, &time);
+#else
+		localtime_r(&time, &local);
+#endif
+
 		std::stringstream ss;
-		ss << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S");
+		ss << std::put_time(&local, "%Y-%m-%d %H:%M:%S");
 		ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
 		return ss.str();
 	}
@@ -82,11 +92,13 @@ namespace utility::logging
 
 	void Logger::setMinLevel(LogLevel level)
 	{
+		std::lock_guard<std::mutex> guard(_mutex);
 		_minLevel = level;
 	}
 
 	LogLevel Logger::getMinLevel() const
 	{
+		std::lock_guard<std::mutex> guard(_mutex);
 		return _minLevel;
 	}
 
