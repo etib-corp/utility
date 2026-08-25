@@ -173,12 +173,14 @@ namespace utility::graphic
 		utility::math::Vector<OrientationComponentType, 3>
 			getForward(void) const noexcept
 		{
-			return utility::math::Quaternion<OrientationComponentType>(
-					   this->x, this->y, this->z, this->w)
-				* utility::math::Vector<OrientationComponentType, 3> {
-					  OrientationComponentType(0), OrientationComponentType(0),
-					  OrientationComponentType(-1)
-				  };
+			return utility::math::Vector<OrientationComponentType, 3>(
+				utility::math::Quaternion<OrientationComponentType>(
+					this->x, this->y, this->z, this->w)
+					* utility::math::Vector<OrientationComponentType, 3> {
+						OrientationComponentType(0),
+						OrientationComponentType(0),
+						OrientationComponentType(-1)
+					});
 		}
 
 		/**
@@ -220,9 +222,10 @@ namespace utility::graphic
 			const utility::math::Vector<OrientationComponentType, 3> &local)
 			const noexcept
 		{
-			return utility::math::Quaternion<OrientationComponentType>(
-					   this->x, this->y, this->z, this->w)
-				* local;
+			return utility::math::Vector<OrientationComponentType, 3>(
+				utility::math::Quaternion<OrientationComponentType>(
+					this->x, this->y, this->z, this->w)
+				* local);
 		}
 
 		/**
@@ -273,9 +276,10 @@ namespace utility::graphic
 		 */
 		Orientation normalized(void) const noexcept
 		{
-			return Orientation(utility::math::normalize(
-				static_cast<const utility::math::Quaternion<
-					OrientationComponentType> &>(*this)));
+			return Orientation(utility::math::Quaternion<OrientationComponentType>(
+				utility::math::normalize(
+					static_cast<const utility::math::Quaternion<
+						OrientationComponentType> &>(*this))));
 		}
 
 		/**
@@ -284,9 +288,10 @@ namespace utility::graphic
 		 */
 		Orientation inversed(void) const noexcept
 		{
-			return Orientation(utility::math::inverse(
-				static_cast<const utility::math::Quaternion<
-					OrientationComponentType> &>(*this)));
+			return Orientation(utility::math::Quaternion<OrientationComponentType>(
+				utility::math::inverse(
+					static_cast<const utility::math::Quaternion<
+						OrientationComponentType> &>(*this))));
 		}
 
 		/**

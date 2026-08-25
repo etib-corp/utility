@@ -544,11 +544,13 @@ namespace utility::graphic
 			const auto orientation = _pose.getOrientation();
 			const auto position	   = _pose.getPosition();
 
-			utility::math::Matrix<ViewComponentType, 4, 4> view = glm::inverse(
-				glm::translate(glm::identity<glm::mat4>(),
-							   glm::vec3(position.x, position.y, position.z))
-				* glm::mat4_cast(glm::quat(orientation.w, orientation.x,
-										   orientation.y, orientation.z)));
+			utility::math::Matrix<ViewComponentType, 4, 4> view {
+				glm::inverse(
+					glm::translate(glm::identity<glm::mat4>(),
+								   glm::vec3(position.x, position.y, position.z))
+					* glm::mat4_cast(glm::quat(orientation.w, orientation.x,
+											   orientation.y, orientation.z)))
+			};
 
 			// GLM is column-major: view[col][row]
 			// view[0][0] = static_cast<ViewComponentType>(right[0]);
