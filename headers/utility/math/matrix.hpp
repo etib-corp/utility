@@ -140,7 +140,7 @@ namespace utility::math
 		 * @brief Construct from a GLM matrix.
 		 * @param value Source matrix.
 		 */
-		Matrix(const glm::mat<Cols, Rows, MatrixComponentType> &value)
+		explicit Matrix(const glm::mat<Cols, Rows, MatrixComponentType> &value)
 			: glm::mat<Cols, Rows, MatrixComponentType>(value)
 		{
 		}
