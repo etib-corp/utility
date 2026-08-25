@@ -127,13 +127,13 @@ bool utility::AndroidSystemIO::save(const std::string &path,
 			<< "Cannot save Android asset to original path. Provide a newPath.";
 		return false;
 	}
-	const std::string &content = it->second->content();
+	const auto &content = it->second->data();
 	std::ofstream file(newPath, std::ios::binary);
 	if (!file.is_open()) {
 		getLogger().warning() << "Failed to open file for writing: " << newPath;
 		return false;
 	}
-	file.write(content.data(), content.size());
+	file.write(reinterpret_cast<const char *>(content.data()), content.size());
 	file.close();
 	return true;
 }

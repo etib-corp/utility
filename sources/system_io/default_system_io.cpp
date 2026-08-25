@@ -131,7 +131,7 @@ bool utility::DefaultSystemIO::save(const std::string &path,
 		return false;
 	}
 
-	const std::string &content = it->second->content();
+	const auto &content = it->second->data();
 	const std::string savePath = newPath.empty() ? key : newPath;
 
 	std::error_code error;
@@ -152,7 +152,7 @@ bool utility::DefaultSystemIO::save(const std::string &path,
 		return false;
 	}
 
-	file.write(content.data(), content.size());
+	file.write(reinterpret_cast<const char *>(content.data()), content.size());
 	if (!file) {
 		getLogger().warning() << "Failed to write file content: " << savePath;
 		return false;

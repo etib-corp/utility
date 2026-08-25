@@ -59,7 +59,7 @@ std::shared_ptr<utility::sound::AudioBuffer>
 	DecodedAudio decodedAudio;
 	drmp3 mp3 = {};
 
-	if (drmp3_init_memory(&mp3, file->content().data(), file->size(), nullptr)
+	if (drmp3_init_memory(&mp3, file->data().data(), file->size(), nullptr)
 		== DRMP3_FALSE) {
 		// Log error but don't throw - return nullptr
 		return nullptr;
