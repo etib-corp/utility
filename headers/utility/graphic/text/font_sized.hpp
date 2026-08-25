@@ -124,6 +124,15 @@ namespace utility::graphic
 		std::vector<Glyph> generateGlyphs(const codePointString &codePoints);
 
 		/**
+		 * @brief Compute glyph metrics for a code point without rasterizing or
+		 * mutating the texture atlas.
+		 * @param codePoint The Unicode code point to measure.
+		 * @return A Glyph whose size, bearing, and advance are populated; uv
+		 * coordinates are zero-initialized.
+		 */
+		Glyph measureGlyph(uint32_t codePoint) const;
+
+		/**
 		 * @brief The ascender value for the font size, representing the height
 		 * of the tallest glyph above the baseline.
 		 */

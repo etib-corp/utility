@@ -145,6 +145,18 @@ namespace utility::graphic
 											 const codePointString &codePoints);
 
 		/**
+		 * @brief Measure the bounding size of a string of code points without
+		 * rasterizing or mutating any glyph atlas.
+		 *
+		 * This is a side-effect-free measurement based on glyph metrics.
+		 * @param fontSize The font size to measure with.
+		 * @param codePoints The code points to measure.
+		 * @return The width and height (in pixels) the text would occupy.
+		 */
+		math::Vector2F measureText(uint32_t fontSize,
+								   const codePointString &codePoints) const;
+
+		/**
 		 * @brief Retrieves the paths of the loaded font assets.
 		 *
 		 * This method returns a vector of strings containing the paths of the

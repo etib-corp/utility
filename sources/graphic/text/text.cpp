@@ -87,21 +87,10 @@ namespace utility::graphic
 		graphic::SizeF dimensions({ 0.0, 0.0 });
 
 		std::vector<uint32_t> codepoints = utf8ToCodepoints(_content);
-		std::vector<Glyph> glyphs =
-			_font->processCodePoints(_fontSize, codepoints);
+		const math::Vector2F measured = _font->measureText(_fontSize, codepoints);
 
-		double maxTop	 = 0.0;
-		double maxBottom = 0.0;
-
-		for (const auto &g: glyphs) {
-			dimensions.setWidth(dimensions.getWidth() + g.advance);
-			maxTop = std::max(maxTop, static_cast<double>(g.bearing[VEC_Y]));
-			maxBottom =
-				std::max(maxBottom,
-						 static_cast<double>(g.size[VEC_Y] - g.bearing[VEC_Y]));
-		}
-
-		dimensions.setHeight(maxTop + maxBottom);
+		dimensions.setWidth(measured[0]);
+		dimensions.setHeight(measured[1]);
 
 		getLogger().debug() << "Calculated text dimensions for content '"
 							<< _content << "' with font size " << _fontSize
