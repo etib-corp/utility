@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <stdexcept>
@@ -88,7 +89,7 @@ namespace utility::graphic
 
 		if (_penY + glyphHeight + GLYPH_PADDING
 			>= static_cast<int>(_atlasHeight)) {
-			throw std::runtime_error("Atlas full");
+			resizeAtlas(_atlasHeight * 2);
 		}
 
 		const int pitch	   = g->bitmap.pitch;
@@ -186,5 +187,37 @@ namespace utility::graphic
 		_penX	   = 0;
 		_penY	   = 0;
 		_rowHeight = 0;
+	}
+
+	void FontSized::resizeAtlas(int newHeight)
+	{
+		if (!_generatedAtlas) {
+			_atlasHeight = newHeight;
+			return;
+		}
+
+		if (newHeight <= _atlasHeight) {
+			return;
+		}
+
+		std::vector<uint8_t> resized(
+			static_cast<size_t>(_atlasWidth) * newHeight, 0);
+
+		const int oldWidth	= static_cast<int>(_atlasWidth);
+		const int oldHeight = _atlasHeight;
+
+		for (int y = 0; y < oldHeight; ++y) {
+			const size_t srcRowStart =
+				static_cast<size_t>(y) * oldWidth;
+			const size_t dstRowStart = static_cast<size_t>(y) * oldWidth;
+			std::copy(_generatedAtlas->_pixels.begin()
+						  + static_cast<std::ptrdiff_t>(srcRowStart),
+					  _generatedAtlas->_pixels.begin()
+						  + static_cast<std::ptrdiff_t>(srcRowStart + oldWidth),
+					  resized.begin() + static_cast<std::ptrdiff_t>(dstRowStart));
+		}
+
+		_generatedAtlas->_pixels.swap(resized);
+		_atlasHeight = newHeight;
 	}
 }	 // namespace utility::graphic
