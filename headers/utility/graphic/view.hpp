@@ -596,6 +596,17 @@ namespace utility::graphic
 			const ViewComponentType width  = tanRight - tanLeft;
 			const ViewComponentType height = tanUp - tanDown;
 
+			if (width <= ViewComponentType { 0 }
+				|| height <= ViewComponentType { 0 }) {
+				throw std::invalid_argument(
+					"View frustum width and height must be positive");
+			}
+
+			if (_farPlane <= _nearPlane) {
+				throw std::invalid_argument(
+					"View far plane must be greater than near plane");
+			}
+
 			utility::math::Matrix<ViewComponentType, 4, 4> projection = {};
 
 			projection[0][0] = static_cast<ViewComponentType>(2) / width;

@@ -37,6 +37,15 @@ TEST_F(TestView, ComparisonOperators)
 	EXPECT_FALSE(view1 != view2);
 }
 
+TEST_F(TestView, RejectDegenerateFrustum)
+{
+	// Symmetric zero-width/zero-height frustum yields a degenerate projection.
+	ViewF view;
+	FieldOfView<float> degenerate { 0.0f, 0.0f, 0.0f, 0.0f };
+	view.setFieldOfView(degenerate);
+	EXPECT_THROW(view.getProjectionMatrix(), std::invalid_argument);
+}
+
 TEST_F(TestView, PoseManagement)
 {
 	ViewF view;
