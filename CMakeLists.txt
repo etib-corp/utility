@@ -84,7 +84,7 @@ if(NOT BUILD_DOCS_ONLY)
     set(FMT_OS_X_VERSION 10.15 CACHE STRING "" FORCE)
     FetchContent_MakeAvailable(fmt)
 
-    # Disable building examples, tests, and utilities for OpenAL Soft
+    # Disable building examples, tests, and utilities for OpenAL Soft.
     set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
     set(ALSOFT_TESTS OFF CACHE BOOL "" FORCE)
     set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
@@ -135,13 +135,16 @@ if(NOT BUILD_DOCS_ONLY)
     )
 
     # 07. Link dependencies
+    # PUBLIC deps are referenced by public headers and must be exported;
+    # PRIVATE deps are implementation-only and need not appear in the export set.
     target_link_libraries(${PROJECT_NAME}
         PUBLIC
             tinyobjloader
             glm
             freetype
-            fmt::fmt
             OpenAL::OpenAL
+        PRIVATE
+            fmt::fmt
     )
 
     if(WIN32)
@@ -169,13 +172,29 @@ if(NOT BUILD_DOCS_ONLY)
     set(UTILITY_INSTALL_CMAKEDIR
         "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
 
-    install(TARGETS ${PROJECT_NAME}
+    # Install the PUBLIC dependency targets into the same export set so the
+    # exported utility target's PUBLIC link dependencies resolve for consumers.
+    install(TARGETS ${PROJECT_NAME} glm glm-header-only tinyobjloader freetype fmt
         EXPORT ${PROJECT_NAME}Targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
+
+    # OpenAL declares its public headers as a FILE_SET, which must be installed
+    # when the target is exported. Handle it in a dedicated install command.
+    if(TARGET OpenAL)
+        install(TARGETS OpenAL
+            EXPORT ${PROJECT_NAME}Targets
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            FILE_SET public_headers
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        )
+    endif()
 
     install(DIRECTORY ${HEADERS_DIR}/
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
