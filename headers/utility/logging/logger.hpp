@@ -35,6 +35,7 @@
 
 #pragma once
 
+#include <memory>
 #include <source_location>
 #include <sstream>
 #include <string>
@@ -94,8 +95,21 @@ namespace utility::logging
 			Logger *_logger;				   ///< Parent logger
 			LogLevel _level;				   ///< Severity level
 			std::source_location _location;	   ///< Call-site metadata
-			std::ostringstream _stream;		   ///< Internal buffer
+			std::unique_ptr<std::ostringstream>
+				_stream;	///< Lazily allocated internal buffer
 			bool _active;	 ///< False if level is below minimum
+
+			/**
+			 * @brief Ensure the stream buffer is allocated.
+			 * @return Reference to the internal stream.
+			 */
+			std::ostringstream &ensureStream(void)
+			{
+				if (!_stream) {
+					_stream = std::make_unique<std::ostringstream>();
+				}
+				return *_stream;
+			}
 
 			public:
 			/**
@@ -123,7 +137,7 @@ namespace utility::logging
 			template<typename T> LogMessage &operator<<(T &&value)
 			{
 				if (_active) {
-					_stream << std::forward<T>(value);
+					ensureStream() << std::forward<T>(value);
 				}
 				return *this;
 			}
@@ -136,7 +150,7 @@ namespace utility::logging
 			LogMessage &operator<<(std::ostream &(*manip)(std::ostream &))
 			{
 				if (_active) {
-					_stream << manip;
+					ensureStream() << manip;
 				}
 				return *this;
 			}
@@ -147,12 +161,12 @@ namespace utility::logging
 			 */
 			~LogMessage()
 			{
-				if (!_active || !_logger) {
+				if (!_active || !_logger || !_stream) {
 					return;
 				}
 				LogRecord record;
 				record.level	  = _level;
-				record.message	  = _stream.str();
+				record.message	  = _stream->str();
 				record.timestamp  = Logger::getTimestamp();
 				record.loggerName = _logger->getName();
 				if (_level == LogLevel::DEBUG_LEVEL) {
@@ -160,7 +174,11 @@ namespace utility::logging
 					record.line		= static_cast<int>(_location.line());
 					record.function = _location.function_name();
 				}
-				_logger->output(record);
+				try {
+					_logger->output(record);
+				} catch (...) {
+					// Logging must never become a terminate path.
+				}
 			}
 		};
 
