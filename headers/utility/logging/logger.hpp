@@ -144,6 +144,10 @@ namespace utility::logging
 			/**
 			 * @brief Destructor emits the accumulated message via the parent
 			 * logger.
+			 *
+			 * Output is guarded so an exception thrown by a logger
+			 * implementation cannot terminate the process, even during stack
+			 * unwinding.
 			 */
 			~LogMessage()
 			{
@@ -160,7 +164,11 @@ namespace utility::logging
 					record.line		= static_cast<int>(_location.line());
 					record.function = _location.function_name();
 				}
-				_logger->output(record);
+				try {
+					_logger->output(record);
+				} catch (...) {
+					// Logging must never become a terminate path.
+				}
 			}
 		};
 
