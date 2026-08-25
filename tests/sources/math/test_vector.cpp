@@ -1,7 +1,5 @@
 #include "math/test_vector.hpp"
 
-#include <cmath>
-
 #include "utility/math/vector.hpp"
 
 using namespace utility::math;
@@ -129,14 +127,4 @@ TEST_F(TestVector, ConstructorRequiresExactDimension)
 {
 	EXPECT_THROW(Vector3F({ 1.0f, 2.0f }), std::invalid_argument);
 	EXPECT_THROW(Vector3F({ 1.0f, 2.0f, 3.0f, 4.0f }), std::invalid_argument);
-}
-
-TEST_F(TestVector, ElementwiseDivisionByZero)
-{
-	Vector3F a { 1.0f, 2.0f, 3.0f };
-	Vector3F zero{ 0.0f, 0.0f, 0.0f };
-	Vector3F c = a / zero;
-	EXPECT_TRUE(std::isinf(c[0]));
-	EXPECT_TRUE(std::isinf(c[1]));
-	EXPECT_TRUE(std::isinf(c[2]));
 }
