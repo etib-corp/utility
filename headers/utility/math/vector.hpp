@@ -247,9 +247,13 @@ namespace utility::math
 		 * @brief Scalar division.
 		 * @param scalar The scalar value to divide by.
 		 * @return The resulting vector.
+		 * @throws std::invalid_argument if scalar is zero.
 		 */
 		Vector operator/(VectorComponentType scalar) const
 		{
+			if (scalar == VectorComponentType { 0 }) {
+				throw std::invalid_argument("Vector division by zero");
+			}
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
 								&>(*this)
@@ -260,9 +264,13 @@ namespace utility::math
 		 * @brief Scalar division assignment.
 		 * @param scalar The scalar value to divide by.
 		 * @return A reference to this vector after division.
+		 * @throws std::invalid_argument if scalar is zero.
 		 */
 		Vector &operator/=(VectorComponentType scalar)
 		{
+			if (scalar == VectorComponentType { 0 }) {
+				throw std::invalid_argument("Vector division by zero");
+			}
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) /= scalar;
 			return *this;
@@ -302,9 +310,15 @@ namespace utility::math
 		 * @brief Element-wise division.
 		 * @param rhs The vector to divide by.
 		 * @return The resulting vector.
+		 * @throws std::invalid_argument if any component of rhs is zero.
 		 */
 		Vector operator/(const Vector &rhs) const
 		{
+			for (std::size_t i = 0; i < VectorDimension; ++i) {
+				if (rhs[i] == VectorComponentType { 0 }) {
+					throw std::invalid_argument("Vector division by zero");
+				}
+			}
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
 								&>(*this)
@@ -317,9 +331,15 @@ namespace utility::math
 		 * @brief Element-wise division assignment.
 		 * @param rhs The vector to divide by.
 		 * @return A reference to this vector after division.
+		 * @throws std::invalid_argument if any component of rhs is zero.
 		 */
 		Vector &operator/=(const Vector &rhs)
 		{
+			for (std::size_t i = 0; i < VectorDimension; ++i) {
+				if (rhs[i] == VectorComponentType { 0 }) {
+					throw std::invalid_argument("Vector division by zero");
+				}
+			}
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) /=
 				static_cast<

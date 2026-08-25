@@ -254,9 +254,13 @@ namespace utility::math
 		 * @brief Scalar division.
 		 * @param scalar The scalar value to divide by.
 		 * @return The resulting matrix.
+		 * @throws std::invalid_argument if scalar is zero.
 		 */
 		Matrix operator/(MatrixComponentType scalar) const
 		{
+			if (scalar == MatrixComponentType { 0 }) {
+				throw std::invalid_argument("Matrix division by zero");
+			}
 			return Matrix(
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
 					*this)
@@ -267,9 +271,13 @@ namespace utility::math
 		 * @brief Scalar division assignment.
 		 * @param scalar The scalar value to divide by.
 		 * @return A reference to this matrix after division.
+		 * @throws std::invalid_argument if scalar is zero.
 		 */
 		Matrix &operator/=(MatrixComponentType scalar)
 		{
+			if (scalar == MatrixComponentType { 0 }) {
+				throw std::invalid_argument("Matrix division by zero");
+			}
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) /=
 				scalar;
 			return *this;

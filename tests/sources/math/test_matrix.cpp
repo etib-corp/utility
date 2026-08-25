@@ -69,3 +69,10 @@ TEST_F(TestMatrix, Equality)
 	EXPECT_TRUE(a == b);
 	EXPECT_FALSE(a != b);
 }
+
+TEST_F(TestMatrix, ScalarDivisionByZeroThrows)
+{
+	Matrix3x3F a { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f };
+	EXPECT_THROW(a / 0.0f, std::invalid_argument);
+	EXPECT_THROW(a /= 0.0f, std::invalid_argument);
+}
