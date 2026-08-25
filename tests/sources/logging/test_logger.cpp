@@ -22,6 +22,8 @@
 
 #include <gtest/gtest.h>
 
+#include <stdexcept>
+
 #include "utility/logging/logger.hpp"
 #include "utility/logging/standard_logger.hpp"
 #include "utility/logging/default_logger.hpp"
@@ -160,4 +162,21 @@ TEST(StandardLoggerTest, LevelToString)
 	EXPECT_EQ(Logger::levelToString(LogLevel::INFO_LEVEL), "Info");
 	EXPECT_EQ(Logger::levelToString(LogLevel::WARNING_LEVEL), "Warning");
 	EXPECT_EQ(Logger::levelToString(LogLevel::ERROR_LEVEL), "Error");
+}
+
+TEST(LoggerTest, ThrowingOutputDoesNotTerminate)
+{
+	struct ThrowingLogger: Logger {
+		ThrowingLogger(const std::string &name)
+			: Logger(name)
+		{
+		}
+		void output(const LogRecord &) override
+		{
+			throw std::runtime_error("boom");
+		}
+	};
+
+	ThrowingLogger logger("Throw");
+	EXPECT_NO_THROW({ logger.info() << "should not terminate"; });
 }
