@@ -1,5 +1,6 @@
 #include "graphic/test_ray.hpp"
 
+#include "utility/graphic/pose.hpp"
 #include "utility/graphic/ray.hpp"
 
 using namespace utility::graphic;
@@ -47,4 +48,25 @@ TEST_F(TestRay, DirectionValidationAndAccessors)
 	EXPECT_FLOAT_EQ(atPoint[0], 5.0f);
 	EXPECT_FLOAT_EQ(atPoint[1], 3.0f);
 	EXPECT_FLOAT_EQ(atPoint[2], 4.0f);
+}
+
+TEST_F(TestRay, IntersectRectangleCenter)
+{
+	// Pose at origin, identity orientation. Rectangle is 10 wide, 10 tall.
+	// Its top-left is at (0,0,0), so center is at (5, 5, 0).
+	PoseF pose;
+	RayF ray;
+	ray.setOrigin(PositionF(5.0f, 5.0f, 10.0f));
+	ray.setDirection(Vector3F { 0.0f, 0.0f, -1.0f });
+	EXPECT_TRUE(ray.intersectRectangle(pose, Vector2F { 10.0f, 10.0f }));
+}
+
+TEST_F(TestRay, IntersectRectangleMiss)
+{
+	PoseF pose;
+	RayF ray;
+	// Ray hits far outside the rectangle bounds.
+	ray.setOrigin(PositionF(100.0f, 100.0f, 10.0f));
+	ray.setDirection(Vector3F { 0.0f, 0.0f, -1.0f });
+	EXPECT_FALSE(ray.intersectRectangle(pose, Vector2F { 10.0f, 10.0f }));
 }

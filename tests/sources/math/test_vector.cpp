@@ -79,3 +79,88 @@ TEST_F(TestVector, Equality)
 	EXPECT_TRUE(a == b);
 	EXPECT_FALSE(a != b);
 }
+
+TEST_F(TestVector, ScalarDivisionByZeroThrows)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	EXPECT_THROW(a / 0.0f, std::invalid_argument);
+	EXPECT_THROW(a /= 0.0f, std::invalid_argument);
+}
+
+TEST_F(TestVector, ElementwiseDivisionByZeroThrows)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F zero{ 0.0f, 0.0f, 0.0f };
+	EXPECT_THROW(a / zero, std::invalid_argument);
+	EXPECT_THROW(a /= zero, std::invalid_argument);
+}
+
+TEST_F(TestVector, ExactEqualityRejectsRounding)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F b { 1.0f + 1e-6f, 2.0f, 3.0f };
+	EXPECT_FALSE(a == b);
+}
+
+TEST_F(TestVector, EpsilonEqualityAcceptsTinyDifference)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F b { 1.0f + 1e-6f, 2.0f, 3.0f };
+	EXPECT_TRUE(a.equalsEpsilon(b));
+}
+
+TEST_F(TestVector, EpsilonEqualityRejectsLargeDifference)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F b { 1.1f, 2.0f, 3.0f };
+	EXPECT_FALSE(a.equalsEpsilon(b));
+}
+
+TEST_F(TestVector, AdditionCommutative)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F b { 4.0f, 5.0f, 6.0f };
+	EXPECT_EQ(a + b, b + a);
+}
+
+TEST_F(TestVector, AdditionAssociative)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F b { 4.0f, 5.0f, 6.0f };
+	Vector3F c { 7.0f, 8.0f, 9.0f };
+	EXPECT_EQ((a + b) + c, a + (b + c));
+}
+
+TEST_F(TestVector, AdditiveIdentity)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F zero{ 0.0f, 0.0f, 0.0f };
+	EXPECT_EQ(a + zero, a);
+	EXPECT_EQ(zero + a, a);
+}
+
+TEST_F(TestVector, AdditiveInverse)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F zero{ 0.0f, 0.0f, 0.0f };
+	EXPECT_EQ(a + (-a), zero);
+}
+
+TEST_F(TestVector, ScalarIdentity)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	EXPECT_EQ(a * 1.0f, a);
+}
+
+TEST_F(TestVector, ScalarDistributivity)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F b { 4.0f, 5.0f, 6.0f };
+	EXPECT_EQ(2.0f * (a + b), (2.0f * a) + (2.0f * b));
+}
+
+TEST_F(TestVector, ConstructorRequiresExactDimension)
+{
+	EXPECT_THROW(Vector3F({ 1.0f, 2.0f }), std::invalid_argument);
+	EXPECT_THROW(Vector3F({ 1.0f, 2.0f, 3.0f, 4.0f }), std::invalid_argument);
+}

@@ -48,3 +48,32 @@ TEST_F(TestColor, AlphaHelpers)
 	EXPECT_NEAR(transparent.alpha01(), 0.0, 1e-9);
 	EXPECT_NEAR(color.alpha01(), 1.0, 1e-9);
 }
+
+TEST_F(TestColor, IntegerAdditionSaturates)
+{
+	Color32Bit color(200, 200, 50, 255);
+	Color32Bit other(100, 100, 50, 255);
+	Color32Bit result = color + other;
+	EXPECT_EQ(result.getRed(), 255);
+	EXPECT_EQ(result.getGreen(), 255);
+	EXPECT_EQ(result.getBlue(), 100);
+}
+
+TEST_F(TestColor, IntegerSubtractionSaturates)
+{
+	Color32Bit color(50, 50, 50, 255);
+	Color32Bit other(200, 100, 10, 255);
+	Color32Bit result = color - other;
+	EXPECT_EQ(result.getRed(), 0);
+	EXPECT_EQ(result.getGreen(), 0);
+	EXPECT_EQ(result.getBlue(), 40);
+}
+
+TEST_F(TestColor, IntegerScalarMultiplicationSaturates)
+{
+	Color32Bit color(200, 200, 10, 255);
+	Color32Bit result = color * 3;
+	EXPECT_EQ(result.getRed(), 255);
+	EXPECT_EQ(result.getGreen(), 255);
+	EXPECT_EQ(result.getBlue(), 30);
+}
