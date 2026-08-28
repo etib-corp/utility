@@ -23,7 +23,9 @@
 #pragma once
 
 #include <map>
+#include <mutex>
 #include <optional>
+#include <shared_mutex>
 #include <utility>
 #include <functional>
 #include <concepts>
@@ -69,6 +71,7 @@ namespace utility
 		std::map<Key, Entry, Compare>
 			_entries;	 ///< Internal storage for cache entries, using a
 						 ///< std::map to manage key-value pairs.
+		mutable std::shared_mutex _mutex;	///< Guards concurrent access
 
 		public:
 		/**
@@ -110,6 +113,7 @@ namespace utility
 		 */
 		bool contains(const Key &key) const
 		{
+			std::shared_lock<std::shared_mutex> guard(_mutex);
 			return _entries.find(key) != _entries.end();
 		}
 
@@ -121,6 +125,7 @@ namespace utility
 		 */
 		std::optional<Entry> get(const Key &key) const
 		{
+			std::shared_lock<std::shared_mutex> guard(_mutex);
 			auto it = _entries.find(key);
 			if (it == _entries.end()) {
 				return std::nullopt;
@@ -135,6 +140,7 @@ namespace utility
 		 */
 		void put(const Key &key, const Entry &value)
 		{
+			std::unique_lock<std::shared_mutex> guard(_mutex);
 			_entries.insert_or_assign(key, value);
 		}
 
@@ -146,6 +152,7 @@ namespace utility
 		 */
 		void put(Key &&key, Entry &&value)
 		{
+			std::unique_lock<std::shared_mutex> guard(_mutex);
 			_entries.insert_or_assign(std::move(key), std::move(value));
 		}
 
@@ -156,10 +163,14 @@ namespace utility
 		 * @param key The key to associate with the new entry.
 		 * @param args Constructor arguments for the entry.
 		 * @return Reference to the newly emplaced entry.
+		 * @note The returned reference is only valid while the calling thread
+		 * holds no other cache operation; concurrent modification may
+		 * invalidate it.
 		 */
 		template<typename... Args>
 		Entry &emplace(const Key &key, Args &&...args)
 		{
+			std::unique_lock<std::shared_mutex> guard(_mutex);
 			auto [it, inserted] =
 				_entries.try_emplace(key, std::forward<Args>(args)...);
 			return it->second;
@@ -172,9 +183,13 @@ namespace utility
 		 * @param key The key to associate with the new entry (moved).
 		 * @param args Constructor arguments for the entry.
 		 * @return Reference to the newly emplaced entry.
+		 * @note The returned reference is only valid while the calling thread
+		 * holds no other cache operation; concurrent modification may
+		 * invalidate it.
 		 */
 		template<typename... Args> Entry &emplace(Key &&key, Args &&...args)
 		{
+			std::unique_lock<std::shared_mutex> guard(_mutex);
 			auto [it, inserted] = _entries.try_emplace(
 				std::move(key), std::forward<Args>(args)...);
 			return it->second;
@@ -187,6 +202,7 @@ namespace utility
 		 */
 		bool erase(const Key &key)
 		{
+			std::unique_lock<std::shared_mutex> guard(_mutex);
 			return _entries.erase(key) > 0;
 		}
 
@@ -198,6 +214,7 @@ namespace utility
 		void erase_if(
 			const std::function<bool(const Key &, const Entry &)> &predicate)
 		{
+			std::unique_lock<std::shared_mutex> guard(_mutex);
 			for (auto it = _entries.begin(); it != _entries.end();) {
 				if (predicate(it->first, it->second)) {
 					it = _entries.erase(it);
@@ -214,6 +231,7 @@ namespace utility
 		 */
 		void apply(const std::function<void(const Key &, Entry &)> &function)
 		{
+			std::unique_lock<std::shared_mutex> guard(_mutex);
 			for (auto &[key, entry]: _entries) {
 				function(key, entry);
 			}
@@ -224,6 +242,7 @@ namespace utility
 		 */
 		void clear(void)
 		{
+			std::unique_lock<std::shared_mutex> guard(_mutex);
 			_entries.clear();
 		}
 
@@ -233,6 +252,7 @@ namespace utility
 		 */
 		std::map<Key, Entry, Compare>::size_type size(void) const
 		{
+			std::shared_lock<std::shared_mutex> guard(_mutex);
 			return _entries.size();
 		}
 
@@ -242,6 +262,7 @@ namespace utility
 		 */
 		bool empty(void) const
 		{
+			std::shared_lock<std::shared_mutex> guard(_mutex);
 			return _entries.empty();
 		}
 	};
