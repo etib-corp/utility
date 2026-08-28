@@ -215,14 +215,15 @@ namespace utility::graphic
 			const size_t srcRowStart =
 				static_cast<size_t>(y) * oldWidth;
 			const size_t dstRowStart = static_cast<size_t>(y) * oldWidth;
-			std::copy(_generatedAtlas->_pixels.begin()
+			auto &atlasPixels = _generatedAtlas->pixels();
+			std::copy(atlasPixels.begin()
 						  + static_cast<std::ptrdiff_t>(srcRowStart),
-					  _generatedAtlas->_pixels.begin()
+					  atlasPixels.begin()
 						  + static_cast<std::ptrdiff_t>(srcRowStart + oldWidth),
 					  resized.begin() + static_cast<std::ptrdiff_t>(dstRowStart));
 		}
 
-		_generatedAtlas->_pixels.swap(resized);
+		_generatedAtlas->pixels().swap(resized);
 		_atlasHeight = newHeight;
 	}
 }	 // namespace utility::graphic

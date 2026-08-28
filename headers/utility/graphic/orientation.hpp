@@ -190,12 +190,13 @@ namespace utility::graphic
 		utility::math::Vector<OrientationComponentType, 3>
 			getUp(void) const noexcept
 		{
-			return utility::math::Quaternion<OrientationComponentType>(
-					   this->x, this->y, this->z, this->w)
+			return utility::math::Vector<OrientationComponentType, 3>(
+				utility::math::Quaternion<OrientationComponentType>(
+					this->x, this->y, this->z, this->w)
 				* utility::math::Vector<OrientationComponentType, 3> {
 					  OrientationComponentType(0), OrientationComponentType(1),
 					  OrientationComponentType(0)
-				  };
+				  });
 		}
 
 		/**
@@ -205,12 +206,13 @@ namespace utility::graphic
 		utility::math::Vector<OrientationComponentType, 3>
 			getRight(void) const noexcept
 		{
-			return utility::math::Quaternion<OrientationComponentType>(
-					   this->x, this->y, this->z, this->w)
+			return utility::math::Vector<OrientationComponentType, 3>(
+				utility::math::Quaternion<OrientationComponentType>(
+					this->x, this->y, this->z, this->w)
 				* utility::math::Vector<OrientationComponentType, 3> {
 					  OrientationComponentType(1), OrientationComponentType(0),
 					  OrientationComponentType(0)
-				  };
+				  });
 		}
 
 		/**
