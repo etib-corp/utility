@@ -151,6 +151,13 @@ namespace utility::graphic
 		void generateAtlas();
 
 		/**
+		 * @brief Grow the atlas to the given new height, preserving existing
+		 * glyphs.
+		 * @param newHeight The new atlas height in pixels.
+		 */
+		void resizeAtlas(int newHeight);
+
+		/**
 		 * @brief The font size in points for this FontSized object.
 		 */
 		std::shared_ptr<Texture> _generatedAtlas;
