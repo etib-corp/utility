@@ -32,9 +32,6 @@
 #include <vector>
 
 #include "utility/system_io/file.hpp"
-#include "utility/graphic/vertex.hpp"
-
-#include <tiny_obj_loader.h>
 
 /**
  * @namespace utility
