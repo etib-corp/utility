@@ -145,22 +145,15 @@ namespace utility::graphic
 					const size_t normalBase =
 						static_cast<size_t>(index.normal_index) * 3;
 					if (normalBase + 2 < attrib.normals.size()) {
-						vertex.setColor(utility::graphic::Color32Bit(
-							static_cast<std::uint8_t>(
-								attrib.normals[normalBase + 0]),
-							static_cast<std::uint8_t>(
-								attrib.normals[normalBase + 1]),
-							static_cast<std::uint8_t>(
-								attrib.normals[normalBase + 2]),
-							255));
-					} else {
-						vertex.setColor(
-							utility::graphic::Color32Bit(255, 255, 255, 255));
+						vertex.setNormal(utility::math::Vector3F(
+							{ attrib.normals[normalBase + 0],
+							  attrib.normals[normalBase + 1],
+							  attrib.normals[normalBase + 2] }));
 					}
-				} else {
-					vertex.setColor(
-						utility::graphic::Color32Bit(255, 255, 255, 255));
 				}
+
+				vertex.setColor(
+					utility::graphic::Color32Bit(255, 255, 255, 255));
 
 				if (vertices.size() >= static_cast<size_t>(
 						std::numeric_limits<uint32_t>::max())) {
