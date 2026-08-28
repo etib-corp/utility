@@ -92,13 +92,18 @@ namespace utility::math
 	{
 		public:
 		/**
-		 * @brief Default constructor initializing matrix to identity (if
-		 * square) or zero (if not square).
+		 * @brief Default constructor initializing square matrices to identity
+		 * and non-square matrices to zero.
 		 */
 		Matrix(void)
 			: glm::mat<Cols, Rows, MatrixComponentType>(
 				  MatrixComponentType { 0 })
 		{
+			if constexpr (Cols == Rows) {
+				*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this)
+					= glm::mat<Cols, Rows, MatrixComponentType>(
+						MatrixComponentType { 1 });
+			}
 		}
 
 		/**
@@ -135,7 +140,7 @@ namespace utility::math
 		 * @brief Construct from a GLM matrix.
 		 * @param value Source matrix.
 		 */
-		Matrix(const glm::mat<Cols, Rows, MatrixComponentType> &value)
+		explicit Matrix(const glm::mat<Cols, Rows, MatrixComponentType> &value)
 			: glm::mat<Cols, Rows, MatrixComponentType>(value)
 		{
 		}
@@ -176,7 +181,7 @@ namespace utility::math
 		 * @param rhs The matrix to add.
 		 * @return The resulting matrix.
 		 */
-		Matrix operator+(const Matrix &rhs) const
+		Matrix operator+(const Matrix &rhs) const noexcept
 		{
 			return Matrix(
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -190,7 +195,7 @@ namespace utility::math
 		 * @param rhs The matrix to add.
 		 * @return A reference to this matrix after addition.
 		 */
-		Matrix &operator+=(const Matrix &rhs)
+		Matrix &operator+=(const Matrix &rhs) noexcept
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) +=
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -203,7 +208,7 @@ namespace utility::math
 		 * @param rhs The matrix to subtract.
 		 * @return The resulting matrix.
 		 */
-		Matrix operator-(const Matrix &rhs) const
+		Matrix operator-(const Matrix &rhs) const noexcept
 		{
 			return Matrix(
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -217,7 +222,7 @@ namespace utility::math
 		 * @param rhs The matrix to subtract.
 		 * @return A reference to this matrix after subtraction.
 		 */
-		Matrix &operator-=(const Matrix &rhs)
+		Matrix &operator-=(const Matrix &rhs) noexcept
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) -=
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -230,7 +235,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return The resulting matrix.
 		 */
-		Matrix operator*(MatrixComponentType scalar) const
+		Matrix operator*(MatrixComponentType scalar) const noexcept
 		{
 			return Matrix(
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -243,7 +248,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return A reference to this matrix after multiplication.
 		 */
-		Matrix &operator*=(MatrixComponentType scalar)
+		Matrix &operator*=(MatrixComponentType scalar) noexcept
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) *=
 				scalar;
@@ -254,9 +259,13 @@ namespace utility::math
 		 * @brief Scalar division.
 		 * @param scalar The scalar value to divide by.
 		 * @return The resulting matrix.
+		 * @throws std::invalid_argument if scalar is zero.
 		 */
 		Matrix operator/(MatrixComponentType scalar) const
 		{
+			if (scalar == MatrixComponentType { 0 }) {
+				throw std::invalid_argument("Matrix division by zero");
+			}
 			return Matrix(
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
 					*this)
@@ -267,9 +276,13 @@ namespace utility::math
 		 * @brief Scalar division assignment.
 		 * @param scalar The scalar value to divide by.
 		 * @return A reference to this matrix after division.
+		 * @throws std::invalid_argument if scalar is zero.
 		 */
 		Matrix &operator/=(MatrixComponentType scalar)
 		{
+			if (scalar == MatrixComponentType { 0 }) {
+				throw std::invalid_argument("Matrix division by zero");
+			}
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) /=
 				scalar;
 			return *this;
@@ -277,24 +290,35 @@ namespace utility::math
 
 		/**
 		 * @brief Matrix multiplication.
+		 * @tparam RhsCols Number of columns of the RHS matrix.
+		 * @tparam RhsRows Number of rows of the RHS matrix.
 		 * @param rhs The matrix to multiply with.
-		 * @return The resulting matrix.
+		 * @return The resulting matrix with shape (Rows, RhsCols).
+		 * @note Requires this matrix's column count to equal the RHS row count
+		 * (Cols == RhsRows).
 		 */
-		Matrix operator*(const Matrix &rhs) const
+		template<std::size_t RhsCols, std::size_t RhsRows>
+			requires (Cols == RhsRows)
+		Matrix<MatrixComponentType, RhsCols, Rows>
+			operator*(const Matrix<MatrixComponentType, RhsCols, RhsRows> &rhs)
+				const noexcept
 		{
-			return Matrix(
-				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
-					*this)
-				* static_cast<
-					const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs));
+			using LhsGlm =
+				glm::mat<Cols, Rows, MatrixComponentType>;
+			using RhsGlm =
+				glm::mat<RhsCols, RhsRows, MatrixComponentType>;
+			return Matrix<MatrixComponentType, RhsCols, Rows>(
+				static_cast<const LhsGlm &>(*this)
+				* static_cast<const RhsGlm &>(rhs));
 		}
 
 		/**
-		 * @brief Matrix multiplication assignment.
+		 * @brief Matrix multiplication assignment (square matrices only).
 		 * @param rhs The matrix to multiply with.
 		 * @return A reference to this matrix after multiplication.
 		 */
-		Matrix &operator*=(const Matrix &rhs)
+		Matrix &operator*=(const Matrix &rhs) noexcept
+			requires (Cols == Rows)
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) =
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -306,10 +330,13 @@ namespace utility::math
 
 		/**
 		 * @brief Equality comparison.
+		 *
+		 * Uses exact component-wise equality. For floating-point types prefer
+		 * equalsEpsilon to tolerate rounding error.
 		 * @param rhs The matrix to compare with.
 		 * @return True if the matrices are equal, false otherwise.
 		 */
-		bool operator==(const Matrix &rhs) const
+		bool operator==(const Matrix &rhs) const noexcept
 		{
 			return static_cast<
 					   const glm::mat<Cols, Rows, MatrixComponentType> &>(*this)
@@ -318,11 +345,34 @@ namespace utility::math
 		}
 
 		/**
+		 * @brief Approximate equality using an epsilon threshold.
+		 *
+		 * Returns true if each component is within @p epsilon of its counterpart
+		 * in @p rhs.
+		 * @param rhs The matrix to compare with.
+		 * @param epsilon The maximum allowed difference per component.
+		 * @return True if the matrices are equal within epsilon.
+		 */
+		bool equalsEpsilon(const Matrix &rhs,
+						   MatrixComponentType epsilon =
+							   MatrixComponentType { 1e-5 }) const
+		{
+			for (std::size_t col = 0; col < Cols; ++col) {
+				for (std::size_t row = 0; row < Rows; ++row) {
+					if (std::abs((*this)[col][row] - rhs[col][row]) > epsilon) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		/**
 		 * @brief Inequality comparison.
 		 * @param rhs The matrix to compare with.
 		 * @return True if the matrices are not equal, false otherwise.
 		 */
-		bool operator!=(const Matrix &rhs) const
+		bool operator!=(const Matrix &rhs) const noexcept
 		{
 			return !(*this == rhs);
 		}
@@ -331,7 +381,7 @@ namespace utility::math
 		 * @brief Unary negation.
 		 * @return The negated matrix.
 		 */
-		Matrix operator-(void) const
+		Matrix operator-(void) const noexcept
 		{
 			return Matrix(
 				-static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(

@@ -418,7 +418,7 @@ namespace utility
 
 		_textures[id] = std::make_shared<graphic::Texture>(texWidth, texHeight);
 		std::copy(pixels, pixels + (texWidth * texHeight * 4),
-				  _textures[id]->_pixels.data());
+				  _textures[id]->pixels().data());
 
 		_elementsIDs[textureAsset->path()] = id;
 		return _textures[id];
