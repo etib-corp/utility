@@ -12,6 +12,8 @@
 #include <memory>
 #include <functional>
 #include <iostream>
+#include <cstdint>
+#include <vector>
 
 #include <utility/system_io/file.hpp>
 
@@ -250,8 +252,10 @@ namespace utility::graphic
 		 *
 		 * FreeType's memory-face loader does not copy the provided bytes, so
 		 * these buffers must remain alive for as long as the corresponding
-		 * face exists.
+		 * face exists. Buffers are heap-pinned via shared_ptr to guarantee
+		 * stable storage.
 		 */
-		std::map<std::string, std::string> _faceBuffers;
+		std::map<std::string, std::shared_ptr<std::vector<uint8_t>>>
+			_faceBuffers;
 	};
 }	 // namespace utility::graphic
