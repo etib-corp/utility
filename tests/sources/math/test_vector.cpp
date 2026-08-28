@@ -80,6 +80,27 @@ TEST_F(TestVector, Equality)
 	EXPECT_FALSE(a != b);
 }
 
+TEST_F(TestVector, ExactEqualityRejectsRounding)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F b { 1.0f + 1e-6f, 2.0f, 3.0f };
+	EXPECT_FALSE(a == b);
+}
+
+TEST_F(TestVector, EpsilonEqualityAcceptsTinyDifference)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F b { 1.0f + 1e-6f, 2.0f, 3.0f };
+	EXPECT_TRUE(a.equalsEpsilon(b));
+}
+
+TEST_F(TestVector, EpsilonEqualityRejectsLargeDifference)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F b { 1.1f, 2.0f, 3.0f };
+	EXPECT_FALSE(a.equalsEpsilon(b));
+}
+
 TEST_F(TestVector, AdditionCommutative)
 {
 	Vector3F a { 1.0f, 2.0f, 3.0f };

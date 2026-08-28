@@ -227,6 +227,9 @@ namespace utility::math
 
 		/**
 		 * @brief Equality comparison.
+		 *
+		 * Uses exact component-wise equality. For floating-point types prefer
+		 * equalsEpsilon to tolerate rounding error.
 		 * @param rhs The quaternion to compare with.
 		 * @return True if the quaternions are equal, false otherwise.
 		 */
@@ -234,6 +237,25 @@ namespace utility::math
 		{
 			return static_cast<const glm::qua<QuaternionComponentType> &>(*this)
 				== static_cast<const glm::qua<QuaternionComponentType> &>(rhs);
+		}
+
+		/**
+		 * @brief Approximate equality using an epsilon threshold.
+		 *
+		 * Returns true if each component is within @p epsilon of its counterpart
+		 * in @p rhs.
+		 * @param rhs The quaternion to compare with.
+		 * @param epsilon The maximum allowed difference per component.
+		 * @return True if the quaternions are equal within epsilon.
+		 */
+		bool equalsEpsilon(const Quaternion &rhs,
+						   QuaternionComponentType epsilon =
+							   QuaternionComponentType { 1e-5 }) const
+		{
+			return std::abs(this->x - rhs.x) <= epsilon
+				&& std::abs(this->y - rhs.y) <= epsilon
+				&& std::abs(this->z - rhs.z) <= epsilon
+				&& std::abs(this->w - rhs.w) <= epsilon;
 		}
 
 		/**

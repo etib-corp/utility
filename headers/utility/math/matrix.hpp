@@ -322,6 +322,9 @@ namespace utility::math
 
 		/**
 		 * @brief Equality comparison.
+		 *
+		 * Uses exact component-wise equality. For floating-point types prefer
+		 * equalsEpsilon to tolerate rounding error.
 		 * @param rhs The matrix to compare with.
 		 * @return True if the matrices are equal, false otherwise.
 		 */
@@ -331,6 +334,29 @@ namespace utility::math
 					   const glm::mat<Cols, Rows, MatrixComponentType> &>(*this)
 				== static_cast<
 					   const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs);
+		}
+
+		/**
+		 * @brief Approximate equality using an epsilon threshold.
+		 *
+		 * Returns true if each component is within @p epsilon of its counterpart
+		 * in @p rhs.
+		 * @param rhs The matrix to compare with.
+		 * @param epsilon The maximum allowed difference per component.
+		 * @return True if the matrices are equal within epsilon.
+		 */
+		bool equalsEpsilon(const Matrix &rhs,
+						   MatrixComponentType epsilon =
+							   MatrixComponentType { 1e-5 }) const
+		{
+			for (std::size_t col = 0; col < Cols; ++col) {
+				for (std::size_t row = 0; row < Rows; ++row) {
+					if (std::abs((*this)[col][row] - rhs[col][row]) > epsilon) {
+						return false;
+					}
+				}
+			}
+			return true;
 		}
 
 		/**
