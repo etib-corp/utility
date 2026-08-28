@@ -93,7 +93,7 @@ namespace utility::math
 		 * @brief Construct from a GLM quaternion.
 		 * @param q Source quaternion.
 		 */
-		Quaternion(const glm::qua<QuaternionComponentType> &q)
+		explicit Quaternion(const glm::qua<QuaternionComponentType> &q)
 			: glm::qua<QuaternionComponentType>(q)
 		{
 		}

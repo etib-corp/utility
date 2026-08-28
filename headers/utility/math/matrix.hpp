@@ -92,13 +92,18 @@ namespace utility::math
 	{
 		public:
 		/**
-		 * @brief Default constructor initializing matrix to identity (if
-		 * square) or zero (if not square).
+		 * @brief Default constructor initializing square matrices to identity
+		 * and non-square matrices to zero.
 		 */
 		Matrix(void)
 			: glm::mat<Cols, Rows, MatrixComponentType>(
 				  MatrixComponentType { 0 })
 		{
+			if constexpr (Cols == Rows) {
+				*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this)
+					= glm::mat<Cols, Rows, MatrixComponentType>(
+						MatrixComponentType { 1 });
+			}
 		}
 
 		/**
@@ -135,7 +140,7 @@ namespace utility::math
 		 * @brief Construct from a GLM matrix.
 		 * @param value Source matrix.
 		 */
-		Matrix(const glm::mat<Cols, Rows, MatrixComponentType> &value)
+		explicit Matrix(const glm::mat<Cols, Rows, MatrixComponentType> &value)
 			: glm::mat<Cols, Rows, MatrixComponentType>(value)
 		{
 		}
@@ -277,24 +282,35 @@ namespace utility::math
 
 		/**
 		 * @brief Matrix multiplication.
+		 * @tparam RhsCols Number of columns of the RHS matrix.
+		 * @tparam RhsRows Number of rows of the RHS matrix.
 		 * @param rhs The matrix to multiply with.
-		 * @return The resulting matrix.
+		 * @return The resulting matrix with shape (Rows, RhsCols).
+		 * @note Requires this matrix's column count to equal the RHS row count
+		 * (Cols == RhsRows).
 		 */
-		Matrix operator*(const Matrix &rhs) const
+		template<std::size_t RhsCols, std::size_t RhsRows>
+			requires (Cols == RhsRows)
+		Matrix<MatrixComponentType, RhsCols, Rows>
+			operator*(const Matrix<MatrixComponentType, RhsCols, RhsRows> &rhs)
+				const
 		{
-			return Matrix(
-				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
-					*this)
-				* static_cast<
-					const glm::mat<Cols, Rows, MatrixComponentType> &>(rhs));
+			using LhsGlm =
+				glm::mat<Cols, Rows, MatrixComponentType>;
+			using RhsGlm =
+				glm::mat<RhsCols, RhsRows, MatrixComponentType>;
+			return Matrix<MatrixComponentType, RhsCols, Rows>(
+				static_cast<const LhsGlm &>(*this)
+				* static_cast<const RhsGlm &>(rhs));
 		}
 
 		/**
-		 * @brief Matrix multiplication assignment.
+		 * @brief Matrix multiplication assignment (square matrices only).
 		 * @param rhs The matrix to multiply with.
 		 * @return A reference to this matrix after multiplication.
 		 */
 		Matrix &operator*=(const Matrix &rhs)
+			requires (Cols == Rows)
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) =
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(

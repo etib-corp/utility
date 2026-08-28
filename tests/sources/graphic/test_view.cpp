@@ -37,6 +37,21 @@ TEST_F(TestView, ComparisonOperators)
 	EXPECT_FALSE(view1 != view2);
 }
 
+TEST_F(TestView, FlipYDefaultsToTrue)
+{
+	ViewF view;
+	EXPECT_TRUE(view.isFlipY());
+}
+
+TEST_F(TestView, SetFlipY)
+{
+	ViewF view;
+	view.setFlipY(false);
+	EXPECT_FALSE(view.isFlipY());
+	view.setFlipY(true);
+	EXPECT_TRUE(view.isFlipY());
+}
+
 TEST_F(TestView, PoseManagement)
 {
 	ViewF view;

@@ -25,12 +25,15 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include "utility/system_io/system_io.hpp"
 
-#include <utility/logging/loggable.hpp>
-#include <utility/logging/default_logger.hpp>
+namespace utility::logging
+{
+	class Logger;
+}
 
 namespace utility
 {
@@ -39,26 +42,46 @@ namespace utility
 	 * @class DefaultSystemIO
 	 * @brief The DefaultSystemIO class is a concrete implementation of the
 	 * SystemIO interface that loads assets from the file system.
+	 *
+	 * Logging is kept private behind an opaque logger to avoid leaking logging
+	 * headers into the public API.
 	 */
-	class DefaultSystemIO:
-		public SystemIO,
-		protected utility::logging::Loggable<DefaultSystemIO,
-											 utility::logging::DefaultLogger>
+	class DefaultSystemIO: public SystemIO
 	{
+		private:
+		std::unique_ptr<utility::logging::Logger> _logger;
+
+		protected:
+		/**
+		 * @brief Get the internal logger.
+		 * @return Reference to the internal Logger instance.
+		 */
+		utility::logging::Logger &getLogger(void);
+
+		/**
+		 * @brief Get the internal logger.
+		 * @return Reference to the internal Logger instance.
+		 */
+		utility::logging::Logger &getLogger(void) const;
+
 		public:
 		/**
 		 * @brief Constructs a DefaultSystemIO.
 		 */
-		DefaultSystemIO() = default;
+		DefaultSystemIO();
 
-		using Loggable::getLogger;
+		/**
+		 * @brief Default destructor for DefaultSystemIO.
+		 */
+		~DefaultSystemIO() override;
+
 		using SystemIO::add;
 		using SystemIO::loadDirectory;
 		using SystemIO::remove;
 		using SystemIO::save;
 
 		/**
-		 * @brief Default destructor for DefaultSystemIO.
+		 * @brief Loads assets from a directory.
 		 * @param directory The path to the directory containing the assets.
 		 * @return True if the assets were loaded successfully, false otherwise.
 		 */
