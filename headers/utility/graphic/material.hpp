@@ -94,15 +94,13 @@ namespace utility::graphic
 		/**
 		 * @brief Retrieves the textures associated with this material.
 		 *
-		 * This method returns a vector of pointers to Texture objects that are
-		 * associated with this material. The textures are loaded from the
-		 * File objects provided during construction and can be used for
-		 * rendering operations that require these textures.
-		 *
-		 * @return A const reference to a vector of pointers to Texture objects
+		 * This method returns a vector of shared pointers to the Texture objects
 		 * associated with this material.
+		 *
+		 * @return A vector of shared pointers to Texture objects associated with
+		 * this material.
 		 */
-		const std::vector<std::shared_ptr<Texture>> &getTextures() const;
+		std::vector<std::shared_ptr<Texture>> getTextures() const;
 
 		/**
 		 * @brief Retrieves the shader name associated with this material.

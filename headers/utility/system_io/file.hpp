@@ -22,10 +22,12 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstring>
 #include <fstream>
 #include <memory>
 #include <string>
+#include <vector>
 
 /**
  * @namespace utility
@@ -39,7 +41,8 @@ namespace utility
 	 * @brief The File class represents a I/O file asset.
 	 *
 	 * This class provides methods to read and write binary data to and from a
-	 * file.
+	 * file. Content is stored as raw bytes so binary assets (which may contain
+	 * null bytes) are handled correctly.
 	 */
 	class File
 	{
@@ -62,6 +65,13 @@ namespace utility
 		 * @param content The content of the file.
 		 */
 		File(const std::string &path, const std::string &content);
+
+		/**
+		 * @brief Constructs a File object with raw binary content.
+		 * @param path The path to the file.
+		 * @param content The binary content of the file.
+		 */
+		File(const std::string &path, const std::vector<std::byte> &content);
 
 		/**
 		 * @brief Destructs the File object.
@@ -112,15 +122,26 @@ namespace utility
 		size_t tell() const;
 
 		/**
-		 * @brief Returns the content of the file.
-		 * @return The content of the file.
-		 * This method returns the content of the file as a string. The content
-		 * is stored in the _content member variable and can be accessed using
-		 * this method.
+		 * @brief Returns the binary content of the file.
+		 * @return The content of the file as raw bytes.
 		 */
-		[[nodiscard]] inline const std::string &content() const
+		[[nodiscard]] inline const std::vector<std::byte> &data() const
 		{
 			return _content;
+		}
+
+		/**
+		 * @brief Returns the content of the file as a string view.
+		 *
+		 * Convenience accessor for text-oriented consumers. For binary assets
+		 * prefer data().
+		 * @return The content of the file interpreted as bytes.
+		 */
+		[[nodiscard]] inline std::string content() const
+		{
+			return std::string(
+				reinterpret_cast<const char *>(_content.data()),
+				_content.size());
 		}
 
 		/**
@@ -174,7 +195,7 @@ namespace utility
 		/**
 		 * @brief In-memory content of the asset.
 		 */
-		std::string _content;
+		std::vector<std::byte> _content;
 
 		/**
 		 * @brief Path to the file.
