@@ -181,7 +181,7 @@ namespace utility::math
 		 * @param rhs The matrix to add.
 		 * @return The resulting matrix.
 		 */
-		Matrix operator+(const Matrix &rhs) const
+		Matrix operator+(const Matrix &rhs) const noexcept
 		{
 			return Matrix(
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -195,7 +195,7 @@ namespace utility::math
 		 * @param rhs The matrix to add.
 		 * @return A reference to this matrix after addition.
 		 */
-		Matrix &operator+=(const Matrix &rhs)
+		Matrix &operator+=(const Matrix &rhs) noexcept
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) +=
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -208,7 +208,7 @@ namespace utility::math
 		 * @param rhs The matrix to subtract.
 		 * @return The resulting matrix.
 		 */
-		Matrix operator-(const Matrix &rhs) const
+		Matrix operator-(const Matrix &rhs) const noexcept
 		{
 			return Matrix(
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -222,7 +222,7 @@ namespace utility::math
 		 * @param rhs The matrix to subtract.
 		 * @return A reference to this matrix after subtraction.
 		 */
-		Matrix &operator-=(const Matrix &rhs)
+		Matrix &operator-=(const Matrix &rhs) noexcept
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) -=
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -235,7 +235,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return The resulting matrix.
 		 */
-		Matrix operator*(MatrixComponentType scalar) const
+		Matrix operator*(MatrixComponentType scalar) const noexcept
 		{
 			return Matrix(
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -248,7 +248,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return A reference to this matrix after multiplication.
 		 */
-		Matrix &operator*=(MatrixComponentType scalar)
+		Matrix &operator*=(MatrixComponentType scalar) noexcept
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) *=
 				scalar;
@@ -301,7 +301,7 @@ namespace utility::math
 			requires (Cols == RhsRows)
 		Matrix<MatrixComponentType, RhsCols, Rows>
 			operator*(const Matrix<MatrixComponentType, RhsCols, RhsRows> &rhs)
-				const
+				const noexcept
 		{
 			using LhsGlm =
 				glm::mat<Cols, Rows, MatrixComponentType>;
@@ -317,7 +317,7 @@ namespace utility::math
 		 * @param rhs The matrix to multiply with.
 		 * @return A reference to this matrix after multiplication.
 		 */
-		Matrix &operator*=(const Matrix &rhs)
+		Matrix &operator*=(const Matrix &rhs) noexcept
 			requires (Cols == Rows)
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) =
@@ -336,7 +336,7 @@ namespace utility::math
 		 * @param rhs The matrix to compare with.
 		 * @return True if the matrices are equal, false otherwise.
 		 */
-		bool operator==(const Matrix &rhs) const
+		bool operator==(const Matrix &rhs) const noexcept
 		{
 			return static_cast<
 					   const glm::mat<Cols, Rows, MatrixComponentType> &>(*this)
@@ -372,7 +372,7 @@ namespace utility::math
 		 * @param rhs The matrix to compare with.
 		 * @return True if the matrices are not equal, false otherwise.
 		 */
-		bool operator!=(const Matrix &rhs) const
+		bool operator!=(const Matrix &rhs) const noexcept
 		{
 			return !(*this == rhs);
 		}
@@ -381,7 +381,7 @@ namespace utility::math
 		 * @brief Unary negation.
 		 * @return The negated matrix.
 		 */
-		Matrix operator-(void) const
+		Matrix operator-(void) const noexcept
 		{
 			return Matrix(
 				-static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(

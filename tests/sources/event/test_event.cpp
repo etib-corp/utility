@@ -9,7 +9,7 @@ using namespace utility::event;
 using namespace utility::math;
 using namespace tests::utility::event;
 
-TEST_F(TestEvent, MouseMotionDefaults)
+TEST_F(TestEvent, MouseMotionDefaultsFactory)
 {
 	MouseMotionEvent event;
 	Vector2F expected{ 0, 0 };
@@ -41,7 +41,7 @@ TEST_F(TestEvent, MouseMotionFactoryCreatesBaseEvent)
 	EXPECT_NE(std::dynamic_pointer_cast<MouseMotionEvent>(event), nullptr);
 }
 
-TEST_F(TestEvent, MouseButtonDefaults)
+TEST_F(TestEvent, MouseButtonDefaultsFactory)
 {
 	MouseButtonEvent event;
 	EXPECT_EQ(event.getButton(), MouseButtonEvent::Button::Unknown);

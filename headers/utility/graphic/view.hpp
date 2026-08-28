@@ -108,7 +108,7 @@ namespace utility::graphic
 				std::atan(std::tan(halfVertical) * aspectRatio);
 
 			return FieldOfView<ViewComponentType>(
-				-halfVertical, halfVertical, -halfHorizontal, halfHorizontal);
+				halfVertical, -halfVertical, -halfHorizontal, halfHorizontal);
 		}
 
 		/**
