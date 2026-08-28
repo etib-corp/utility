@@ -93,6 +93,27 @@ namespace utility::graphic
 		}
 
 		/**
+		 * @brief Retrieve the pixel data.
+		 * @return Read-only reference to the pixel buffer (RGBA unless this is
+		 * a FontAtlas).
+		 */
+		[[nodiscard]] const std::vector<uint8_t> &pixels() const noexcept
+		{
+			return _pixels;
+		}
+
+		/**
+		 * @brief Retrieve the pixel data for mutation.
+		 * @return Reference to the pixel buffer. Resizing it is discouraged as
+		 * it may break the width*height invariant.
+		 */
+		[[nodiscard]] std::vector<uint8_t> &pixels() noexcept
+		{
+			return _pixels;
+		}
+
+		protected:
+		/**
 		 * @brief The corresponding pixel data for this texture, stored as a
 		 * vector of bytes (RGBA format).
 		 */
@@ -103,7 +124,6 @@ namespace utility::graphic
 		 */
 		TextureType _type;
 
-		protected:
 		/**
 		 * @brief The width of the texture in pixels.
 		 */

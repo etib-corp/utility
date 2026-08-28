@@ -19,9 +19,6 @@
 
 #include <utility/graphic/text/font_sized.hpp>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 namespace utility::graphic
 {
 	/**
@@ -221,27 +218,19 @@ namespace utility::graphic
 		/**
 		 * @brief FreeType library instance used for managing font resources.
 		 *
-		 * This member variable holds the FreeType library instance that is
-		 * initialized when the Font object is created. It is used to load and
-		 * manage font faces, and it is cleaned up in the destructor to prevent
-		 * memory leaks.
+		 * Stored as an opaque handle to keep FreeType types out of the public
+		 * API.
 		 */
-		FT_Library _ftLibrary;
+		void *_ftLibrary;
 
 		/**
 		 * @brief Map of font paths to their corresponding FreeType face
 		 * objects.
 		 *
-		 * This map stores the loaded font faces, allowing the Font class to
-		 * manage multiple fonts and retrieve glyph information as needed. Each
-		 * entry maps a font path (as a string) to its corresponding FT_Face
-		 * object.
-		 *
-		 * The map is populated during the construction of the Font object, and
-		 * the faces are released in the destructor to ensure proper resource
-		 * management.
+		 * Faces are stored as opaque handles to keep FreeType types out of the
+		 * public API.
 		 */
-		std::map<std::string, FT_Face> _faces;
+		std::map<std::string, void *> _faces;
 
 		/**
 		 * @brief Map of font sizes to their corresponding FontSized objects.
@@ -261,9 +250,10 @@ namespace utility::graphic
 		/**
 		 * @brief In-memory buffers backing FreeType faces.
 		 *
-		 * FT_New_Memory_Face does not copy the provided bytes, so these buffers
-		 * must remain alive for as long as the corresponding FT_Face exists.
-		 * Buffers are heap-pinned via shared_ptr to guarantee stable storage.
+		 * FreeType's memory-face loader does not copy the provided bytes, so
+		 * these buffers must remain alive for as long as the corresponding
+		 * face exists. Buffers are heap-pinned via shared_ptr to guarantee
+		 * stable storage.
 		 */
 		std::map<std::string, std::shared_ptr<std::vector<uint8_t>>>
 			_faceBuffers;

@@ -404,7 +404,7 @@ namespace utility
 		int texChannels = 0;
 
 		stbi_uc *pixels = stbi_load_from_memory(
-			reinterpret_cast<const stbi_uc *>(textureAsset->content().c_str()),
+			reinterpret_cast<const stbi_uc *>(textureAsset->data().data()),
 			textureAsset->size(), &texWidth, &texHeight, &texChannels,
 			STBI_rgb_alpha);
 
@@ -418,7 +418,7 @@ namespace utility
 
 		_textures[id] = std::make_shared<graphic::Texture>(texWidth, texHeight);
 		std::copy(pixels, pixels + (texWidth * texHeight * 4),
-				  _textures[id]->_pixels.data());
+				  _textures[id]->pixels().data());
 
 		_elementsIDs[textureAsset->path()] = id;
 		return _textures[id];

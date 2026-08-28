@@ -96,6 +96,25 @@ namespace utility::graphic
 		}
 
 		/**
+		 * @brief Clamp a wide accumulator into the component range.
+		 *
+		 * Integral arithmetic is performed in a wider type to avoid wrapping
+		 * before clamping (e.g. 200+200 would truncate to 144 as uint8_t).
+		 * @param value The wide value to clamp.
+		 * @return Clamped component.
+		 */
+		static Type clampWide(long long value)
+		{
+			if constexpr (std::is_floating_point<Type>::value) {
+				return clamp(static_cast<Type>(value));
+			} else {
+				constexpr long long max = 255;
+				return static_cast<Type>(
+					(std::max)(0LL, (std::min)(max, value)));
+			}
+		}
+
+		/**
 		 * @brief Get the maximum value for the type.
 		 * @return Maximum value (1.0 for float, 255 for uint8_t).
 		 */
@@ -323,8 +342,11 @@ namespace utility::graphic
 		 */
 		Color operator+(const Color &other) const
 		{
-			return Color(clamp(_red + other._red), clamp(_green + other._green),
-						 clamp(_blue + other._blue), _alpha);
+			return Color(clampWide(static_cast<long long>(_red) + other._red),
+						 clampWide(static_cast<long long>(_green)
+								   + other._green),
+						 clampWide(static_cast<long long>(_blue) + other._blue),
+						 _alpha);
 		}
 
 		/**
@@ -334,8 +356,11 @@ namespace utility::graphic
 		 */
 		Color operator-(const Color &other) const
 		{
-			return Color(clamp(_red - other._red), clamp(_green - other._green),
-						 clamp(_blue - other._blue), _alpha);
+			return Color(clampWide(static_cast<long long>(_red) - other._red),
+						 clampWide(static_cast<long long>(_green)
+								   - other._green),
+						 clampWide(static_cast<long long>(_blue) - other._blue),
+						 _alpha);
 		}
 
 		/**
@@ -345,8 +370,10 @@ namespace utility::graphic
 		 */
 		Color operator*(Type scalar) const
 		{
-			return Color(clamp(_red * scalar), clamp(_green * scalar),
-						 clamp(_blue * scalar), _alpha);
+			return Color(clampWide(static_cast<long long>(_red) * scalar),
+						 clampWide(static_cast<long long>(_green) * scalar),
+						 clampWide(static_cast<long long>(_blue) * scalar),
+						 _alpha);
 		}
 
 		/**

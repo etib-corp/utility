@@ -11,7 +11,20 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# 01. Policy & standard setup
+# 01. Platform-specific configuration
+# Load the matching config module for the current platform. These modules
+# apply compiler warnings, debug/release flags, and platform defines.
+if(ANDROID OR CMAKE_SYSTEM_NAME STREQUAL "Android")
+    include(cmake/ConfigAndroid.cmake)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    include(cmake/ConfigMacOS.cmake)
+elseif(WIN32)
+    include(cmake/ConfigWindows.cmake)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    include(cmake/ConfigLinux.cmake)
+else()
+    message(WARNING "No platform configuration found for system '${CMAKE_SYSTEM_NAME}'")
+endif()
 
 # 02. Options & configuration
 option(BUILD_DOCS "Build Doxygen documentation" OFF)
@@ -31,7 +44,7 @@ if(NOT BUILD_DOCS_ONLY)
     FetchContent_Declare(
         tinyobjloader
         GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader.git
-        GIT_TAG release
+        GIT_TAG 45636bdcef1a4fec140346b90c0b50bf0bc3e23b
     )
     # tinyobjloader may call add_sanitizers() even when the helper module is unavailable.
     if(NOT COMMAND add_sanitizers)
@@ -68,7 +81,7 @@ if(NOT BUILD_DOCS_ONLY)
 
     FetchContent_Declare(stb
         GIT_REPOSITORY https://github.com/nothings/stb.git
-        GIT_TAG master
+        GIT_TAG 2c980bb59875b0d32144a71867fbdebb2f77cd20
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
     )
@@ -84,7 +97,7 @@ if(NOT BUILD_DOCS_ONLY)
     set(FMT_OS_X_VERSION 10.15 CACHE STRING "" FORCE)
     FetchContent_MakeAvailable(fmt)
 
-    # Disable building examples, tests, and utilities for OpenAL Soft
+    # Disable building examples, tests, and utilities for OpenAL Soft.
     set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
     set(ALSOFT_TESTS OFF CACHE BOOL "" FORCE)
     set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
@@ -96,7 +109,7 @@ if(NOT BUILD_DOCS_ONLY)
 
     FetchContent_Declare(openal
         GIT_REPOSITORY https://github.com/kcat/openal-soft.git
-        GIT_TAG master
+        GIT_TAG 3f94a50884e2ae4963092fead7d299127e97e5d5
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
     )
@@ -105,7 +118,7 @@ if(NOT BUILD_DOCS_ONLY)
     FetchContent_Declare(
         dr_libs
         GIT_REPOSITORY https://github.com/mackron/dr_libs.git
-        GIT_TAG master
+        GIT_TAG b55a0d9a30b91ad8901f89ecf05f76a33186c185
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
     )
@@ -114,11 +127,6 @@ if(NOT BUILD_DOCS_ONLY)
     # Set the files directories
     set(HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/headers")
     set(SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sources")
-
-    # Add the headers directories
-    include_directories(
-        ${HEADERS_DIR}
-    )
 
     # Add the source files
     file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
@@ -135,13 +143,16 @@ if(NOT BUILD_DOCS_ONLY)
     )
 
     # 07. Link dependencies
+    # PUBLIC deps are referenced by public headers and must be exported;
+    # PRIVATE deps are implementation-only and need not appear in the export set.
     target_link_libraries(${PROJECT_NAME}
         PUBLIC
             tinyobjloader
             glm
             freetype
-            fmt::fmt
             OpenAL::OpenAL
+        PRIVATE
+            fmt::fmt
     )
 
     if(WIN32)
@@ -158,6 +169,67 @@ if(NOT BUILD_DOCS_ONLY)
             $<INSTALL_INTERFACE:include>
             $<BUILD_INTERFACE:${stb_SOURCE_DIR}>
             $<BUILD_INTERFACE:${dr_libs_SOURCE_DIR}>
+    )
+
+    # 10. Install & export rules
+    # Allow downstream projects to consume the library via find_package().
+
+    include(GNUInstallDirs)
+    include(CMakePackageConfigHelpers)
+
+    set(UTILITY_INSTALL_CMAKEDIR
+        "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+
+    # Install the PUBLIC dependency targets into the same export set so the
+    # exported utility target's PUBLIC link dependencies resolve for consumers.
+    install(TARGETS ${PROJECT_NAME} glm glm-header-only tinyobjloader freetype fmt
+        EXPORT ${PROJECT_NAME}Targets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+    # OpenAL declares its public headers as a FILE_SET, which must be installed
+    # when the target is exported. Handle it in a dedicated install command.
+    if(TARGET OpenAL)
+        install(TARGETS OpenAL
+            EXPORT ${PROJECT_NAME}Targets
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            FILE_SET public_headers
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        )
+    endif()
+
+    install(DIRECTORY ${HEADERS_DIR}/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "*.hpp"
+    )
+
+    install(EXPORT ${PROJECT_NAME}Targets
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION ${UTILITY_INSTALL_CMAKEDIR}
+    )
+
+    configure_package_config_file(
+        cmake/${PROJECT_NAME}Config.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        INSTALL_DESTINATION ${UTILITY_INSTALL_CMAKEDIR}
+    )
+
+    write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+
+    install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        DESTINATION ${UTILITY_INSTALL_CMAKEDIR}
     )
 endif()
 
