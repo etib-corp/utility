@@ -7,6 +7,8 @@
 
 #include <utility/graphic/text/font.hpp>
 
+#include <algorithm>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -127,9 +129,45 @@ namespace utility::graphic
 
 		return glyphs;
 	}
-	std::vector<std::string> Font::getFontPaths(void) const
+	math::Vector2F Font::measureText(uint32_t fontSize,
+									 const codePointString &codePoints) const
 	{
-		std::vector<std::string> fontPaths;
+		double width	= 0.0;
+		double maxTop	= 0.0;
+		double maxBottom = 0.0;
+
+		for (const auto &codePoint: codePoints) {
+			const std::string faceName = _getFaceNameForGlyph(codePoint);
+			if (faceName.empty()) {
+				continue;
+			}
+			const FontSizedKey key { faceName, fontSize };
+			auto fontSizedIt = _sizes.find(key);
+			if (fontSizedIt == _sizes.end()) {
+				// Not yet rasterized; measure metrics without mutating state.
+				FontSized probe(fontSize, _faces.at(faceName));
+				const Glyph metric = probe.measureGlyph(codePoint);
+				width += metric.advance;
+				maxTop	   = std::max(maxTop, static_cast<double>(metric.bearing[1]));
+				maxBottom = std::max(
+					maxBottom,
+					static_cast<double>(metric.size[1] - metric.bearing[1]));
+			} else {
+				const Glyph metric = fontSizedIt->second->measureGlyph(codePoint);
+				width += metric.advance;
+				maxTop	   = std::max(maxTop, static_cast<double>(metric.bearing[1]));
+				maxBottom = std::max(
+					maxBottom,
+					static_cast<double>(metric.size[1] - metric.bearing[1]));
+			}
+		}
+
+		return math::Vector2F { static_cast<float>(width),
+								static_cast<float>(maxTop + maxBottom) };
+	}
+
+	std::vector<std::string> Font::getFontPaths(void) const
+	{		std::vector<std::string> fontPaths;
 		for (const auto &[fontPath, _]: _faces) {
 			fontPaths.push_back(fontPath);
 		}

@@ -158,9 +158,38 @@ namespace utility::graphic
 		return glyphs;
 	}
 
-	std::shared_ptr<Texture> FontSized::getAtlas(bool shouldRegenerate)
+	Glyph FontSized::measureGlyph(uint32_t codePoint) const
 	{
-		if (!_generatedAtlas) {
+		Glyph glyph;
+		FT_Face ftFace = static_cast<FT_Face>(_correspondingFace);
+		if (!ftFace) {
+			return glyph;
+		}
+
+		if (FT_Set_Pixel_Sizes(ftFace, 0, _fontSize) != 0) {
+			return glyph;
+		}
+
+		// Load metrics without rendering into a bitmap.
+		if (FT_Load_Char(ftFace, codePoint, FT_LOAD_NO_BITMAP) != 0) {
+			return glyph;
+		}
+
+		FT_GlyphSlot g = ftFace->glyph;
+		if (!g) {
+			return glyph;
+		}
+
+		glyph.size	 = { static_cast<float>(g->metrics.width) / 64.0f,
+						 static_cast<float>(g->metrics.height) / 64.0f };
+		glyph.bearing = { static_cast<float>(g->metrics.horiBearingX) / 64.0f,
+						  static_cast<float>(g->metrics.horiBearingY) / 64.0f };
+		glyph.advance = static_cast<float>(g->metrics.horiAdvance) / 64.0f;
+		return glyph;
+	}
+
+	std::shared_ptr<Texture> FontSized::getAtlas(bool shouldRegenerate)
+	{		if (!_generatedAtlas) {
 			_generatedAtlas = std::make_shared<Texture>(
 				_atlasWidth, _atlasHeight, Texture::TextureType::FontAtlas);
 			_generatedAtlas->pixels().resize(_atlasWidth * _atlasHeight, 0);
