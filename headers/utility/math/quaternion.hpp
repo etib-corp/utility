@@ -77,7 +77,13 @@ namespace utility::math
 		}
 
 		/**
-		 * @brief Construct from explicit components (x, y, z, w).
+		 * @brief Construct from explicit components in (x, y, z, w) order.
+		 *
+		 * Note: this library exposes the parameter order (x, y, z, w) with the
+		 * scalar component (w) last. This deliberately differs from GLM's
+		 * `glm::qua(w, x, y, z)` constructor, which places the scalar component
+		 * first. The arguments are remapped internally; pass (x, y, z, w).
+		 *
 		 * @param x X component.
 		 * @param y Y component.
 		 * @param z Z component.
@@ -93,7 +99,7 @@ namespace utility::math
 		 * @brief Construct from a GLM quaternion.
 		 * @param q Source quaternion.
 		 */
-		Quaternion(const glm::qua<QuaternionComponentType> &q)
+		explicit Quaternion(const glm::qua<QuaternionComponentType> &q)
 			: glm::qua<QuaternionComponentType>(q)
 		{
 		}
@@ -227,6 +233,9 @@ namespace utility::math
 
 		/**
 		 * @brief Equality comparison.
+		 *
+		 * Uses exact component-wise equality. For floating-point types prefer
+		 * equalsEpsilon to tolerate rounding error.
 		 * @param rhs The quaternion to compare with.
 		 * @return True if the quaternions are equal, false otherwise.
 		 */
@@ -234,6 +243,25 @@ namespace utility::math
 		{
 			return static_cast<const glm::qua<QuaternionComponentType> &>(*this)
 				== static_cast<const glm::qua<QuaternionComponentType> &>(rhs);
+		}
+
+		/**
+		 * @brief Approximate equality using an epsilon threshold.
+		 *
+		 * Returns true if each component is within @p epsilon of its counterpart
+		 * in @p rhs.
+		 * @param rhs The quaternion to compare with.
+		 * @param epsilon The maximum allowed difference per component.
+		 * @return True if the quaternions are equal within epsilon.
+		 */
+		bool equalsEpsilon(const Quaternion &rhs,
+						   QuaternionComponentType epsilon =
+							   QuaternionComponentType { 1e-5 }) const
+		{
+			return std::abs(this->x - rhs.x) <= epsilon
+				&& std::abs(this->y - rhs.y) <= epsilon
+				&& std::abs(this->z - rhs.z) <= epsilon
+				&& std::abs(this->w - rhs.w) <= epsilon;
 		}
 
 		/**
