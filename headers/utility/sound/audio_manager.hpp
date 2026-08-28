@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include <unordered_map>
 #include <thread>
@@ -289,8 +290,11 @@ namespace utility::sound
 
 		/**
 		 * @brief Indicates whether the audio thread should continue running.
+		 *
+		 * Atomic so the audio thread observes a stop() promptly without a data
+		 * race.
 		 */
-		bool _running = true;
+		std::atomic<bool> _running { true };
 
 		using Loggable::getLogger;
 	};

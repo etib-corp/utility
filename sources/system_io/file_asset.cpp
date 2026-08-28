@@ -23,9 +23,21 @@
 #include "utility/system_io/file.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <limits>
+#include <vector>
 
 utility::File::File(const std::string &path, const std::string &content)
+	: _path(path)
+{
+	_content.reserve(content.size());
+	for (char c: content) {
+		_content.push_back(static_cast<std::byte>(c));
+	}
+}
+
+utility::File::File(const std::string &path,
+					const std::vector<std::byte> &content)
 	: _content(content)
 	, _path(path)
 {
@@ -48,13 +60,11 @@ size_t utility::File::write(const void *ptr, size_t size, size_t nmemb)
 	}
 
 	const size_t bytesToWrite = size * nmemb;
-	size_t lenBefore		  = _content.size();
-	size_t newLen			  = lenBefore + bytesToWrite;
-	if (newLen > _content.capacity()) {
-		_content.reserve(newLen);
-	}
+	const auto *bytes		   = static_cast<const std::byte *>(ptr);
+	const size_t lenBefore	   = _content.size();
 
-	_content.insert(_pos, static_cast<const char *>(ptr), bytesToWrite);
+	_content.insert(_content.begin() + static_cast<std::ptrdiff_t>(_pos),
+					bytes, bytes + bytesToWrite);
 	_pos += bytesToWrite;
 	return (_content.size() - lenBefore) / size;
 }
@@ -71,7 +81,7 @@ size_t utility::File::read(void *ptr, size_t size, size_t count)
 
 	size_t toRead = size * count;
 	toRead		  = std::min(toRead, _content.size() - _pos);
-	std::memcpy(ptr, _content.c_str() + _pos, toRead);
+	std::memcpy(ptr, _content.data() + _pos, toRead);
 	_pos += toRead;
 	return toRead / size;
 }
@@ -139,6 +149,7 @@ size_t utility::File::remove(size_t count)
 	}
 
 	size_t toRemove = std::min(count, _content.size() - _pos);
-	_content.erase(_pos, toRemove);
+	_content.erase(_content.begin() + static_cast<std::ptrdiff_t>(_pos),
+				   _content.begin() + static_cast<std::ptrdiff_t>(_pos + toRemove));
 	return toRemove;
 }

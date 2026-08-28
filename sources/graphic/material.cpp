@@ -39,10 +39,10 @@ namespace utility::graphic
 		return nullptr;
 	}
 
-	const std::vector<std::shared_ptr<Texture>> &Material::getTextures() const
+	std::vector<std::shared_ptr<Texture>> Material::getTextures() const
 	{
-		static std::vector<std::shared_ptr<Texture>> textures;
-		textures.clear();
+		std::vector<std::shared_ptr<Texture>> textures;
+		textures.reserve(_textures.size());
 		for (const auto &[_, texture]: _textures) {
 			textures.push_back(texture);
 		}

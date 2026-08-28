@@ -21,6 +21,9 @@
  */
 
 #include <filesystem>
+#include <memory>
+
+#include "utility/logging/default_logger.hpp"
 
 #include "utility/system_io/default_system_io.hpp"
 
@@ -31,6 +34,23 @@ namespace
 		return std::filesystem::path(path).lexically_normal().generic_string();
 	}
 }	 // namespace
+
+utility::DefaultSystemIO::DefaultSystemIO()
+	: _logger(std::make_unique<utility::logging::DefaultLogger>("DefaultSystemIO"))
+{
+}
+
+utility::DefaultSystemIO::~DefaultSystemIO() = default;
+
+utility::logging::Logger &utility::DefaultSystemIO::getLogger(void)
+{
+	return *_logger;
+}
+
+utility::logging::Logger &utility::DefaultSystemIO::getLogger(void) const
+{
+	return *_logger;
+}
 
 bool utility::DefaultSystemIO::loadDirectory(const std::string &directory)
 {
@@ -131,7 +151,7 @@ bool utility::DefaultSystemIO::save(const std::string &path,
 		return false;
 	}
 
-	const std::string &content = it->second->content();
+	const auto &content = it->second->data();
 	const std::string savePath = newPath.empty() ? key : newPath;
 
 	std::error_code error;
@@ -152,7 +172,7 @@ bool utility::DefaultSystemIO::save(const std::string &path,
 		return false;
 	}
 
-	file.write(content.data(), content.size());
+	file.write(reinterpret_cast<const char *>(content.data()), content.size());
 	if (!file) {
 		getLogger().warning() << "Failed to write file content: " << savePath;
 		return false;

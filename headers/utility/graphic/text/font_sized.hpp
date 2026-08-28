@@ -12,10 +12,6 @@
 
 #include <utility/graphic/texture.hpp>
 
-// FreeType
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 // Types & structs
 #include <utility/graphic/text/code_point.hpp>
 #include <utility/graphic/text/glyph.hpp>
@@ -46,9 +42,9 @@ namespace utility::graphic
 		 *
 		 * @param fontSize The font size in points for this FontSized object.
 		 * @param face The corresponding FreeType face associated with this
-		 * FontSized object.
+		 * FontSized object (opaque handle).
 		 */
-		FontSized(uint32_t fontSize, FT_Face face);
+		FontSized(uint32_t fontSize, void *face);
 
 		/**
 		 * @brief Destructs the FontSized object, releasing any allocated
@@ -164,6 +160,13 @@ namespace utility::graphic
 		void generateAtlas();
 
 		/**
+		 * @brief Grow the atlas to the given new height, preserving existing
+		 * glyphs.
+		 * @param newHeight The new atlas height in pixels.
+		 */
+		void resizeAtlas(int newHeight);
+
+		/**
 		 * @brief The font size in points for this FontSized object.
 		 */
 		std::shared_ptr<Texture> _generatedAtlas;
@@ -176,8 +179,11 @@ namespace utility::graphic
 		/**
 		 * @brief The corresponding FreeType face associated with this FontSized
 		 * object.
+		 *
+		 * Stored as an opaque handle to keep FreeType types out of the public
+		 * API.
 		 */
-		FT_Face _correspondingFace;
+		void *_correspondingFace;
 
 		/**
 		 * @brief A map storing the generated glyphs for this font size.

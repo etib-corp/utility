@@ -9,25 +9,30 @@
 
 #include <algorithm>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 namespace utility::graphic
 {
 
 	Font::Font(const std::vector<File> &fontAssets)
 	{
 		// Initialize FreeType library
-		if (FT_Init_FreeType(&_ftLibrary)) {
+		if (FT_Init_FreeType(reinterpret_cast<FT_Library *>(&_ftLibrary))) {
 			throw std::runtime_error("Could not initialize FreeType library.");
 		}
 
 		for (const auto &fontAsset: fontAssets) {
-			_faceBuffers[fontAsset.path()] = fontAsset.content();
-			const auto &buffer			   = _faceBuffers.at(fontAsset.path());
+			auto buffer = std::make_shared<std::vector<uint8_t>>();
+			const std::string content = fontAsset.content();
+			buffer->assign(content.begin(), content.end());
+			_faceBuffers[fontAsset.path()] = buffer;
 
 			FT_Face face;
 			if (FT_New_Memory_Face(
-					_ftLibrary,
-					reinterpret_cast<const FT_Byte *>(buffer.data()),
-					static_cast<FT_Long>(buffer.size()), 0, &face)) {
+					reinterpret_cast<FT_Library>(_ftLibrary),
+					reinterpret_cast<const FT_Byte *>(buffer->data()),
+					static_cast<FT_Long>(buffer->size()), 0, &face)) {
 				throw std::runtime_error(
 					"Could not load font " + fontAsset.path() + ": "
 					+ FT_Error_String(FT_Err_Cannot_Open_Resource));
@@ -42,10 +47,10 @@ namespace utility::graphic
 			return;
 		}
 		for (const auto &[_, face]: _faces) {
-			FT_Done_Face(face);
+			FT_Done_Face(static_cast<FT_Face>(face));
 		}
 		if (_ftLibrary) {
-			FT_Done_FreeType(_ftLibrary);
+			FT_Done_FreeType(reinterpret_cast<FT_Library>(_ftLibrary));
 		}
 	}
 
@@ -174,7 +179,8 @@ namespace utility::graphic
 		if (_faces.empty())
 			return false;
 		for (const auto &[_, face]: _faces) {
-			if (!face || face->num_glyphs == 0) {
+			if (!face
+				|| static_cast<FT_Face>(face)->num_glyphs == 0) {
 				return false;
 			}
 		}
@@ -187,7 +193,8 @@ namespace utility::graphic
 			return false;
 		}
 		for (const auto &[_, face]: _faces) {
-			if (FT_Get_Char_Index(face, codepoint) != 0) {
+			if (FT_Get_Char_Index(static_cast<FT_Face>(face), codepoint)
+				!= 0) {
 				return true;
 			}
 		}
@@ -205,7 +212,8 @@ namespace utility::graphic
 		}
 
 		for (const auto &[faceName, face]: _faces) {
-			FT_UInt glyphIndex = FT_Get_Char_Index(face, codePoint);
+			FT_UInt glyphIndex =
+				FT_Get_Char_Index(static_cast<FT_Face>(face), codePoint);
 			if (glyphIndex != 0) {
 				return faceName;
 			}

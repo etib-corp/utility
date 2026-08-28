@@ -9,10 +9,14 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <stdexcept>
 #include <vector>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace utility::graphic
 {
@@ -21,7 +25,7 @@ namespace utility::graphic
 		constexpr int GLYPH_PADDING = 2;
 	}
 
-	FontSized::FontSized(uint32_t fontSize, FT_Face face)
+	FontSized::FontSized(uint32_t fontSize, void *face)
 		: _fontSize(fontSize)
 		, _correspondingFace(face)
 		, _atlasWidth(1024)
@@ -30,25 +34,25 @@ namespace utility::graphic
 		, _penY(0)
 		, _rowHeight(0)
 	{
-		if (!_correspondingFace) {
+		FT_Face ftFace = static_cast<FT_Face>(_correspondingFace);
+		if (!ftFace) {
 			throw std::runtime_error("Invalid FreeType face");
 		}
 
-		if (FT_Set_Pixel_Sizes(_correspondingFace, 0, _fontSize) != 0) {
+		if (FT_Set_Pixel_Sizes(ftFace, 0, _fontSize) != 0) {
 			throw std::runtime_error("FT_Set_Pixel_Sizes failed");
 		}
 
-		_ascender = _correspondingFace->size->metrics.ascender / 64.0f;
-		_descender =
-			std::abs(_correspondingFace->size->metrics.descender / 64.0f);
-		_lineHeight = _correspondingFace->size->metrics.height / 64.0f;
+		_ascender = ftFace->size->metrics.ascender / 64.0f;
+		_descender = std::abs(ftFace->size->metrics.descender / 64.0f);
+		_lineHeight = ftFace->size->metrics.height / 64.0f;
 
 		_generatedAtlas = std::make_shared<Texture>(
 			_atlasWidth, _atlasHeight, Texture::TextureType::FontAtlas);
 
-		_generatedAtlas->_pixels.resize(_atlasWidth * _atlasHeight, 0);
-		std::fill(_generatedAtlas->_pixels.begin(),
-				  _generatedAtlas->_pixels.end(), 0);
+		_generatedAtlas->pixels().resize(_atlasWidth * _atlasHeight, 0);
+		std::fill(_generatedAtlas->pixels().begin(),
+				  _generatedAtlas->pixels().end(), 0);
 	}
 
 	Glyph FontSized::generateGlyph(uint32_t codePoint)
@@ -58,15 +62,17 @@ namespace utility::graphic
 			return it->second;
 		}
 
-		if (FT_Set_Pixel_Sizes(_correspondingFace, 0, _fontSize) != 0) {
+		FT_Face ftFace = static_cast<FT_Face>(_correspondingFace);
+
+		if (FT_Set_Pixel_Sizes(ftFace, 0, _fontSize) != 0) {
 			throw std::runtime_error("FT_Set_Pixel_Sizes failed");
 		}
 
-		if (FT_Load_Char(_correspondingFace, codePoint, FT_LOAD_RENDER) != 0) {
+		if (FT_Load_Char(ftFace, codePoint, FT_LOAD_RENDER) != 0) {
 			throw std::runtime_error("Glyph not found");
 		}
 
-		FT_GlyphSlot g = _correspondingFace->glyph;
+		FT_GlyphSlot g = ftFace->glyph;
 		if (!g) {
 			throw std::runtime_error("Invalid glyph slot");
 		}
@@ -88,7 +94,7 @@ namespace utility::graphic
 
 		if (_penY + glyphHeight + GLYPH_PADDING
 			>= static_cast<int>(_atlasHeight)) {
-			throw std::runtime_error("Atlas full");
+			resizeAtlas(_atlasHeight * 2);
 		}
 
 		const int pitch	   = g->bitmap.pitch;
@@ -110,7 +116,7 @@ namespace utility::graphic
 				const int dstY = _penY + y;
 				const int dstIndex =
 					dstY * static_cast<int>(_atlasWidth) + dstX;
-				_generatedAtlas->_pixels[dstIndex] = srcRow[x];
+				_generatedAtlas->pixels()[dstIndex] = srcRow[x];
 			}
 		}
 
@@ -186,7 +192,7 @@ namespace utility::graphic
 	{		if (!_generatedAtlas) {
 			_generatedAtlas = std::make_shared<Texture>(
 				_atlasWidth, _atlasHeight, Texture::TextureType::FontAtlas);
-			_generatedAtlas->_pixels.resize(_atlasWidth * _atlasHeight, 0);
+			_generatedAtlas->pixels().resize(_atlasWidth * _atlasHeight, 0);
 			shouldRegenerate = true;
 		}
 
@@ -208,12 +214,45 @@ namespace utility::graphic
 			throw std::runtime_error("Atlas texture is null");
 		}
 
-		std::fill(_generatedAtlas->_pixels.begin(),
-				  _generatedAtlas->_pixels.end(), 0);
+		std::fill(_generatedAtlas->pixels().begin(),
+				  _generatedAtlas->pixels().end(), 0);
 
 		_generatedGlyphs.clear();
 		_penX	   = 0;
 		_penY	   = 0;
 		_rowHeight = 0;
+	}
+
+	void FontSized::resizeAtlas(int newHeight)
+	{
+		if (!_generatedAtlas) {
+			_atlasHeight = newHeight;
+			return;
+		}
+
+		if (newHeight <= _atlasHeight) {
+			return;
+		}
+
+		std::vector<uint8_t> resized(
+			static_cast<size_t>(_atlasWidth) * newHeight, 0);
+
+		const int oldWidth	= static_cast<int>(_atlasWidth);
+		const int oldHeight = _atlasHeight;
+
+		for (int y = 0; y < oldHeight; ++y) {
+			const size_t srcRowStart =
+				static_cast<size_t>(y) * oldWidth;
+			const size_t dstRowStart = static_cast<size_t>(y) * oldWidth;
+			auto &atlasPixels = _generatedAtlas->pixels();
+			std::copy(atlasPixels.begin()
+						  + static_cast<std::ptrdiff_t>(srcRowStart),
+					  atlasPixels.begin()
+						  + static_cast<std::ptrdiff_t>(srcRowStart + oldWidth),
+					  resized.begin() + static_cast<std::ptrdiff_t>(dstRowStart));
+		}
+
+		_generatedAtlas->pixels().swap(resized);
+		_atlasHeight = newHeight;
 	}
 }	 // namespace utility::graphic
