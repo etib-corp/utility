@@ -80,6 +80,21 @@ TEST_F(TestVector, Equality)
 	EXPECT_FALSE(a != b);
 }
 
+TEST_F(TestVector, ScalarDivisionByZeroThrows)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	EXPECT_THROW(a / 0.0f, std::invalid_argument);
+	EXPECT_THROW(a /= 0.0f, std::invalid_argument);
+}
+
+TEST_F(TestVector, ElementwiseDivisionByZeroThrows)
+{
+	Vector3F a { 1.0f, 2.0f, 3.0f };
+	Vector3F zero{ 0.0f, 0.0f, 0.0f };
+	EXPECT_THROW(a / zero, std::invalid_argument);
+	EXPECT_THROW(a /= zero, std::invalid_argument);
+}
+
 TEST_F(TestVector, ExactEqualityRejectsRounding)
 {
 	Vector3F a { 1.0f, 2.0f, 3.0f };
