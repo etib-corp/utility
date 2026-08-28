@@ -94,7 +94,7 @@ namespace utility::math
 		 * @brief Construct from a GLM vector.
 		 * @param v Source GLM vector.
 		 */
-		Vector(const glm::vec<VectorDimension, VectorComponentType> &v)
+		explicit Vector(const glm::vec<VectorDimension, VectorComponentType> &v)
 			: glm::vec<VectorDimension, VectorComponentType>(v)
 		{
 		}
@@ -350,6 +350,9 @@ namespace utility::math
 
 		/**
 		 * @brief Equality comparison.
+		 *
+		 * Uses exact component-wise equality. For floating-point types prefer
+		 * equalsEpsilon to tolerate rounding error.
 		 * @param rhs The vector to compare with.
 		 * @return True if the vectors are equal, false otherwise.
 		 */
@@ -361,6 +364,27 @@ namespace utility::math
 				== static_cast<
 					   const glm::vec<VectorDimension, VectorComponentType> &>(
 					   rhs);
+		}
+
+		/**
+		 * @brief Approximate equality using an epsilon threshold.
+		 *
+		 * Returns true if each component is within @p epsilon of its counterpart
+		 * in @p rhs.
+		 * @param rhs The vector to compare with.
+		 * @param epsilon The maximum allowed difference per component.
+		 * @return True if the vectors are equal within epsilon.
+		 */
+		bool equalsEpsilon(const Vector &rhs,
+						   VectorComponentType epsilon =
+							   VectorComponentType { 1e-5 }) const
+		{
+			for (std::size_t i = 0; i < VectorDimension; ++i) {
+				if (std::abs((*this)[i] - rhs[i]) > epsilon) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		/**

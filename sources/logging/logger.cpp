@@ -22,6 +22,7 @@
 
 #include <chrono>
 #include <iomanip>
+#include <limits>
 #include <sstream>
 
 #include "utility/logging/logger.hpp"
@@ -57,7 +58,9 @@ namespace utility::logging
 			case LogLevel::ERROR_LEVEL:
 				return 3;
 			default:
-				return -1;
+				// Return a high sentinel so an unknown/future level is treated
+				// as most severe and never silently dropped by the filter.
+				return std::numeric_limits<int>::max();
 		}
 	}
 

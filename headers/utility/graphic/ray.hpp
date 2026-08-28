@@ -333,8 +333,9 @@ namespace utility::graphic
 			const math::Vector<RayComponentType, 3> topLeft =
 				math::Vector<RayComponentType, 3>(rectanglePose.getPosition());
 
-			// Top-left -> center
-			// Use -up because your UI placement appears to grow downward in Y
+			// The rectangle's position is treated as its top-left corner. The
+			// center is found by extending half the width along the rectangle's
+			// right axis and half the height along its up axis.
 			const math::Vector<RayComponentType, 3> rectangleCenter =
 				topLeft + right * halfWidth + up * halfHeight;
 
