@@ -65,6 +65,8 @@ namespace utility::graphic
 		ViewComponentType _nearPlane;	 ///< Near clipping plane distance
 		ViewComponentType _farPlane;	 ///< Far clipping plane distance
 
+		bool _flipY = true;	 ///< Invert Y axis for Vulkan-style NDC
+
 		/**
 		 * @brief Validate perspective parameter constraints.
 		 * @param verticalFovDegrees Vertical field-of-view in degrees.
@@ -610,10 +612,33 @@ namespace utility::graphic
 				-(_farPlane * _nearPlane) / (_farPlane - _nearPlane);
 			projection[3][3] = static_cast<ViewComponentType>(0);
 
-			projection[1][1] *=
-				static_cast<ViewComponentType>(-1);	   // Invert Y for Vulkan
+			if (_flipY) {
+				// Invert Y for Vulkan-style NDC (Y pointing down).
+				projection[1][1] *= static_cast<ViewComponentType>(-1);
+			}
 
 			return projection;
+		}
+
+		/**
+		 * @brief Set whether the projection matrix inverts the Y axis.
+		 *
+		 * Vulkan uses a Y-down NDC, so Y is inverted by default. Graphics APIs
+		 * with a Y-up NDC (OpenGL, Metal, DirectX) should disable this.
+		 * @param flip True to invert Y (Vulkan-style), false to keep Y-up.
+		 */
+		void setFlipY(bool flip) noexcept
+		{
+			_flipY = flip;
+		}
+
+		/**
+		 * @brief Get whether the projection matrix inverts the Y axis.
+		 * @return True if Y is inverted (Vulkan-style NDC).
+		 */
+		bool isFlipY(void) const noexcept
+		{
+			return _flipY;
 		}
 	};
 
