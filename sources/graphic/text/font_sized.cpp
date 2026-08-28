@@ -46,9 +46,9 @@ namespace utility::graphic
 		_generatedAtlas = std::make_shared<Texture>(
 			_atlasWidth, _atlasHeight, Texture::TextureType::FontAtlas);
 
-		_generatedAtlas->_pixels.resize(_atlasWidth * _atlasHeight, 0);
-		std::fill(_generatedAtlas->_pixels.begin(),
-				  _generatedAtlas->_pixels.end(), 0);
+		_generatedAtlas->pixels().resize(_atlasWidth * _atlasHeight, 0);
+		std::fill(_generatedAtlas->pixels().begin(),
+				  _generatedAtlas->pixels().end(), 0);
 	}
 
 	Glyph FontSized::generateGlyph(uint32_t codePoint)
@@ -110,7 +110,7 @@ namespace utility::graphic
 				const int dstY = _penY + y;
 				const int dstIndex =
 					dstY * static_cast<int>(_atlasWidth) + dstX;
-				_generatedAtlas->_pixels[dstIndex] = srcRow[x];
+				_generatedAtlas->pixels()[dstIndex] = srcRow[x];
 			}
 		}
 
@@ -157,7 +157,7 @@ namespace utility::graphic
 		if (!_generatedAtlas) {
 			_generatedAtlas = std::make_shared<Texture>(
 				_atlasWidth, _atlasHeight, Texture::TextureType::FontAtlas);
-			_generatedAtlas->_pixels.resize(_atlasWidth * _atlasHeight, 0);
+			_generatedAtlas->pixels().resize(_atlasWidth * _atlasHeight, 0);
 			shouldRegenerate = true;
 		}
 
@@ -179,8 +179,8 @@ namespace utility::graphic
 			throw std::runtime_error("Atlas texture is null");
 		}
 
-		std::fill(_generatedAtlas->_pixels.begin(),
-				  _generatedAtlas->_pixels.end(), 0);
+		std::fill(_generatedAtlas->pixels().begin(),
+				  _generatedAtlas->pixels().end(), 0);
 
 		_generatedGlyphs.clear();
 		_penX	   = 0;
