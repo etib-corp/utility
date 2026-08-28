@@ -146,6 +146,12 @@ TEST(LoggerTest, LogLevelValueOrder)
 			  Logger::levelValue(LogLevel::ERROR_LEVEL));
 }
 
+TEST(LoggerTest, UnknownLevelMapsToHighSentinel)
+{
+	auto unknown = static_cast<LogLevel>(999);
+	EXPECT_GT(Logger::levelValue(unknown), Logger::levelValue(LogLevel::ERROR_LEVEL));
+}
+
 TEST(LoggerTest, DefaultLoggerIsStandardLogger)
 {
 	static_assert(
@@ -191,4 +197,21 @@ TEST(LoggerTest, ConcurrentLoggingIsSafe)
 		thread.join();
 	}
 	EXPECT_EQ(logger.count.load(), kThreads * kPerThread);
+}
+
+TEST(LoggerTest, ThrowingOutputDoesNotTerminate)
+{
+	struct ThrowingLogger: Logger {
+		ThrowingLogger(const std::string &name)
+			: Logger(name)
+		{
+		}
+		void output(const LogRecord &) override
+		{
+			throw std::runtime_error("boom");
+		}
+	};
+
+	ThrowingLogger logger("Throw");
+	EXPECT_NO_THROW({ logger.info() << "should not terminate"; });
 }

@@ -94,7 +94,7 @@ namespace utility::math
 		 * @brief Construct from a GLM vector.
 		 * @param v Source GLM vector.
 		 */
-		Vector(const glm::vec<VectorDimension, VectorComponentType> &v)
+		explicit Vector(const glm::vec<VectorDimension, VectorComponentType> &v)
 			: glm::vec<VectorDimension, VectorComponentType>(v)
 		{
 		}
@@ -163,7 +163,7 @@ namespace utility::math
 		 * @param rhs The vector to add.
 		 * @return The resulting vector.
 		 */
-		Vector operator+(const Vector &rhs) const
+		Vector operator+(const Vector &rhs) const noexcept
 		{
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
@@ -178,7 +178,7 @@ namespace utility::math
 		 * @param rhs The vector to add.
 		 * @return A reference to this vector after addition.
 		 */
-		Vector &operator+=(const Vector &rhs)
+		Vector &operator+=(const Vector &rhs) noexcept
 		{
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) +=
@@ -193,7 +193,7 @@ namespace utility::math
 		 * @param rhs The vector to subtract.
 		 * @return The resulting vector.
 		 */
-		Vector operator-(const Vector &rhs) const
+		Vector operator-(const Vector &rhs) const noexcept
 		{
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
@@ -208,7 +208,7 @@ namespace utility::math
 		 * @param rhs The vector to subtract.
 		 * @return A reference to this vector after subtraction.
 		 */
-		Vector &operator-=(const Vector &rhs)
+		Vector &operator-=(const Vector &rhs) noexcept
 		{
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) -=
@@ -223,7 +223,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return The resulting vector.
 		 */
-		Vector operator*(VectorComponentType scalar) const
+		Vector operator*(VectorComponentType scalar) const noexcept
 		{
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
@@ -236,7 +236,7 @@ namespace utility::math
 		 * @param scalar The scalar value to multiply with.
 		 * @return A reference to this vector after multiplication.
 		 */
-		Vector &operator*=(VectorComponentType scalar)
+		Vector &operator*=(VectorComponentType scalar) noexcept
 		{
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) *= scalar;
@@ -247,9 +247,13 @@ namespace utility::math
 		 * @brief Scalar division.
 		 * @param scalar The scalar value to divide by.
 		 * @return The resulting vector.
+		 * @throws std::invalid_argument if scalar is zero.
 		 */
 		Vector operator/(VectorComponentType scalar) const
 		{
+			if (scalar == VectorComponentType { 0 }) {
+				throw std::invalid_argument("Vector division by zero");
+			}
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
 								&>(*this)
@@ -260,9 +264,13 @@ namespace utility::math
 		 * @brief Scalar division assignment.
 		 * @param scalar The scalar value to divide by.
 		 * @return A reference to this vector after division.
+		 * @throws std::invalid_argument if scalar is zero.
 		 */
 		Vector &operator/=(VectorComponentType scalar)
 		{
+			if (scalar == VectorComponentType { 0 }) {
+				throw std::invalid_argument("Vector division by zero");
+			}
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) /= scalar;
 			return *this;
@@ -273,7 +281,7 @@ namespace utility::math
 		 * @param rhs The vector to multiply with.
 		 * @return The resulting vector.
 		 */
-		Vector operator*(const Vector &rhs) const
+		Vector operator*(const Vector &rhs) const noexcept
 		{
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
@@ -288,7 +296,7 @@ namespace utility::math
 		 * @param rhs The vector to multiply with.
 		 * @return A reference to this vector after multiplication.
 		 */
-		Vector &operator*=(const Vector &rhs)
+		Vector &operator*=(const Vector &rhs) noexcept
 		{
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) *=
@@ -302,9 +310,15 @@ namespace utility::math
 		 * @brief Element-wise division.
 		 * @param rhs The vector to divide by.
 		 * @return The resulting vector.
+		 * @throws std::invalid_argument if any component of rhs is zero.
 		 */
 		Vector operator/(const Vector &rhs) const
 		{
+			for (std::size_t i = 0; i < VectorDimension; ++i) {
+				if (rhs[i] == VectorComponentType { 0 }) {
+					throw std::invalid_argument("Vector division by zero");
+				}
+			}
 			return Vector(
 				static_cast<const glm::vec<VectorDimension, VectorComponentType>
 								&>(*this)
@@ -317,9 +331,15 @@ namespace utility::math
 		 * @brief Element-wise division assignment.
 		 * @param rhs The vector to divide by.
 		 * @return A reference to this vector after division.
+		 * @throws std::invalid_argument if any component of rhs is zero.
 		 */
 		Vector &operator/=(const Vector &rhs)
 		{
+			for (std::size_t i = 0; i < VectorDimension; ++i) {
+				if (rhs[i] == VectorComponentType { 0 }) {
+					throw std::invalid_argument("Vector division by zero");
+				}
+			}
 			*static_cast<glm::vec<VectorDimension, VectorComponentType> *>(
 				this) /=
 				static_cast<
@@ -330,10 +350,13 @@ namespace utility::math
 
 		/**
 		 * @brief Equality comparison.
+		 *
+		 * Uses exact component-wise equality. For floating-point types prefer
+		 * equalsEpsilon to tolerate rounding error.
 		 * @param rhs The vector to compare with.
 		 * @return True if the vectors are equal, false otherwise.
 		 */
-		bool operator==(const Vector &rhs) const
+		bool operator==(const Vector &rhs) const noexcept
 		{
 			return static_cast<
 					   const glm::vec<VectorDimension, VectorComponentType> &>(
@@ -344,11 +367,32 @@ namespace utility::math
 		}
 
 		/**
+		 * @brief Approximate equality using an epsilon threshold.
+		 *
+		 * Returns true if each component is within @p epsilon of its counterpart
+		 * in @p rhs.
+		 * @param rhs The vector to compare with.
+		 * @param epsilon The maximum allowed difference per component.
+		 * @return True if the vectors are equal within epsilon.
+		 */
+		bool equalsEpsilon(const Vector &rhs,
+						   VectorComponentType epsilon =
+							   VectorComponentType { 1e-5 }) const
+		{
+			for (std::size_t i = 0; i < VectorDimension; ++i) {
+				if (std::abs((*this)[i] - rhs[i]) > epsilon) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		/**
 		 * @brief Inequality comparison.
 		 * @param rhs The vector to compare with.
 		 * @return True if the vectors are not equal, false otherwise.
 		 */
-		bool operator!=(const Vector &rhs) const
+		bool operator!=(const Vector &rhs) const noexcept
 		{
 			return !(*this == rhs);
 		}
@@ -357,7 +401,7 @@ namespace utility::math
 		 * @brief Unary negation.
 		 * @return The negated vector.
 		 */
-		Vector operator-() const
+		Vector operator-() const noexcept
 		{
 			return Vector(
 				-static_cast<
