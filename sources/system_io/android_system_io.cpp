@@ -26,6 +26,9 @@
 
 	#include <filesystem>
 	#include <fstream>
+	#include <memory>
+
+	#include "utility/logging/default_logger.hpp"
 
 namespace
 {
@@ -37,7 +40,18 @@ namespace
 
 utility::AndroidSystemIO::AndroidSystemIO(AAssetManager *systemInterface)
 	: _assetManager(systemInterface)
+	, _logger(std::make_unique<utility::logging::DefaultLogger>("AndroidSystemIO"))
 {
+}
+
+utility::logging::Logger &utility::AndroidSystemIO::getLogger(void)
+{
+	return *_logger;
+}
+
+utility::logging::Logger &utility::AndroidSystemIO::getLogger(void) const
+{
+	return *_logger;
 }
 
 bool utility::AndroidSystemIO::loadDirectory(const std::string &directory)
@@ -127,13 +141,13 @@ bool utility::AndroidSystemIO::save(const std::string &path,
 			<< "Cannot save Android asset to original path. Provide a newPath.";
 		return false;
 	}
-	const std::string &content = it->second->content();
+	const auto &content = it->second->data();
 	std::ofstream file(newPath, std::ios::binary);
 	if (!file.is_open()) {
 		getLogger().warning() << "Failed to open file for writing: " << newPath;
 		return false;
 	}
-	file.write(content.data(), content.size());
+	file.write(reinterpret_cast<const char *>(content.data()), content.size());
 	file.close();
 	return true;
 }

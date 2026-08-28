@@ -22,6 +22,11 @@
 
 #include <gtest/gtest.h>
 
+#include <atomic>
+#include <stdexcept>
+#include <thread>
+#include <vector>
+
 #include "utility/logging/logger.hpp"
 #include "utility/logging/standard_logger.hpp"
 #include "utility/logging/default_logger.hpp"
@@ -141,6 +146,12 @@ TEST(LoggerTest, LogLevelValueOrder)
 			  Logger::levelValue(LogLevel::ERROR_LEVEL));
 }
 
+TEST(LoggerTest, UnknownLevelMapsToHighSentinel)
+{
+	auto unknown = static_cast<LogLevel>(999);
+	EXPECT_GT(Logger::levelValue(unknown), Logger::levelValue(LogLevel::ERROR_LEVEL));
+}
+
 TEST(LoggerTest, DefaultLoggerIsStandardLogger)
 {
 	static_assert(
@@ -154,4 +165,53 @@ TEST(StandardLoggerTest, LevelToString)
 	EXPECT_EQ(Logger::levelToString(LogLevel::INFO_LEVEL), "Info");
 	EXPECT_EQ(Logger::levelToString(LogLevel::WARNING_LEVEL), "Warning");
 	EXPECT_EQ(Logger::levelToString(LogLevel::ERROR_LEVEL), "Error");
+}
+
+TEST(LoggerTest, ConcurrentLoggingIsSafe)
+{
+	struct CountingLogger: Logger {
+		std::atomic<int> count { 0 };
+		CountingLogger(const std::string &name)
+			: Logger(name)
+		{
+		}
+		void output(const LogRecord &) override
+		{
+			++count;
+		}
+	};
+
+	CountingLogger logger("Concurrent");
+	constexpr int kThreads	= 8;
+	constexpr int kPerThread = 500;
+
+	std::vector<std::thread> threads;
+	for (int t = 0; t < kThreads; ++t) {
+		threads.emplace_back([&]() {
+			for (int i = 0; i < kPerThread; ++i) {
+				logger.info() << "thread " << i;
+			}
+		});
+	}
+	for (auto &thread: threads) {
+		thread.join();
+	}
+	EXPECT_EQ(logger.count.load(), kThreads * kPerThread);
+}
+
+TEST(LoggerTest, ThrowingOutputDoesNotTerminate)
+{
+	struct ThrowingLogger: Logger {
+		ThrowingLogger(const std::string &name)
+			: Logger(name)
+		{
+		}
+		void output(const LogRecord &) override
+		{
+			throw std::runtime_error("boom");
+		}
+	};
+
+	ThrowingLogger logger("Throw");
+	EXPECT_NO_THROW({ logger.info() << "should not terminate"; });
 }
