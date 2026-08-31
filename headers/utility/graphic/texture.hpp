@@ -112,6 +112,15 @@ namespace utility::graphic
 			return _pixels;
 		}
 
+		/**
+		 * @brief Retrieve the type of the texture.
+		 * @return The texture type.
+		 */
+		[[nodiscard]] TextureType type() const noexcept
+		{
+			return _type;
+		}
+
 		protected:
 		/**
 		 * @brief The corresponding pixel data for this texture, stored as a
