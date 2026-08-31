@@ -110,7 +110,6 @@ if(NOT BUILD_DOCS_ONLY)
     FetchContent_Declare(openal
         GIT_REPOSITORY https://github.com/kcat/openal-soft.git
         GIT_TAG 3f94a50884e2ae4963092fead7d299127e97e5d5
-        GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
     )
     FetchContent_MakeAvailable(openal)
