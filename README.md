@@ -67,3 +67,18 @@ and helper modules, including edge cases and invalid-input paths.
 - [Modules](docs/MODULES.md)
 - [Technical Choices](docs/TECHNICAL_CHOICES.md)
 - [How Utility Works](docs/HOW_GUILLAUME_WORKS.md)
+- [Code Conventions](docs/CODE_CONVENTIONS.md)
+- [Commit Conventions](docs/COMMIT_CONVENTIONS.md)
+
+## Contributing
+
+We welcome contributions from the community! If you're interested in
+contributing to Utility, please check out our
+[Contributing Guidelines](CONTRIBUTING.md) for more information on how to get
+involved.
+
+## License
+
+Utility is released under the [MIT License](LICENSE). See
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for our community standards and
+[SECURITY.md](SECURITY.md) for reporting vulnerabilities.
