@@ -65,6 +65,8 @@ and helper modules, including edge cases and invalid-input paths.
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Modules](docs/MODULES.md)
+- [Getting Started](docs/GETTING_STARTED.md)
+- [Versioning & Support](docs/VERSIONING.md)
 - [Technical Choices](docs/TECHNICAL_CHOICES.md)
 - [How Utility Works](docs/HOW_GUILLAUME_WORKS.md)
 - [Code Conventions](docs/CODE_CONVENTIONS.md)

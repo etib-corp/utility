@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Standard open-source documentation: `CHANGELOG.md`, `CODE_OF_CONDUCT.md`,
   `CONTRIBUTING.md`, `SECURITY.md`, `AUTHORS.md`, and `LICENSE`.
+- CPack packaging rules.
+- Benchmark harness (`BUILD_BENCHMARKS`) covering math and cache hot paths.
+- CI hardening: ASan/UBSan and `clang-tidy` jobs, and coverage reporting.
+- Documentation: Getting Started tutorial, architecture diagrams, and
+  versioning & support policy.
+- A runnable `examples/math_vectors` sample.
+
+### Changed
+
+- Replaced `file(GLOB)` with explicit source lists for reproducible builds.
 
 ## [1.0.0] - 2025-08-25
 

@@ -3,7 +3,22 @@
 Utility is a shared foundation layer. Its namespaces are grouped by concern so
 the rest of the workspace can reuse them without pulling in higher-level code.
 
-## Main Areas
+## Module Layout
+
+```mermaid
+graph TD
+    Math[utility::math]
+    Graphic[utility::graphic]
+    Event[utility::event]
+    SystemIO[utility::system_io]
+    Sound[utility::sound]
+    Logging[utility::logging]
+
+    Graphic --> Math
+    Graphic --> SystemIO
+    Event --> Math
+    Sound --> SystemIO
+```
 
 - `utility::math` contains vectors, matrices, quaternions, and scalar helpers.
 - `utility::graphic` contains rendering-friendly types such as colors, poses,
@@ -18,14 +33,16 @@ the rest of the workspace can reuse them without pulling in higher-level code.
 Utility sits at the bottom of the dependency stack. Higher layers (engine, UI,
 application) depend on Utility; Utility must never depend on them.
 
-```
- Application
-     |
-   UI / Rendering
-     |
-   Engine
-     |
- Utility  <- shared foundation
+```mermaid
+graph TD
+    App[Application]
+    UI[UI / Rendering]
+    Engine[Engine]
+    Util[Utility]
+
+    App --> UI
+    UI --> Engine
+    Engine --> Util
 ```
 
 Because every layer shares the same data model, care must be taken to keep

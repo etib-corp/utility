@@ -29,6 +29,7 @@ endif()
 # 02. Options & configuration
 option(BUILD_DOCS "Build Doxygen documentation" OFF)
 option(BUILD_DOCS_ONLY "Configure only the documentation target" OFF)
+option(BUILD_BENCHMARKS "Build the benchmark harness" OFF)
 
 if(BUILD_DOCS_ONLY)
     set(BUILD_DOCS ON)
@@ -125,15 +126,12 @@ if(NOT BUILD_DOCS_ONLY)
 
     # Set the files directories
     set(HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/headers")
-    set(SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sources")
 
-    # Add the source files
-    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
-        "${SOURCES_DIR}/*.cpp"
-    )
+    # Explicit source list (no file(GLOB)) for reproducible packaging.
+    include(cmake/Sources.cmake)
 
     # 04. Library definition
-    add_library(${PROJECT_NAME} ${SOURCES})
+    add_library(${PROJECT_NAME} ${UTILITY_SOURCES})
 
     # 06. Compile definitions
     target_compile_definitions(${PROJECT_NAME}
@@ -230,6 +228,17 @@ if(NOT BUILD_DOCS_ONLY)
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
         DESTINATION ${UTILITY_INSTALL_CMAKEDIR}
     )
+
+    # CPack packaging
+    set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
+    set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+    set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_DESCRIPTION}")
+    set(CPACK_PACKAGE_HOMEPAGE_URL "${PROJECT_HOMEPAGE_URL}")
+    set(CPACK_PACKAGE_VENDOR "ETIB Corporation")
+    set(CPACK_PACKAGE_CONTACT "clement-antoine.xavier@epitech.eu")
+    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+    set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+    include(CPack)
 endif()
 
 # 08. Documentations
@@ -250,3 +259,14 @@ if(BUILD_TESTING)
 else()
     message(STATUS "Skipping tests...")
 endif()
+
+# 10. Benchmarks
+
+if(BUILD_BENCHMARKS)
+    message(STATUS "Building benchmarks...")
+    add_subdirectory(benchmarks)
+endif()
+
+# 11. Examples
+
+add_subdirectory(examples)

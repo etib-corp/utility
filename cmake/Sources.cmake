@@ -1,0 +1,104 @@
+# Explicit list of Utility source files.
+#
+# This list is intentionally explicit (no file(GLOB)) so that the installed
+# target is reproducible across machines and packaging is deterministic.
+# When adding or removing a source file, update this list.
+
+set(UTILITY_SOURCES
+    sources/cache.cpp
+    sources/demangle.cpp
+    sources/event/cursor_enter_event.cpp
+    sources/event/event.cpp
+    sources/event/file_drop_event.cpp
+    sources/event/hand_button_event.cpp
+    sources/event/hand_event.cpp
+    sources/event/hand_haptic_event.cpp
+    sources/event/hand_haptic_thumb_event.cpp
+    sources/event/hand_haptic_trigger_event.cpp
+    sources/event/hand_motion_event.cpp
+    sources/event/hand_pinch_event.cpp
+    sources/event/hand_poke_event.cpp
+    sources/event/hand_squeeze_event.cpp
+    sources/event/hand_thumb_rest_event.cpp
+    sources/event/hand_thumb_stick_event.cpp
+    sources/event/hand_trigger_event.cpp
+    sources/event/keyboard_event.cpp
+    sources/event/mouse_button_event.cpp
+    sources/event/mouse_motion_event.cpp
+    sources/event/mouse_wheel_event.cpp
+    sources/event/palm_event.cpp
+    sources/event/quit_event.cpp
+    sources/event/text_editing_event.cpp
+    sources/event/text_input_event.cpp
+    sources/graphic/color.cpp
+    sources/graphic/field_of_view.cpp
+    sources/graphic/material.cpp
+    sources/graphic/mesh.cpp
+    sources/graphic/model.cpp
+    sources/graphic/orientation.cpp
+    sources/graphic/pose.cpp
+    sources/graphic/position.cpp
+    sources/graphic/primitive.cpp
+    sources/graphic/ray.cpp
+    sources/graphic/renderable.cpp
+    sources/graphic/scale.cpp
+    sources/graphic/shader.cpp
+    sources/graphic/size.cpp
+    sources/graphic/text/code_points.cpp
+    sources/graphic/text/font.cpp
+    sources/graphic/text/font_sized.cpp
+    sources/graphic/text/text.cpp
+    sources/graphic/text/text_material.cpp
+    sources/graphic/texture.cpp
+    sources/graphic/vertex.cpp
+    sources/graphic/view.cpp
+    sources/logging/android_logger.cpp
+    sources/logging/loggable.cpp
+    sources/logging/logger.cpp
+    sources/logging/standard_logger.cpp
+    sources/math/common.cpp
+    sources/math/integer.cpp
+    sources/math/matrix.cpp
+    sources/math/quaternion.cpp
+    sources/math/trigonometric.cpp
+    sources/math/vector.cpp
+    sources/ressource_provider.cpp
+    sources/singleton.cpp
+    sources/sound/audio_buffer.cpp
+    sources/sound/audio_manager.cpp
+    sources/sound/audio_source.cpp
+    sources/sound/decoder/audio_decoder.cpp
+    sources/sound/decoder/decoder_registry.cpp
+    sources/sound/decoder/mp3_decoder.cpp
+    sources/sound/decoder/wav_decoder.cpp
+    sources/system_io/android_system_io.cpp
+    sources/system_io/default_system_io.cpp
+    sources/system_io/file_asset.cpp
+    sources/system_io/system_io.cpp
+)
+
+set(UTILITY_TEST_SOURCES
+    sources/event/test_event.cpp
+    sources/event/test_event_dispatcher.cpp
+    sources/event/test_event_values.cpp
+    sources/graphic/test_code_points.cpp
+    sources/graphic/test_color.cpp
+    sources/graphic/test_field_of_view.cpp
+    sources/graphic/test_mesh.cpp
+    sources/graphic/test_orientation.cpp
+    sources/graphic/test_pose.cpp
+    sources/graphic/test_position.cpp
+    sources/graphic/test_ray.cpp
+    sources/graphic/test_scale.cpp
+    sources/graphic/test_shader.cpp
+    sources/graphic/test_vertex.cpp
+    sources/graphic/test_view.cpp
+    sources/logging/test_logger.cpp
+    sources/math/test_matrix.cpp
+    sources/math/test_quaternion.cpp
+    sources/math/test_vector.cpp
+    sources/test_cache.cpp
+    sources/test_demangle.cpp
+    sources/test_file.cpp
+    sources/test_singleton.cpp
+)
