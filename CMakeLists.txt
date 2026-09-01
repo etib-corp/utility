@@ -119,7 +119,6 @@ if(NOT BUILD_DOCS_ONLY)
         dr_libs
         GIT_REPOSITORY https://github.com/mackron/dr_libs.git
         GIT_TAG b55a0d9a30b91ad8901f89ecf05f76a33186c185
-        GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
     )
     FetchContent_MakeAvailable(dr_libs)
