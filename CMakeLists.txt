@@ -104,6 +104,11 @@ if(NOT BUILD_DOCS_ONLY)
     set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
     set(ALSOFT_INSTALL OFF CACHE BOOL "" FORCE)
 
+    # Build OpenAL as a static library on all platforms. This avoids shipping
+    # a runtime DLL, so test executables can run without PATH manipulation
+    # (e.g. on Windows where gtest discovery failed to locate OpenAL32.dll).
+    set(LIBTYPE STATIC CACHE STRING "" FORCE)
+
     # Force OpenAL to NOT use its bundled fmt and instead use the project-wide fmt
     set(ALSOFT_USE_BUNDLED_FMT OFF CACHE BOOL "" FORCE)
     set(ALSOFT_CONFIG_FMT "fmt" CACHE STRING "" FORCE)
