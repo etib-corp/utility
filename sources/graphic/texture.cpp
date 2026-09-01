@@ -10,9 +10,9 @@
 namespace utility::graphic
 {
 	Texture::Texture(uint32_t width, uint32_t height, TextureType type)
-		: _width(width)
+		: _type(type)
+		, _width(width)
 		, _height(height)
-		, _type(type)
 	{
 		if (type == TextureType::FontAtlas) {
 			_pixels.resize(
