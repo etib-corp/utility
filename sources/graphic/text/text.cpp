@@ -37,8 +37,8 @@ namespace utility::graphic
 		: Renderable(pose, color)
 		, logging::Loggable<Text, logging::DefaultLogger>()
 		, _content(content)
-		, _fontSize(fontSize)
 		, _fontPath(font)
+		, _fontSize(fontSize)
 	{
 		_font	= ressourceProvider->loadFont(_fontPath);
 		_meshes = { std::make_shared<Mesh>(std::vector<VertexF> {},
