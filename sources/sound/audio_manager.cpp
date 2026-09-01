@@ -25,15 +25,20 @@ utility::sound::AudioManager::AudioManager()
 {
 	_device = alcOpenDevice(nullptr);
 	if (!_device) {
-		getLogger().error() << "Failed to open audio device";
-		throw std::runtime_error("Failed to open audio device");
+		getLogger().warning()
+			<< "Failed to open audio device; audio is disabled";
+		_running = false;
+		return;
 	}
 
 	_context = alcCreateContext(_device, nullptr);
 	if (!_context) {
-		getLogger().error() << "Failed to create audio context";
+		getLogger().warning()
+			<< "Failed to create audio context; audio is disabled";
 		alcCloseDevice(_device);
-		throw std::runtime_error("Failed to create audio context");
+		_device = nullptr;
+		_running = false;
+		return;
 	}
 
 	getLogger().info() << "Audio manager initialized successfully";

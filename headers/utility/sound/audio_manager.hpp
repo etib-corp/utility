@@ -169,8 +169,9 @@ namespace utility::sound
 		 * This constructor opens the default OpenAL device, creates an audio
 		 * context, and starts the dedicated audio processing thread.
 		 *
-		 * @throws std::runtime_error If the audio device cannot be opened or
-		 * the audio context cannot be created.
+		 * If the audio device or context cannot be created, the manager
+		 * degrades gracefully: audio is disabled (isRunning() returns false)
+		 * and no exception is thrown, so callers can continue without audio.
 		 */
 		AudioManager();
 
