@@ -93,11 +93,38 @@ jobs:
           --capture
           --directory ${{ github.workspace }}/build
           --output-file coverage.info
+          --no-external
+          --ignore-errors unused
           --exclude '*/_deps/*'
           --exclude '*/tests/*'
+          --exclude '*/googletest*'
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5.0.0
         with:
           files: coverage.info
           fail_ci_if_error: false
+
+  benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v6.0.2
+
+      - name: Configure CMake with benchmarks
+        run: >
+          cmake
+          -B ${{ github.workspace }}/build
+          -S ${{ github.workspace }}
+          -DBUILD_BENCHMARKS=ON
+
+      - name: Build benchmarks
+        run: >
+          cmake
+          --build ${{ github.workspace }}/build
+          --target utility_benchmarks
+
+      - name: Run benchmarks (report)
+        run: >
+          ${{ github.workspace }}/build/benchmarks/utility_benchmarks
+          --benchmark_min_time=0.01s

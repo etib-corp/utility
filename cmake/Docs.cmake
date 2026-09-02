@@ -121,7 +121,7 @@ function(add_project_docs)
     list(REMOVE_DUPLICATES DOC_INPUT_FILES)
 
     doxygen_add_docs(
-        utility_docs
+        docs_all
         ${DOC_INPUT_FILES}
         ALL
         USE_STAMP_FILE
@@ -139,7 +139,7 @@ function(add_project_docs)
             # Preserve structure relative to root when copying
             file(RELATIVE_PATH _rel "${ROOT}" "${img}")
             set(_dest "${HTML_OUT}/${_rel}")
-            add_custom_command(TARGET utility_docs POST_BUILD
+            add_custom_command(TARGET docs_all POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_directory
                     "${img}"
                     "${_dest}"
