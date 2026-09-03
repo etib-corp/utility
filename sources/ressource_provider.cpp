@@ -425,6 +425,45 @@ namespace utility
 		return _textures[id];
 	}
 
+	std::shared_ptr<graphic::Material>
+		RessourceProvider::loadImageMaterial(const std::string &path)
+	{
+		std::string resolvedPath = resolvePath(path);
+		std::string materialName = "image_" + resolvedPath;
+		auto it					  = _elementsIDs.find(materialName);
+
+		if (it != _elementsIDs.end()) {
+			if (_materials.find(it->second) != _materials.end()) {
+				return _materials[it->second];
+			}
+		}
+
+		auto texture = loadTexture(path);
+
+		if (!texture) {
+			getLogger().warning() << "Failed to load image texture: " << path;
+			return nullptr;
+		}
+
+		auto textureAsset = _systemInterface.add(resolvedPath);
+
+		if (!textureAsset) {
+			getLogger().warning()
+				<< "Failed to load image asset: " << path;
+			return nullptr;
+		}
+
+		auto material = std::make_shared<graphic::Material>(
+			*this, std::string("default"),
+			std::vector<File> { *textureAsset });
+		auto id = getNextID();
+
+		_materials[id]			  = material;
+		_elementsIDs[materialName] = id;
+
+		return _materials[id];
+	}
+
 	std::shared_ptr<graphic::Model>
 		RessourceProvider::loadModel(const std::string &path,
 									 const utility::graphic::PoseF &pose,

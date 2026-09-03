@@ -254,6 +254,24 @@ namespace utility
 		// load all assets from a directory
 
 		/**
+		 * @brief Loads an image texture and wraps it in a material bound to the
+		 * default shader.
+		 *
+		 * This method loads the image at the given path as a texture and creates
+		 * a material that uses the `"default"` shader (which samples the albedo
+		 * texture at binding 1) with the loaded image texture. The material is
+		 * registered under a deterministic name (`image_<path>`) so that
+		 * `getMaterialID("image_<path>")` resolves and the material can be used
+		 * with `addMesh`.
+		 *
+		 * @param path The file path to the image resource to be loaded.
+		 * @return A shared pointer to the loaded Material object, or nullptr if
+		 * the image texture could not be loaded.
+		 */
+		std::shared_ptr<graphic::Material>
+			loadImageMaterial(const std::string &path);
+
+		/**
 		 * @brief Loads a model resource from a specified file path.
 		 *
 		 * @param path The file path to the model resource to be loaded.
