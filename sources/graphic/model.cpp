@@ -9,7 +9,8 @@
 
 namespace utility::graphic
 {
-	Model::Model(std::shared_ptr<utility::File> modelAsset, const PoseF &pose, uint32_t materialID)
+	Model::Model(std::shared_ptr<utility::File> modelAsset, const PoseF &pose,
+				 uint32_t materialID)
 		: Renderable(pose, Color32Bit())
 		, _materialID(materialID)
 	{

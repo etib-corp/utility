@@ -87,7 +87,8 @@ namespace utility::graphic
 		graphic::SizeF dimensions({ 0.0, 0.0 });
 
 		std::vector<uint32_t> codepoints = utf8ToCodepoints(_content);
-		const math::Vector2F measured = _font->measureText(_fontSize, codepoints);
+		const math::Vector2F measured =
+			_font->measureText(_fontSize, codepoints);
 
 		dimensions.setWidth(measured[0]);
 		dimensions.setHeight(measured[1]);

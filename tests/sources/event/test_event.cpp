@@ -12,14 +12,14 @@ using namespace tests::utility::event;
 TEST_F(TestEvent, MouseMotionDefaultsFactory)
 {
 	MouseMotionEvent event;
-	Vector2F expected{ 0, 0 };
+	Vector2F expected { 0, 0 };
 	EXPECT_EQ(event.getPosition(), expected);
 }
 
 TEST_F(TestEvent, MouseMotionSetAndGet)
 {
 	MouseMotionEvent event;
-	Vector2F pos{ 12.5f, 7.0f };
+	Vector2F pos { 12.5f, 7.0f };
 	event.setPosition(pos);
 	EXPECT_EQ(event.getPosition(), pos);
 }
@@ -28,7 +28,7 @@ TEST_F(TestEvent, MouseMotionFactoryCreatesTypedEvent)
 {
 	MouseMotionEvent::Factory factory;
 	auto event = factory.createTyped();
-	Vector2F zero{ 0, 0 };
+	Vector2F zero { 0, 0 };
 	ASSERT_NE(event, nullptr);
 	EXPECT_EQ(event->getPosition(), zero);
 }
@@ -51,7 +51,7 @@ TEST_F(TestEvent, MouseButtonDefaultsFactory)
 TEST_F(TestEvent, MouseButtonSetters)
 {
 	MouseButtonEvent event;
-	Vector2F pos{ 1.0f, 2.0f };
+	Vector2F pos { 1.0f, 2.0f };
 	event.setButton(MouseButtonEvent::Button::Right)
 		.setPressed(true)
 		.setPosition(pos);

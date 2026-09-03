@@ -425,6 +425,43 @@ namespace utility
 		return _textures[id];
 	}
 
+	std::shared_ptr<graphic::Material>
+		RessourceProvider::loadImageMaterial(const std::string &path)
+	{
+		std::string resolvedPath = resolvePath(path);
+		std::string materialName = resolvePath("image_" + path);
+		auto it					 = _elementsIDs.find(materialName);
+
+		if (it != _elementsIDs.end()) {
+			if (_materials.find(it->second) != _materials.end()) {
+				return _materials[it->second];
+			}
+		}
+
+		auto texture = loadTexture(path);
+
+		if (!texture) {
+			getLogger().warning() << "Failed to load image texture: " << path;
+			return nullptr;
+		}
+
+		auto textureAsset = _systemInterface.add(resolvedPath);
+
+		if (!textureAsset) {
+			getLogger().warning() << "Failed to load image asset: " << path;
+			return nullptr;
+		}
+
+		auto material = std::make_shared<graphic::Material>(
+			*this, std::string("default"), std::vector<File> { *textureAsset });
+		auto id = getNextID();
+
+		_materials[id]			   = material;
+		_elementsIDs[materialName] = id;
+
+		return _materials[id];
+	}
+
 	std::shared_ptr<graphic::Model>
 		RessourceProvider::loadModel(const std::string &path,
 									 const utility::graphic::PoseF &pose,
@@ -454,7 +491,8 @@ namespace utility
 	}
 
 	std::shared_ptr<graphic::Model> RessourceProvider::loadModelFromAsset(
-		std::shared_ptr<utility::File> modelAsset, const utility::graphic::PoseF &pose, const std::string &material)
+		std::shared_ptr<utility::File> modelAsset,
+		const utility::graphic::PoseF &pose, const std::string &material)
 	{
 		auto it = _elementsIDs.find(modelAsset->path());
 
@@ -479,8 +517,9 @@ namespace utility
 			}
 		}
 
-		auto model = std::make_shared<graphic::Model>(modelAsset, pose, materialID);
-		auto id	   = getNextID();
+		auto model =
+			std::make_shared<graphic::Model>(modelAsset, pose, materialID);
+		auto id = getNextID();
 
 		_models[id] = model;
 
@@ -489,7 +528,8 @@ namespace utility
 
 	std::shared_ptr<graphic::Model> RessourceProvider::loadModelFromAsset(
 		std::shared_ptr<utility::File> modelAsset,
-		graphic::Model::ModelType type, const utility::graphic::PoseF &pose, const std::string &material)
+		graphic::Model::ModelType type, const utility::graphic::PoseF &pose,
+		const std::string &material)
 	{
 		auto it = _elementsIDs.find(modelAsset->path());
 
@@ -508,9 +548,9 @@ namespace utility
 			materialID = getDefaultMaterialID();
 		}
 
-		auto model =
-			std::make_shared<graphic::Model>(modelAsset, type, pose, materialID);
-		auto id = getNextID();
+		auto model = std::make_shared<graphic::Model>(modelAsset, type, pose,
+													  materialID);
+		auto id	   = getNextID();
 
 		_models[id] = model;
 
@@ -557,8 +597,8 @@ namespace utility
 	}
 
 	std::shared_ptr<graphic::Model> RessourceProvider::loadObjFromAsset(
-		std::shared_ptr<utility::File> modelAsset, const utility::graphic::PoseF &pose,
-		const std::string &material)
+		std::shared_ptr<utility::File> modelAsset,
+		const utility::graphic::PoseF &pose, const std::string &material)
 	{
 		auto it = _elementsIDs.find(modelAsset->path());
 

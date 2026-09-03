@@ -43,8 +43,8 @@ namespace utility::graphic
 			throw std::runtime_error("FT_Set_Pixel_Sizes failed");
 		}
 
-		_ascender = ftFace->size->metrics.ascender / 64.0f;
-		_descender = std::abs(ftFace->size->metrics.descender / 64.0f);
+		_ascender	= ftFace->size->metrics.ascender / 64.0f;
+		_descender	= std::abs(ftFace->size->metrics.descender / 64.0f);
 		_lineHeight = ftFace->size->metrics.height / 64.0f;
 
 		_generatedAtlas = std::make_shared<Texture>(
@@ -180,8 +180,8 @@ namespace utility::graphic
 			return glyph;
 		}
 
-		glyph.size	 = { static_cast<float>(g->metrics.width) / 64.0f,
-						 static_cast<float>(g->metrics.height) / 64.0f };
+		glyph.size	  = { static_cast<float>(g->metrics.width) / 64.0f,
+						  static_cast<float>(g->metrics.height) / 64.0f };
 		glyph.bearing = { static_cast<float>(g->metrics.horiBearingX) / 64.0f,
 						  static_cast<float>(g->metrics.horiBearingY) / 64.0f };
 		glyph.advance = static_cast<float>(g->metrics.horiAdvance) / 64.0f;
@@ -189,7 +189,8 @@ namespace utility::graphic
 	}
 
 	std::shared_ptr<Texture> FontSized::getAtlas(bool shouldRegenerate)
-	{		if (!_generatedAtlas) {
+	{
+		if (!_generatedAtlas) {
 			_generatedAtlas = std::make_shared<Texture>(
 				_atlasWidth, _atlasHeight, Texture::TextureType::FontAtlas);
 			_generatedAtlas->pixels().resize(_atlasWidth * _atlasHeight, 0);
@@ -241,15 +242,14 @@ namespace utility::graphic
 		const int oldHeight = _atlasHeight;
 
 		for (int y = 0; y < oldHeight; ++y) {
-			const size_t srcRowStart =
-				static_cast<size_t>(y) * oldWidth;
+			const size_t srcRowStart = static_cast<size_t>(y) * oldWidth;
 			const size_t dstRowStart = static_cast<size_t>(y) * oldWidth;
-			auto &atlasPixels = _generatedAtlas->pixels();
-			std::copy(atlasPixels.begin()
-						  + static_cast<std::ptrdiff_t>(srcRowStart),
-					  atlasPixels.begin()
-						  + static_cast<std::ptrdiff_t>(srcRowStart + oldWidth),
-					  resized.begin() + static_cast<std::ptrdiff_t>(dstRowStart));
+			auto &atlasPixels		 = _generatedAtlas->pixels();
+			std::copy(
+				atlasPixels.begin() + static_cast<std::ptrdiff_t>(srcRowStart),
+				atlasPixels.begin()
+					+ static_cast<std::ptrdiff_t>(srcRowStart + oldWidth),
+				resized.begin() + static_cast<std::ptrdiff_t>(dstRowStart));
 		}
 
 		_generatedAtlas->pixels().swap(resized);

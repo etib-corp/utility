@@ -60,11 +60,11 @@ size_t utility::File::write(const void *ptr, size_t size, size_t nmemb)
 	}
 
 	const size_t bytesToWrite = size * nmemb;
-	const auto *bytes		   = static_cast<const std::byte *>(ptr);
-	const size_t lenBefore	   = _content.size();
+	const auto *bytes		  = static_cast<const std::byte *>(ptr);
+	const size_t lenBefore	  = _content.size();
 
-	_content.insert(_content.begin() + static_cast<std::ptrdiff_t>(_pos),
-					bytes, bytes + bytesToWrite);
+	_content.insert(_content.begin() + static_cast<std::ptrdiff_t>(_pos), bytes,
+					bytes + bytesToWrite);
 	_pos += bytesToWrite;
 	return (_content.size() - lenBefore) / size;
 }
@@ -150,6 +150,7 @@ size_t utility::File::remove(size_t count)
 
 	size_t toRemove = std::min(count, _content.size() - _pos);
 	_content.erase(_content.begin() + static_cast<std::ptrdiff_t>(_pos),
-				   _content.begin() + static_cast<std::ptrdiff_t>(_pos + toRemove));
+				   _content.begin()
+					   + static_cast<std::ptrdiff_t>(_pos + toRemove));
 	return toRemove;
 }

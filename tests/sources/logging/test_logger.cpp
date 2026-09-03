@@ -149,7 +149,8 @@ TEST(LoggerTest, LogLevelValueOrder)
 TEST(LoggerTest, UnknownLevelMapsToHighSentinel)
 {
 	auto unknown = static_cast<LogLevel>(999);
-	EXPECT_GT(Logger::levelValue(unknown), Logger::levelValue(LogLevel::ERROR_LEVEL));
+	EXPECT_GT(Logger::levelValue(unknown),
+			  Logger::levelValue(LogLevel::ERROR_LEVEL));
 }
 
 TEST(LoggerTest, DefaultLoggerIsStandardLogger)
@@ -182,7 +183,7 @@ TEST(LoggerTest, ConcurrentLoggingIsSafe)
 	};
 
 	CountingLogger logger("Concurrent");
-	constexpr int kThreads	= 8;
+	constexpr int kThreads	 = 8;
 	constexpr int kPerThread = 500;
 
 	std::vector<std::thread> threads;

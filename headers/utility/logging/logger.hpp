@@ -100,7 +100,7 @@ namespace utility::logging
 			LogLevel _level;				   ///< Severity level
 			std::source_location _location;	   ///< Call-site metadata
 			std::unique_ptr<std::ostringstream>
-				_stream;	///< Lazily allocated internal buffer
+				_stream;	 ///< Lazily allocated internal buffer
 			bool _active;	 ///< False if level is below minimum
 
 			/**

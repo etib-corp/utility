@@ -36,7 +36,7 @@ utility::sound::AudioManager::AudioManager()
 		getLogger().warning()
 			<< "Failed to create audio context; audio is disabled";
 		alcCloseDevice(_device);
-		_device = nullptr;
+		_device	 = nullptr;
 		_running = false;
 		return;
 	}

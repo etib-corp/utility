@@ -8,15 +8,17 @@ using namespace tests::utility::math;
 TEST_F(TestMatrix, DefaultConstructsIdentityForSquare)
 {
 	Matrix3x3F m;
-	Matrix3x3F expected{ 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
+	Matrix3x3F expected {
+		1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f
+	};
 	EXPECT_EQ(m, expected);
 }
 
 TEST_F(TestMatrix, DefaultConstructsZeroForNonSquare)
 {
 	Matrix4x3F m;
-	Matrix4x3F expected{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-						 0.0f, 0.0f, 0.0f, 0.0f };
+	Matrix4x3F expected { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+						  0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 	EXPECT_EQ(m, expected);
 }
 
@@ -77,8 +79,9 @@ TEST_F(TestMatrix, MatrixMultiplicationFullCheck)
 TEST_F(TestMatrix, IdentityProperty)
 {
 	Matrix3x3F a { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f };
-	Matrix3x3F id = Matrix3x3F { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
-	Matrix3x3F leftId = id * a;
+	Matrix3x3F id =
+		Matrix3x3F { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
+	Matrix3x3F leftId  = id * a;
 	Matrix3x3F rightId = a * id;
 	EXPECT_EQ(leftId, a);
 	EXPECT_EQ(rightId, a);
@@ -122,14 +125,16 @@ TEST_F(TestMatrix, IdentityScalarMultiplication)
 TEST_F(TestMatrix, ZeroScalarMultiplication)
 {
 	Matrix3x3F a { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f };
-	Matrix3x3F expected{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+	Matrix3x3F expected {
+		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
+	};
 	EXPECT_EQ(a * 0.0f, expected);
 }
 
 TEST_F(TestMatrix, AdditiveInverse)
 {
 	Matrix3x3F a { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f };
-	Matrix3x3F zero{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+	Matrix3x3F zero { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 	EXPECT_EQ(a + (-a), zero);
 }
 

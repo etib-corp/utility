@@ -139,9 +139,8 @@ namespace utility
 		 */
 		[[nodiscard]] inline std::string content() const
 		{
-			return std::string(
-				reinterpret_cast<const char *>(_content.data()),
-				_content.size());
+			return std::string(reinterpret_cast<const char *>(_content.data()),
+							   _content.size());
 		}
 
 		/**

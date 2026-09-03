@@ -22,7 +22,7 @@ TEST_F(TestShader, ConstructsWithAlignedBytecode)
 
 TEST_F(TestShader, RejectsMisalignedVertex)
 {
-	std::string vert("abc");	  // 3 bytes, not a multiple of 4
+	std::string vert("abc");	// 3 bytes, not a multiple of 4
 	std::string frag("\x00\x00\x00\x00", 4);
 	EXPECT_THROW(Shader(vert, frag), std::invalid_argument);
 }

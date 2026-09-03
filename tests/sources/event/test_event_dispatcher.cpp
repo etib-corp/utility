@@ -13,16 +13,15 @@ TEST_F(TestEvent, DispatcherInvokesMatchingListener)
 {
 	EventDispatcher dispatcher;
 	MouseMotionEvent event;
-	Vector2F pos{ 3.0f, 4.0f };
+	Vector2F pos { 3.0f, 4.0f };
 	event.setPosition(pos);
 
 	bool invoked = false;
-	Vector2F received{ 0, 0 };
-	dispatcher.addListener<MouseMotionEvent>(
-		[&](const MouseMotionEvent &e) {
-			invoked  = true;
-			received = e.getPosition();
-		});
+	Vector2F received { 0, 0 };
+	dispatcher.addListener<MouseMotionEvent>([&](const MouseMotionEvent &e) {
+		invoked	 = true;
+		received = e.getPosition();
+	});
 
 	dispatcher.emit(event);
 	EXPECT_TRUE(invoked);
@@ -33,10 +32,11 @@ TEST_F(TestEvent, DispatcherIgnoresOtherTypes)
 {
 	EventDispatcher dispatcher;
 	int count = 0;
-	dispatcher.addListener<MouseButtonEvent>(
-		[&](const MouseButtonEvent &) { ++count; });
+	dispatcher.addListener<MouseButtonEvent>([&](const MouseButtonEvent &) {
+		++count;
+	});
 
-	dispatcher.emit(MouseMotionEvent{});
+	dispatcher.emit(MouseMotionEvent {});
 	EXPECT_EQ(count, 0);
 }
 
@@ -44,12 +44,14 @@ TEST_F(TestEvent, DispatcherSupportsMultipleListeners)
 {
 	EventDispatcher dispatcher;
 	int count = 0;
-	dispatcher.addListener<MouseMotionEvent>(
-		[&](const MouseMotionEvent &) { ++count; });
-	dispatcher.addListener<MouseMotionEvent>(
-		[&](const MouseMotionEvent &) { ++count; });
+	dispatcher.addListener<MouseMotionEvent>([&](const MouseMotionEvent &) {
+		++count;
+	});
+	dispatcher.addListener<MouseMotionEvent>([&](const MouseMotionEvent &) {
+		++count;
+	});
 
-	dispatcher.emit(MouseMotionEvent{});
+	dispatcher.emit(MouseMotionEvent {});
 	EXPECT_EQ(count, 2);
 }
 
@@ -57,10 +59,11 @@ TEST_F(TestEvent, DispatcherClearListeners)
 {
 	EventDispatcher dispatcher;
 	int count = 0;
-	dispatcher.addListener<MouseMotionEvent>(
-		[&](const MouseMotionEvent &) { ++count; });
+	dispatcher.addListener<MouseMotionEvent>([&](const MouseMotionEvent &) {
+		++count;
+	});
 	dispatcher.clearListeners<MouseMotionEvent>();
-	dispatcher.emit(MouseMotionEvent{});
+	dispatcher.emit(MouseMotionEvent {});
 	EXPECT_EQ(count, 0);
 }
 
@@ -68,12 +71,14 @@ TEST_F(TestEvent, DispatcherClearAll)
 {
 	EventDispatcher dispatcher;
 	int count = 0;
-	dispatcher.addListener<MouseMotionEvent>(
-		[&](const MouseMotionEvent &) { ++count; });
-	dispatcher.addListener<MouseButtonEvent>(
-		[&](const MouseButtonEvent &) { ++count; });
+	dispatcher.addListener<MouseMotionEvent>([&](const MouseMotionEvent &) {
+		++count;
+	});
+	dispatcher.addListener<MouseButtonEvent>([&](const MouseButtonEvent &) {
+		++count;
+	});
 	dispatcher.clearAll();
-	dispatcher.emit(MouseMotionEvent{});
-	dispatcher.emit(MouseButtonEvent{});
+	dispatcher.emit(MouseMotionEvent {});
+	dispatcher.emit(MouseButtonEvent {});
 	EXPECT_EQ(count, 0);
 }

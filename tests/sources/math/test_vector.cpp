@@ -102,7 +102,7 @@ TEST_F(TestVector, ScalarDivisionByZeroThrows)
 TEST_F(TestVector, ElementwiseDivisionByZeroThrows)
 {
 	Vector3F a { 1.0f, 2.0f, 3.0f };
-	Vector3F zero{ 0.0f, 0.0f, 0.0f };
+	Vector3F zero { 0.0f, 0.0f, 0.0f };
 	EXPECT_THROW(a / zero, std::invalid_argument);
 	EXPECT_THROW(a /= zero, std::invalid_argument);
 }
@@ -146,7 +146,7 @@ TEST_F(TestVector, AdditionAssociative)
 TEST_F(TestVector, AdditiveIdentity)
 {
 	Vector3F a { 1.0f, 2.0f, 3.0f };
-	Vector3F zero{ 0.0f, 0.0f, 0.0f };
+	Vector3F zero { 0.0f, 0.0f, 0.0f };
 	EXPECT_EQ(a + zero, a);
 	EXPECT_EQ(zero + a, a);
 }
@@ -154,7 +154,7 @@ TEST_F(TestVector, AdditiveIdentity)
 TEST_F(TestVector, AdditiveInverse)
 {
 	Vector3F a { 1.0f, 2.0f, 3.0f };
-	Vector3F zero{ 0.0f, 0.0f, 0.0f };
+	Vector3F zero { 0.0f, 0.0f, 0.0f };
 	EXPECT_EQ(a + (-a), zero);
 }
 

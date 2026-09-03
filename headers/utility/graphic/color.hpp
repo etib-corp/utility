@@ -342,11 +342,10 @@ namespace utility::graphic
 		 */
 		Color operator+(const Color &other) const
 		{
-			return Color(clampWide(static_cast<long long>(_red) + other._red),
-						 clampWide(static_cast<long long>(_green)
-								   + other._green),
-						 clampWide(static_cast<long long>(_blue) + other._blue),
-						 _alpha);
+			return Color(
+				clampWide(static_cast<long long>(_red) + other._red),
+				clampWide(static_cast<long long>(_green) + other._green),
+				clampWide(static_cast<long long>(_blue) + other._blue), _alpha);
 		}
 
 		/**
@@ -356,11 +355,10 @@ namespace utility::graphic
 		 */
 		Color operator-(const Color &other) const
 		{
-			return Color(clampWide(static_cast<long long>(_red) - other._red),
-						 clampWide(static_cast<long long>(_green)
-								   - other._green),
-						 clampWide(static_cast<long long>(_blue) - other._blue),
-						 _alpha);
+			return Color(
+				clampWide(static_cast<long long>(_red) - other._red),
+				clampWide(static_cast<long long>(_green) - other._green),
+				clampWide(static_cast<long long>(_blue) - other._blue), _alpha);
 		}
 
 		/**

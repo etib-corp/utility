@@ -94,11 +94,11 @@ namespace utility::graphic
 		/**
 		 * @brief Retrieves the textures associated with this material.
 		 *
-		 * This method returns a vector of shared pointers to the Texture objects
-		 * associated with this material.
+		 * This method returns a vector of shared pointers to the Texture
+		 * objects associated with this material.
 		 *
-		 * @return A vector of shared pointers to Texture objects associated with
-		 * this material.
+		 * @return A vector of shared pointers to Texture objects associated
+		 * with this material.
 		 */
 		std::vector<std::shared_ptr<Texture>> getTextures() const;
 
