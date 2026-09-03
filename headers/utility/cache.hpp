@@ -71,7 +71,7 @@ namespace utility
 		std::map<Key, Entry, Compare>
 			_entries;	 ///< Internal storage for cache entries, using a
 						 ///< std::map to manage key-value pairs.
-		mutable std::shared_mutex _mutex;	///< Guards concurrent access
+		mutable std::shared_mutex _mutex;	 ///< Guards concurrent access
 
 		public:
 		/**

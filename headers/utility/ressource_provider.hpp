@@ -3,7 +3,6 @@
 #include <utility/system_io/file.hpp>
 #include <utility/system_io/system_io.hpp>
 
-
 #include <utility/graphic/pose.hpp>
 #include <utility/graphic/text/font.hpp>
 #include <utility/graphic/text/code_points.hpp>
@@ -257,12 +256,12 @@ namespace utility
 		 * @brief Loads an image texture and wraps it in a material bound to the
 		 * default shader.
 		 *
-		 * This method loads the image at the given path as a texture and creates
-		 * a material that uses the `"default"` shader (which samples the albedo
-		 * texture at binding 1) with the loaded image texture. The material is
-		 * registered under a deterministic name (`image_<path>`) so that
-		 * `getMaterialID("image_<path>")` resolves and the material can be used
-		 * with `addMesh`.
+		 * This method loads the image at the given path as a texture and
+		 * creates a material that uses the `"default"` shader (which samples
+		 * the albedo texture at binding 1) with the loaded image texture. The
+		 * material is registered under a deterministic name (`image_<path>`) so
+		 * that `getMaterialID("image_<path>")` resolves and the material can be
+		 * used with `addMesh`.
 		 *
 		 * @param path The file path to the image resource to be loaded.
 		 * @return A shared pointer to the loaded Material object, or nullptr if
@@ -281,10 +280,10 @@ namespace utility
 		 *
 		 * @return A shared pointer to the loaded Model object.
 		 */
-		std::shared_ptr<graphic::Model>
-			loadModel(const std::string &path,
-					  const utility::graphic::PoseF &pose = utility::graphic::PoseF(),
-					  const std::string &material = "default_material");
+		std::shared_ptr<graphic::Model> loadModel(
+			const std::string &path,
+			const utility::graphic::PoseF &pose = utility::graphic::PoseF(),
+			const std::string &material			= "default_material");
 
 		/**
 		 * @brief Loads a model resource from a specified asset.
@@ -300,7 +299,7 @@ namespace utility
 		std::shared_ptr<graphic::Model> loadModelFromAsset(
 			std::shared_ptr<utility::File> modelAsset,
 			const utility::graphic::PoseF &pose = utility::graphic::PoseF(),
-			const std::string &material = "default_material");
+			const std::string &material			= "default_material");
 
 		/**
 		 * @brief Loads a model resource from a specified file path and model
@@ -320,7 +319,7 @@ namespace utility
 			std::shared_ptr<utility::File> modelAsset,
 			graphic::Model::ModelType type,
 			const utility::graphic::PoseF &pose = utility::graphic::PoseF(),
-			const std::string &material = "default_material");
+			const std::string &material			= "default_material");
 
 		/**
 		 * @brief Loads an OBJ model resource from a specified file path.
@@ -334,10 +333,10 @@ namespace utility
 		 * @return A shared pointer to the loaded Model object representing the
 		 * OBJ model.
 		 */
-		std::shared_ptr<graphic::Model>
-			loadObj(const std::string &path,
-					const utility::graphic::PoseF &pose = utility::graphic::PoseF(),
-					const std::string &material = "default_material");
+		std::shared_ptr<graphic::Model> loadObj(
+			const std::string &path,
+			const utility::graphic::PoseF &pose = utility::graphic::PoseF(),
+			const std::string &material			= "default_material");
 
 		/**
 		 * @brief Loads an OBJ model resource from a specified asset.
@@ -352,10 +351,10 @@ namespace utility
 		 * @return A shared pointer to the loaded Model object representing the
 		 * OBJ model.
 		 */
-		std::shared_ptr<graphic::Model>
-			loadObjFromAsset(std::shared_ptr<utility::File> modelAsset,
-						 	 const utility::graphic::PoseF &pose = utility::graphic::PoseF(),
-							 const std::string &material = "default_material");
+		std::shared_ptr<graphic::Model> loadObjFromAsset(
+			std::shared_ptr<utility::File> modelAsset,
+			const utility::graphic::PoseF &pose = utility::graphic::PoseF(),
+			const std::string &material			= "default_material");
 
 		/**
 		 * @brief Loads a shader resource from specified vertex and fragment

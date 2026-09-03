@@ -40,7 +40,8 @@ namespace
 
 utility::AndroidSystemIO::AndroidSystemIO(AAssetManager *systemInterface)
 	: _assetManager(systemInterface)
-	, _logger(std::make_unique<utility::logging::DefaultLogger>("AndroidSystemIO"))
+	, _logger(
+		  std::make_unique<utility::logging::DefaultLogger>("AndroidSystemIO"))
 {
 }
 

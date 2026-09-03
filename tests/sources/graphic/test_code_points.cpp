@@ -42,6 +42,5 @@ TEST_F(TestCodePoints, ToUtf8ThreeByte)
 
 TEST_F(TestCodePoints, ToUtf8FourByte)
 {
-	EXPECT_EQ(CodePoints::toUtf8(0x1F600),
-			  std::string("\xF0\x9F\x98\x80"));
+	EXPECT_EQ(CodePoints::toUtf8(0x1F600), std::string("\xF0\x9F\x98\x80"));
 }

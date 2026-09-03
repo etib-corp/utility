@@ -48,7 +48,7 @@ namespace tests::utility
 	{
 		File file("/tmp/asset.bin", "abcdef");
 		char buffer[6] = {};
-		size_t n = file.read(buffer, 1, 6);
+		size_t n	   = file.read(buffer, 1, 6);
 		EXPECT_EQ(n, 6);
 		EXPECT_EQ(std::string(buffer, 6), "abcdef");
 		EXPECT_EQ(file.tell(), 6);
@@ -58,7 +58,7 @@ namespace tests::utility
 	{
 		File file("/tmp/asset.bin", "abc");
 		char buffer[10] = {};
-		size_t n = file.read(buffer, 1, 10);
+		size_t n		= file.read(buffer, 1, 10);
 		EXPECT_EQ(n, 3);
 		EXPECT_EQ(file.tell(), 3);
 	}

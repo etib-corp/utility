@@ -248,8 +248,8 @@ namespace utility::math
 		/**
 		 * @brief Approximate equality using an epsilon threshold.
 		 *
-		 * Returns true if each component is within @p epsilon of its counterpart
-		 * in @p rhs.
+		 * Returns true if each component is within @p epsilon of its
+		 * counterpart in @p rhs.
 		 * @param rhs The quaternion to compare with.
 		 * @param epsilon The maximum allowed difference per component.
 		 * @return True if the quaternions are equal within epsilon.

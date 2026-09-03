@@ -73,7 +73,8 @@ namespace utility::graphic
 		 * extensions of the file (e.g., .obj, .fbx, .gltf) and set the
 		 * appropriate ModelType based on the file format.
 		 */
-		Model(std::shared_ptr<utility::File> modelAsset, const PoseF &pose, uint32_t materialID);
+		Model(std::shared_ptr<utility::File> modelAsset, const PoseF &pose,
+			  uint32_t materialID);
 
 		/**
 		 * @brief Constructs a Model object from a given File containing the
@@ -91,8 +92,7 @@ namespace utility::graphic
 		 * ModelType based on the specified type parameter.
 		 */
 		Model(std::shared_ptr<utility::File> modelAsset, ModelType type,
-			  const PoseF &pose,
-			  uint32_t materialID);
+			  const PoseF &pose, uint32_t materialID);
 
 		/**
 		 * @brief Destructs the Model object, releasing any allocated resources.

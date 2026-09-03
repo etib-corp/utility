@@ -60,8 +60,7 @@ std::shared_ptr<utility::sound::AudioBuffer>
 	DecodedAudio decodedAudio;
 
 	drwav wav;
-	if (!drwav_init_memory(&wav, file->data().data(), file->size(),
-						   nullptr)) {
+	if (!drwav_init_memory(&wav, file->data().data(), file->size(), nullptr)) {
 		// Failed to initialize the WAV decoder. Return nullptr.
 		return nullptr;
 	}

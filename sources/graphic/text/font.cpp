@@ -132,8 +132,8 @@ namespace utility::graphic
 	math::Vector2F Font::measureText(uint32_t fontSize,
 									 const codePointString &codePoints) const
 	{
-		double width	= 0.0;
-		double maxTop	= 0.0;
+		double width	 = 0.0;
+		double maxTop	 = 0.0;
 		double maxBottom = 0.0;
 
 		for (const auto &codePoint: codePoints) {
@@ -148,14 +148,17 @@ namespace utility::graphic
 				FontSized probe(fontSize, _faces.at(faceName));
 				const Glyph metric = probe.measureGlyph(codePoint);
 				width += metric.advance;
-				maxTop	   = std::max(maxTop, static_cast<double>(metric.bearing[1]));
+				maxTop =
+					std::max(maxTop, static_cast<double>(metric.bearing[1]));
 				maxBottom = std::max(
 					maxBottom,
 					static_cast<double>(metric.size[1] - metric.bearing[1]));
 			} else {
-				const Glyph metric = fontSizedIt->second->measureGlyph(codePoint);
+				const Glyph metric =
+					fontSizedIt->second->measureGlyph(codePoint);
 				width += metric.advance;
-				maxTop	   = std::max(maxTop, static_cast<double>(metric.bearing[1]));
+				maxTop =
+					std::max(maxTop, static_cast<double>(metric.bearing[1]));
 				maxBottom = std::max(
 					maxBottom,
 					static_cast<double>(metric.size[1] - metric.bearing[1]));
@@ -167,7 +170,8 @@ namespace utility::graphic
 	}
 
 	std::vector<std::string> Font::getFontPaths(void) const
-	{		std::vector<std::string> fontPaths;
+	{
+		std::vector<std::string> fontPaths;
 		for (const auto &[fontPath, _]: _faces) {
 			fontPaths.push_back(fontPath);
 		}
@@ -179,8 +183,7 @@ namespace utility::graphic
 		if (_faces.empty())
 			return false;
 		for (const auto &[_, face]: _faces) {
-			if (!face
-				|| static_cast<FT_Face>(face)->num_glyphs == 0) {
+			if (!face || static_cast<FT_Face>(face)->num_glyphs == 0) {
 				return false;
 			}
 		}
@@ -193,8 +196,7 @@ namespace utility::graphic
 			return false;
 		}
 		for (const auto &[_, face]: _faces) {
-			if (FT_Get_Char_Index(static_cast<FT_Face>(face), codepoint)
-				!= 0) {
+			if (FT_Get_Char_Index(static_cast<FT_Face>(face), codepoint) != 0) {
 				return true;
 			}
 		}

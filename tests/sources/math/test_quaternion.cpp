@@ -107,7 +107,7 @@ TEST_F(TestQuaternion, MultiplicationNotCommutative)
 TEST_F(TestQuaternion, AdditiveInverse)
 {
 	QuaternionF a { 1.0f, 2.0f, 3.0f, 4.0f };
-	QuaternionF zero{ 0.0f, 0.0f, 0.0f, 0.0f };
+	QuaternionF zero { 0.0f, 0.0f, 0.0f, 0.0f };
 	EXPECT_EQ(a + (-a), zero);
 }
 

@@ -14,7 +14,7 @@ namespace tests::utility
 	TEST_F(TestCache, ConcurrentPutAndGet)
 	{
 		Cache<int, int> cache;
-		constexpr int kThreads	= 8;
+		constexpr int kThreads	 = 8;
 		constexpr int kPerThread = 200;
 
 		std::vector<std::thread> writers;
@@ -122,7 +122,9 @@ namespace tests::utility
 		cache.put(1, 5);
 		cache.put(2, 15);
 		cache.put(3, 25);
-		cache.erase_if([](int, int value) { return value > 10; });
+		cache.erase_if([](int, int value) {
+			return value > 10;
+		});
 		EXPECT_TRUE(cache.contains(1));
 		EXPECT_FALSE(cache.contains(2));
 		EXPECT_FALSE(cache.contains(3));
@@ -133,7 +135,9 @@ namespace tests::utility
 		Cache<int, int> cache;
 		cache.put(1, 1);
 		cache.put(2, 2);
-		cache.apply([](int, int &value) { value *= 2; });
+		cache.apply([](int, int &value) {
+			value *= 2;
+		});
 		EXPECT_EQ(cache.get(1), std::optional<int>(2));
 		EXPECT_EQ(cache.get(2), std::optional<int>(4));
 	}

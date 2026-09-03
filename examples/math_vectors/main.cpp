@@ -29,8 +29,8 @@ int main(void)
 	utility::math::Vector3F a { 1.0f, 2.0f, 3.0f };
 	utility::math::Vector3F b { 4.0f, 5.0f, 6.0f };
 
-	auto sum = a + b;
-	auto dot = utility::math::dot(a, b);
+	auto sum		= a + b;
+	auto dot		= utility::math::dot(a, b);
 	auto normalized = utility::math::normalize(a);
 
 	std::cout << "a + b = (" << sum.x << ", " << sum.y << ", " << sum.z

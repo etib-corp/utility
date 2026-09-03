@@ -36,7 +36,8 @@ namespace
 }	 // namespace
 
 utility::DefaultSystemIO::DefaultSystemIO()
-	: _logger(std::make_unique<utility::logging::DefaultLogger>("DefaultSystemIO"))
+	: _logger(
+		  std::make_unique<utility::logging::DefaultLogger>("DefaultSystemIO"))
 {
 }
 
@@ -151,7 +152,7 @@ bool utility::DefaultSystemIO::save(const std::string &path,
 		return false;
 	}
 
-	const auto &content = it->second->data();
+	const auto &content		   = it->second->data();
 	const std::string savePath = newPath.empty() ? key : newPath;
 
 	std::error_code error;

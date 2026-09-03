@@ -100,8 +100,9 @@ namespace utility::math
 				  MatrixComponentType { 0 })
 		{
 			if constexpr (Cols == Rows) {
-				*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this)
-					= glm::mat<Cols, Rows, MatrixComponentType>(
+				*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(
+					this) =
+					glm::mat<Cols, Rows, MatrixComponentType>(
 						MatrixComponentType { 1 });
 			}
 		}
@@ -298,15 +299,13 @@ namespace utility::math
 		 * (Cols == RhsRows).
 		 */
 		template<std::size_t RhsCols, std::size_t RhsRows>
-			requires (Cols == RhsRows)
+			requires(Cols == RhsRows)
 		Matrix<MatrixComponentType, RhsCols, Rows>
 			operator*(const Matrix<MatrixComponentType, RhsCols, RhsRows> &rhs)
 				const noexcept
 		{
-			using LhsGlm =
-				glm::mat<Cols, Rows, MatrixComponentType>;
-			using RhsGlm =
-				glm::mat<RhsCols, RhsRows, MatrixComponentType>;
+			using LhsGlm = glm::mat<Cols, Rows, MatrixComponentType>;
+			using RhsGlm = glm::mat<RhsCols, RhsRows, MatrixComponentType>;
 			return Matrix<MatrixComponentType, RhsCols, Rows>(
 				static_cast<const LhsGlm &>(*this)
 				* static_cast<const RhsGlm &>(rhs));
@@ -318,7 +317,7 @@ namespace utility::math
 		 * @return A reference to this matrix after multiplication.
 		 */
 		Matrix &operator*=(const Matrix &rhs) noexcept
-			requires (Cols == Rows)
+			requires(Cols == Rows)
 		{
 			*static_cast<glm::mat<Cols, Rows, MatrixComponentType> *>(this) =
 				static_cast<const glm::mat<Cols, Rows, MatrixComponentType> &>(
@@ -347,15 +346,15 @@ namespace utility::math
 		/**
 		 * @brief Approximate equality using an epsilon threshold.
 		 *
-		 * Returns true if each component is within @p epsilon of its counterpart
-		 * in @p rhs.
+		 * Returns true if each component is within @p epsilon of its
+		 * counterpart in @p rhs.
 		 * @param rhs The matrix to compare with.
 		 * @param epsilon The maximum allowed difference per component.
 		 * @return True if the matrices are equal within epsilon.
 		 */
 		bool equalsEpsilon(const Matrix &rhs,
-						   MatrixComponentType epsilon =
-							   MatrixComponentType { 1e-5 }) const
+						   MatrixComponentType epsilon = MatrixComponentType {
+							   1e-5 }) const
 		{
 			for (std::size_t col = 0; col < Cols; ++col) {
 				for (std::size_t row = 0; row < Rows; ++row) {

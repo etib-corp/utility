@@ -52,8 +52,7 @@ namespace utility::event
 
 		std::unordered_map<std::size_t, std::vector<Handler>> _handlers;
 
-		template<typename EventType>
-		static std::size_t typeKey(void) noexcept
+		template<typename EventType> static std::size_t typeKey(void) noexcept
 		{
 			static const EventType *marker = nullptr;
 			return reinterpret_cast<std::size_t>(&marker);
@@ -80,10 +79,10 @@ namespace utility::event
 		void addListener(Callable &&listener)
 		{
 			auto key = typeKey<EventType>();
-			_handlers[key].emplace_back(
-				[fn = std::forward<Callable>(listener)](const Event &event) mutable {
-					fn(static_cast<const EventType &>(event));
-				});
+			_handlers[key].emplace_back([fn = std::forward<Callable>(listener)](
+											const Event &event) mutable {
+				fn(static_cast<const EventType &>(event));
+			});
 		}
 
 		/**
@@ -96,7 +95,7 @@ namespace utility::event
 		void emit(const EventType &event) const
 		{
 			auto key = typeKey<EventType>();
-			auto it  = _handlers.find(key);
+			auto it	 = _handlers.find(key);
 			if (it == _handlers.end()) {
 				return;
 			}
@@ -109,8 +108,7 @@ namespace utility::event
 		 * @brief Remove all listeners registered for a concrete event type.
 		 * @tparam EventType The concrete event type.
 		 */
-		template<InheritFromEvent EventType>
-		void clearListeners(void)
+		template<InheritFromEvent EventType> void clearListeners(void)
 		{
 			_handlers.erase(typeKey<EventType>());
 		}

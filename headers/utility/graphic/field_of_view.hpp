@@ -51,10 +51,10 @@ namespace utility::graphic
 		private:
 		Type _up;	 ///< Vertical FOV above the forward direction in
 					 ///< radians
-		Type _down;		///< Vertical FOV below the forward direction in
-						///< radians
-		Type _left;		///< Horizontal FOV to the left of the forward
-						///< direction in radians
+		Type _down;	   ///< Vertical FOV below the forward direction in
+					   ///< radians
+		Type _left;	   ///< Horizontal FOV to the left of the forward
+					   ///< direction in radians
 		Type _right;	///< Horizontal FOV to the right of the forward
 						///< direction in radians
 
