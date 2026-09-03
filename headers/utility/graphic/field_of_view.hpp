@@ -49,14 +49,10 @@ namespace utility::graphic
 	template<CanBeFieldOfViewComponent Type> class FieldOfView
 	{
 		private:
-		Type _up;	 ///< Vertical FOV above the forward direction in
-					 ///< radians
-		Type _down;	   ///< Vertical FOV below the forward direction in
-					   ///< radians
-		Type _left;	   ///< Horizontal FOV to the left of the forward
-					   ///< direction in radians
+		Type _up;		///< Vertical FOV above the forward direction
+		Type _down;		///< Vertical FOV below the forward direction
+		Type _left;		///< Horizontal FOV to the left of the forward direction
 		Type _right;	///< Horizontal FOV to the right of the forward
-						///< direction in radians
 
 		public:
 		/**
