@@ -37,8 +37,8 @@ jobs:
 
       - name: Run tests on Linux and macOS
         working-directory: ${{ github.workspace }}/build/tests
-        if: matrix.name == 'Linux' || matrix.name == 'macOS'
-        run: ./test_utility --gtest_output=json:tests.json
+        if: matrix.name != 'Windows'
+        run: ./test_utility --gtest_output=json:tests-${{ github.sha }}.json
 
       - name: Run tests on Windows
         working-directory: ${{ github.workspace }}/build/tests
@@ -50,7 +50,7 @@ jobs:
           if (-not $testExecutable) {
             throw "test_utility.exe was not found"
           }
-          & $testExecutable.FullName --gtest_output=json:tests.json
+          & $testExecutable.FullName --gtest_output=json:tests-${{ github.sha }}.json
 
       - name: Upload test results
         if: always()
