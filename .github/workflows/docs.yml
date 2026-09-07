@@ -8,8 +8,6 @@ on:
 
 jobs:
   build:
-    outputs:
-      tests_failed: ${{ steps.run_tests.outcome == 'failure' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -18,75 +16,16 @@ jobs:
       - name: Install Doxygen
         run: sudo apt-get install doxygen graphviz -y
 
-      - name: Configure CMake for documentation and tests
-        run: cmake -S . -B build -DBUILD_DOCS=ON -DBUILD_ALL_DOCS=ON -DBUILD_TESTING=ON
+      - name: Configure CMake for only building documentation
+        run: cmake -S . -B build -DBUILD_DOCS_ONLY=ON -DBUILD_ALL_DOCS=ON
 
-      - name: Build documentation and tests
-        run: cmake --build build --target docs_all test_utility
-
-      - name: Run tests
-        id: run_tests
-        continue-on-error: true
-        run: ctest --test-dir build --output-on-failure --output-junit tests.xml
-
-      - name: Convert test results to JSON
-        if: always()
-        run: |
-          mkdir -p tests_deploy
-          python3 - <<'PY'
-          import json
-          import xml.etree.ElementTree as ET
-
-          report = ET.parse("build/tests.xml")
-          root = report.getroot()
-          test_cases = []
-          summary = {
-              "tests": 0,
-              "failures": 0,
-              "errors": 0,
-              "skipped": 0,
-              "disabled": 0,
-              "time": 0.0,
-          }
-
-          for suite in root.findall(".//testsuite"):
-              for case in suite.findall("testcase"):
-                  result = {
-                      "name": case.get("name", ""),
-                      "classname": case.get("classname", suite.get("name", "")),
-                      "time": float(case.get("time", 0)),
-                  }
-                  failure = case.find("failure")
-                  error = case.find("error")
-                  skipped = case.find("skipped")
-                  if failure is not None:
-                      result["status"] = "failed"
-                      result["message"] = failure.get("message", "")
-                      summary["failures"] += 1
-                  elif error is not None:
-                      result["status"] = "error"
-                      result["message"] = error.get("message", "")
-                      summary["errors"] += 1
-                  elif skipped is not None:
-                      result["status"] = "skipped"
-                      summary["skipped"] += 1
-                  else:
-                      result["status"] = "passed"
-                  test_cases.append(result)
-
-          summary["tests"] = len(test_cases)
-          summary["time"] = sum(case["time"] for case in test_cases)
-          with open("tests_deploy/tests.json", "w", encoding="utf-8") as output:
-              json.dump({"summary": summary, "tests": test_cases}, output, indent=2)
-              output.write("\n")
-          PY
+      - name: Build documentation
+        run: cmake --build build --target docs_all
 
       - name: Organize documentation for deployment
-        if: always()
         run: |
-          mkdir -p docs_deploy tests_deploy
+          mkdir -p docs_deploy
           cp -r build/docs/html/* docs_deploy/
-          cp tests_deploy/tests.json docs_deploy/tests.json
 
       - name: Upload documentation artifact
         uses: actions/upload-artifact@v7.0.1
@@ -123,12 +62,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5.0.0
-
-  test-status:
-    if: always()
-    needs: [build, publish]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Preserve test failure status
-        if: needs.build.outputs.tests_failed == 'true'
-        run: exit 1

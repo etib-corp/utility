@@ -36,5 +36,12 @@ jobs:
           --build ${{ github.workspace }}/build
 
       - name: Run tests
-        working-directory: ${{ github.workspace }}/build
-        run: ctest --output-on-failure
+        working-directory: ${{ github.workspace }}/build/tests
+        run: ./test_utility --gtest_output=json:tests.json
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: tests-${{ matrix.name }}
+          path: ${{ github.workspace }}/build/tests/tests.json
