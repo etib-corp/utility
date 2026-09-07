@@ -35,9 +35,15 @@ jobs:
           cmake
           --build ${{ github.workspace }}/build
 
-      - name: Run tests
+      - name: Run tests on Linux and macOS
         working-directory: ${{ github.workspace }}/build/tests
+        if: matrix.name == 'Linux' || matrix.name == 'macOS'
         run: ./test_utility --gtest_output=json:tests.json
+
+      - name: Run tests on Windows
+        working-directory: ${{ github.workspace }}/build/tests
+        if: matrix.name == 'Windows'
+        run: .\test_utility.exe --gtest_output=json:tests.json
 
       - name: Upload test results
         if: always()
