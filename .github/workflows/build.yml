@@ -35,6 +35,26 @@ jobs:
           cmake
           --build ${{ github.workspace }}/build
 
-      - name: Run tests
-        working-directory: ${{ github.workspace }}/build
-        run: ctest --output-on-failure
+      - name: Run tests on Linux and macOS
+        working-directory: ${{ github.workspace }}/build/tests
+        if: matrix.name != 'Windows'
+        run: ./test_utility --gtest_output=json:tests-${{ github.sha }}.json
+
+      - name: Run tests on Windows
+        working-directory: ${{ github.workspace }}/build/tests
+        if: matrix.name == 'Windows'
+        shell: pwsh
+        run: |
+          $testExecutable = Get-ChildItem -Path . -Filter test_utility.exe -Recurse |
+            Select-Object -First 1
+          if (-not $testExecutable) {
+            throw "test_utility.exe was not found"
+          }
+          & $testExecutable.FullName --gtest_output=json:tests-${{ github.sha }}.json
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: tests-${{ matrix.name }}
+          path: ${{ github.workspace }}/build/tests/tests.json
