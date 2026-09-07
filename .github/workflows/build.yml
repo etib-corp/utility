@@ -43,7 +43,14 @@ jobs:
       - name: Run tests on Windows
         working-directory: ${{ github.workspace }}/build/tests
         if: matrix.name == 'Windows'
-        run: .\test_utility.exe --gtest_output=json:tests.json
+        shell: pwsh
+        run: |
+          $testExecutable = Get-ChildItem -Path . -Filter test_utility.exe -Recurse |
+            Select-Object -First 1
+          if (-not $testExecutable) {
+            throw "test_utility.exe was not found"
+          }
+          & $testExecutable.FullName --gtest_output=json:tests.json
 
       - name: Upload test results
         if: always()
