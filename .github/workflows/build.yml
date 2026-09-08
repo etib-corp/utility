@@ -82,39 +82,3 @@ jobs:
           name: tests-${{ matrix.name }}
           path: ${{ github.workspace }}/build/tests/tests-${{ matrix.name }}-${{ github.sha }}.json
           if-no-files-found: error
-
-  publish-pages:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Download all test artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: Prepare site directory
-        run: |
-          mkdir -p site/tests
-          # Flatten artifacts into site/tests
-          find artifacts -name 'tests-*.json' -exec cp {} site/tests/ \;
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5.0.0
