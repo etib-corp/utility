@@ -41,22 +41,39 @@ jobs:
         run: ./test_utility --gtest_output=json:tests-${{ matrix.name }}-${{ github.sha }}.json
 
       - name: Run tests on Windows
-        working-directory: ${{ github.workspace }}/build/tests
         if: matrix.name == 'Windows'
         shell: pwsh
         run: |
-          $testExecutable = Get-ChildItem -Path . -Filter test_utility.exe -Recurse |
+          $testsDir = "${{ github.workspace }}\build\tests"
+          $testExecutable = Get-ChildItem -Path $testsDir -Filter test_utility.exe -Recurse |
             Select-Object -First 1
           if (-not $testExecutable) {
             throw "test_utility.exe was not found"
           }
-          & $testExecutable.FullName --gtest_output=json:tests-${{ matrix.name }}-${{ github.sha }}.json
+
+          $outputFile = "$testsDir\tests-Windows-${{ github.sha }}.json"
+
+          & $testExecutable.FullName --gtest_output=json:"$outputFile"
+
+          # Confirm file exists
+          if (-not (Test-Path $outputFile)) {
+            throw "Test output file was not created: $outputFile"
+          }
 
       - name: Debug test output
         if: always()
         run: |
           echo "=== Listing test output directory ==="
           ls -R "${{ github.workspace }}/build/tests" || dir /s "${{ github.workspace }}\build\tests"
+
+      - name: Debug test output directory
+        if: always()
+        shell: pwsh
+        run: |
+          $dir = "${{ github.workspace }}\build\tests"
+          Write-Host "Listing: $dir"
+          Get-ChildItem -Path $dir -Recurse -File |
+            ForEach-Object { Write-Host $_.FullName }
 
       - name: Upload test results
         if: always()
