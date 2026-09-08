@@ -38,23 +38,83 @@ jobs:
       - name: Run tests on Linux and macOS
         working-directory: ${{ github.workspace }}/build/tests
         if: matrix.name != 'Windows'
-        run: ./test_utility --gtest_output=json:tests-${{ github.sha }}.json
+        run: ./test_utility --gtest_output=json:tests-${{ matrix.name }}-${{ github.sha }}.json
 
       - name: Run tests on Windows
-        working-directory: ${{ github.workspace }}/build/tests
         if: matrix.name == 'Windows'
         shell: pwsh
         run: |
-          $testExecutable = Get-ChildItem -Path . -Filter test_utility.exe -Recurse |
+          $testsDir = "${{ github.workspace }}\build\tests"
+          $testExecutable = Get-ChildItem -Path $testsDir -Filter test_utility.exe -Recurse |
             Select-Object -First 1
           if (-not $testExecutable) {
             throw "test_utility.exe was not found"
           }
-          & $testExecutable.FullName --gtest_output=json:tests-${{ github.sha }}.json
+
+          $outputFile = "$testsDir\tests-Windows-${{ github.sha }}.json"
+
+          & $testExecutable.FullName --gtest_output=json:"$outputFile"
+
+          # Confirm file exists
+          if (-not (Test-Path $outputFile)) {
+            throw "Test output file was not created: $outputFile"
+          }
+
+      - name: Debug test output
+        if: always()
+        run: |
+          echo "=== Listing test output directory ==="
+          ls -R "${{ github.workspace }}/build/tests" || dir /s "${{ github.workspace }}\build\tests"
+
+      - name: Debug test output directory
+        if: always()
+        shell: pwsh
+        run: |
+          $dir = "${{ github.workspace }}\build\tests"
+          Write-Host "Listing: $dir"
+          Get-ChildItem -Path $dir -Recurse -File |
+            ForEach-Object { Write-Host $_.FullName }
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v4
         with:
           name: tests-${{ matrix.name }}
-          path: ${{ github.workspace }}/build/tests/tests.json
+          path: ${{ github.workspace }}/build/tests/tests-${{ matrix.name }}-${{ github.sha }}.json
+          if-no-files-found: error
+
+  publish-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Prepare site directory
+        run: |
+          mkdir -p site/tests
+          # Flatten artifacts into site/tests
+          find artifacts -name 'tests-*.json' -exec cp {} site/tests/ \;
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5.0.0
