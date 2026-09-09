@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cstdint>
 
 #include "utility/system_io/file.hpp"
 
