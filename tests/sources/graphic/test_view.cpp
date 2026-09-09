@@ -61,6 +61,20 @@ TEST_F(TestView, SetFlipY)
 	EXPECT_TRUE(view.isFlipY());
 }
 
+TEST_F(TestView, FlipYReflectsAsymmetricVerticalProjection)
+{
+	ViewF view;
+	view.setFieldOfView(FieldOfViewF { 0.7f, -0.9f, -0.8f, 0.8f });
+	view.setFlipY(false);
+	const auto unflipped = view.getProjectionMatrix();
+
+	view.setFlipY(true);
+	const auto flipped = view.getProjectionMatrix();
+
+	EXPECT_FLOAT_EQ(flipped[1][1], -unflipped[1][1]);
+	EXPECT_FLOAT_EQ(flipped[2][1], -unflipped[2][1]);
+}
+
 TEST_F(TestView, PoseManagement)
 {
 	ViewF view;

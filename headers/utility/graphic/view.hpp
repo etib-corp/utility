@@ -624,6 +624,7 @@ namespace utility::graphic
 			if (_flipY) {
 				// Invert Y for Vulkan-style NDC (Y pointing down).
 				projection[1][1] *= static_cast<ViewComponentType>(-1);
+				projection[2][1] *= static_cast<ViewComponentType>(-1);
 			}
 
 			return projection;

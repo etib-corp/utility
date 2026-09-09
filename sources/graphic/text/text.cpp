@@ -23,7 +23,6 @@
 #include <utility/graphic/text/text.hpp>
 #include <utility/graphic/size.hpp>
 
-#include <algorithm>
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -122,38 +121,33 @@ namespace utility::graphic
 		double penX		= 0.0;
 		double baseline = std::round(_font->getAscender(_fontSize));
 
-		float maxHeight = 0.0f;
-		for (const auto &g: glyphs) {
-			maxHeight = std::max(maxHeight, g.size[VEC_Y]);
-		}
-
 		for (const auto &g: glyphs) {
 			const float xpos =
 				static_cast<float>(std::round(x + penX + g.bearing[VEC_X]));
 			const float ypos =
-				static_cast<float>(std::round(y + baseline - g.bearing[VEC_Y]));
+				static_cast<float>(std::round(y - baseline + g.bearing[VEC_Y]));
 
 			const float w = g.size[VEC_X];
 			const float h = g.size[VEC_Y];
 
-			VertexF v0(PositionF(xpos, ypos + h + maxHeight, z),
-					   getPose().getOrientation().getForward(),
-					   math::Vector2F({ g.uvMin[VEC_X], g.uvMax[VEC_Y] }),
-					   _color);
-
-			VertexF v1(PositionF(xpos, ypos + maxHeight, z),
+			VertexF v0(PositionF(xpos, ypos, z),
 					   getPose().getOrientation().getForward(),
 					   math::Vector2F({ g.uvMin[VEC_X], g.uvMin[VEC_Y] }),
 					   _color);
 
-			VertexF v2(PositionF(xpos + w, ypos + maxHeight, z),
+			VertexF v1(PositionF(xpos, ypos - h, z),
 					   getPose().getOrientation().getForward(),
-					   math::Vector2F({ g.uvMax[VEC_X], g.uvMin[VEC_Y] }),
+					   math::Vector2F({ g.uvMin[VEC_X], g.uvMax[VEC_Y] }),
 					   _color);
 
-			VertexF v3(PositionF(xpos + w, ypos + h + maxHeight, z),
+			VertexF v2(PositionF(xpos + w, ypos - h, z),
 					   getPose().getOrientation().getForward(),
 					   math::Vector2F({ g.uvMax[VEC_X], g.uvMax[VEC_Y] }),
+					   _color);
+
+			VertexF v3(PositionF(xpos + w, ypos, z),
+					   getPose().getOrientation().getForward(),
+					   math::Vector2F({ g.uvMax[VEC_X], g.uvMin[VEC_Y] }),
 					   _color);
 
 			_meshes.front()->addIndex(indexOffset + 0);
