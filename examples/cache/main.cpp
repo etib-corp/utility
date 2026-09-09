@@ -14,12 +14,11 @@ int main(void)
 		std::cout << "alice: " << *score << "\n";
 	}
 
-	std::cout << "contains bob: " << std::boolalpha
-			  << scores.contains("bob") << "\n";
+	std::cout << "contains bob: " << std::boolalpha << scores.contains("bob")
+			  << "\n";
 
 	scores.erase("bob");
-	std::cout << "contains bob after erase: " << scores.contains("bob")
-			  << "\n";
+	std::cout << "contains bob after erase: " << scores.contains("bob") << "\n";
 
 	return 0;
 }

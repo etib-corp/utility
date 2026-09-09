@@ -8,8 +8,7 @@ int main(void)
 	const auto inverse = utility::math::inverse(matrix);
 
 	std::cout << "matrix:\n" << matrix << "\n";
-	std::cout << "determinant: " << utility::math::determinant(matrix)
-			  << "\n";
+	std::cout << "determinant: " << utility::math::determinant(matrix) << "\n";
 	std::cout << "inverse:\n"
 			  << inverse[0][0] << ' ' << inverse[1][0] << '\n'
 			  << inverse[0][1] << ' ' << inverse[1][1] << '\n';
