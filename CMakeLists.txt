@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(utility
-    VERSION 1.0.0
+    VERSION 2026.1.0
     DESCRIPTION "A comprehensive C++ utilities library tailored for the development of modern desktop and extended reality (XR) applications."
     HOMEPAGE_URL "https://etib-corp.github.io/utility"
     LANGUAGES CXX
