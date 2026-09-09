@@ -1,0 +1,17 @@
+{
+  "installationFolder": "/Users/clement-antoine-xavier/etib-corp/utility/third_party/fmt/support/build/intermediates/prefab_package/debug/prefab",
+  "gradlePath": ":",
+  "packageInfo": {
+    "packageName": "support",
+    "packageSchemaVersion": 2,
+    "packageDependencies": [],
+    "modules": [
+      {
+        "moduleName": "fmt",
+        "moduleHeaders": "/Users/clement-antoine-xavier/etib-corp/utility/third_party/fmt/include",
+        "moduleExportLibraries": [],
+        "abis": []
+      }
+    ]
+  }
+}
