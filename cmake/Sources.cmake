@@ -7,6 +7,7 @@
 set(UTILITY_SOURCES
     sources/cache.cpp
     sources/demangle.cpp
+    sources/engine.cpp
     sources/event/cursor_enter_event.cpp
     sources/event/event.cpp
     sources/event/file_drop_event.cpp
