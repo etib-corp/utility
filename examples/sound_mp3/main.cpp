@@ -34,7 +34,7 @@ namespace
 
 		return std::make_shared<utility::File>(path, content);
 	}
-}
+}	 // namespace
 
 int main(int argc, char **argv)
 {
