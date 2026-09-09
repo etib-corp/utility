@@ -45,8 +45,7 @@ if(NOT BUILD_DOCS_ONLY)
     # Fetch external dependencies
     FetchContent_Declare(
         tinyobjloader
-        GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader.git
-        GIT_TAG 45636bdcef1a4fec140346b90c0b50bf0bc3e23b
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/tinyobjloader
     )
     # tinyobjloader may call add_sanitizers() even when the helper module is unavailable.
     if(NOT COMMAND add_sanitizers)
@@ -61,10 +60,7 @@ if(NOT BUILD_DOCS_ONLY)
     add_compile_definitions(GLM_FORCE_DEPTH_ZERO_TO_ONE)
 
     FetchContent_Declare(glm
-        GIT_REPOSITORY https://github.com/g-truc/glm.git
-        GIT_TAG 1.0.3
-        GIT_SHALLOW TRUE
-        GIT_PROGRESS TRUE
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glm
     )
     FetchContent_MakeAvailable(glm)
 
@@ -76,23 +72,18 @@ if(NOT BUILD_DOCS_ONLY)
 
     FetchContent_Declare(
         freetype
-        GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
-        GIT_TAG VER-2-14-3
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/freetype
     )
     FetchContent_MakeAvailable(freetype)
 
     FetchContent_Declare(stb
-        GIT_REPOSITORY https://github.com/nothings/stb.git
-        GIT_TAG 2c980bb59875b0d32144a71867fbdebb2f77cd20
-        GIT_SHALLOW TRUE
-        GIT_PROGRESS TRUE
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/stb
     )
     FetchContent_MakeAvailable(stb)
 
     FetchContent_Declare(
         fmt
-        GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-        GIT_TAG 12.2.0
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/fmt
     )
     set(FMT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(FMT_INSTALL OFF CACHE BOOL "" FORCE)
@@ -115,17 +106,13 @@ if(NOT BUILD_DOCS_ONLY)
     set(ALSOFT_CONFIG_FMT "fmt" CACHE STRING "" FORCE)
 
     FetchContent_Declare(openal
-        GIT_REPOSITORY https://github.com/kcat/openal-soft.git
-        GIT_TAG 3f94a50884e2ae4963092fead7d299127e97e5d5
-        GIT_PROGRESS TRUE
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/openal-soft
     )
     FetchContent_MakeAvailable(openal)
 
     FetchContent_Declare(
         dr_libs
-        GIT_REPOSITORY https://github.com/mackron/dr_libs.git
-        GIT_TAG b55a0d9a30b91ad8901f89ecf05f76a33186c185
-        GIT_PROGRESS TRUE
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/dr_libs
     )
     FetchContent_MakeAvailable(dr_libs)
 

@@ -1,0 +1,124 @@
+/**
+ * OpenAL cross platform audio library
+ * Copyright (C) 2011 by Chris Robinson.
+ * This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the
+ *  Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Or go to http://www.gnu.org/copyleft/lgpl.html
+ */
+
+#include "config.h"
+
+#include <algorithm>
+#include <array>
+#include <cstdlib>
+#include <span>
+#include <variant>
+
+#include "alc/effects/base.h"
+#include "core/bufferline.h"
+#include "core/devformat.h"
+#include "core/device.h"
+#include "core/effects/base.h"
+#include "core/effectslot.h"
+#include "core/mixer.h"
+#include "intrusive_ptr.h"
+
+struct BufferStorage;
+struct ContextBase;
+
+
+namespace {
+
+constexpr auto FrontCenterCoeffs = CalcDirectionCoeffs(std::array{0.0f, 0.0f, -1.0f});
+
+struct DedicatedState final : EffectState {
+    /* The "dedicated" effect can output to the real output, so should have
+     * gains for all possible output channels and not just the main ambisonic
+     * buffer.
+     */
+    std::array<float,MaxOutputChannels> mCurrentGains{};
+    std::array<float,MaxOutputChannels> mTargetGains{};
+
+
+    void deviceUpdate(const DeviceBase *device, const BufferStorage *buffer) override;
+    void update(const ContextBase *context, const EffectSlotBase *slot, const EffectProps *props_,
+        EffectTarget target) noexcept NONBLOCKING override;
+    void process(size_t samplesToDo, std::span<const FloatBufferLine> samplesIn,
+        std::span<FloatBufferLine> samplesOut) noexcept override;
+};
+
+void DedicatedState::deviceUpdate(const DeviceBase*, const BufferStorage*)
+{
+    mCurrentGains.fill(0.0f);
+}
+
+void DedicatedState::update(const ContextBase*, const EffectSlotBase *slot,
+    const EffectProps *props_, const EffectTarget target) noexcept NONBLOCKING
+{
+    mTargetGains.fill(0.0f);
+
+    auto &props = IGNORE_FUNCTION_EFFECTS(std::get<DedicatedProps>(*props_));
+    const auto Gain = slot->Gain * props.Gain;
+
+    if(props.Target == DedicatedProps::Dialog)
+    {
+        /* Dialog goes to the front-center speaker if it exists, otherwise it
+         * plays from the front-center location.
+         */
+        if(auto const idx = target.RealOut ? target.RealOut->ChannelIndex[FrontCenter]
+            : InvalidChannelIndex; idx != InvalidChannelIndex)
+        {
+            mOutTarget = target.RealOut->Buffer;
+            mTargetGains[idx.c_val] = Gain;
+        }
+        else
+        {
+            mOutTarget = target.Main->Buffer;
+            ComputePanGains(target.Main, FrontCenterCoeffs, Gain,
+                std::span{mTargetGains}.first<MaxAmbiChannels>());
+        }
+    }
+    else if(props.Target == DedicatedProps::Lfe)
+    {
+        if(const auto idx = target.RealOut ? target.RealOut->ChannelIndex[LFE]:InvalidChannelIndex;
+            idx != InvalidChannelIndex)
+        {
+            mOutTarget = target.RealOut->Buffer;
+            mTargetGains[idx.c_val] = Gain;
+        }
+    }
+}
+
+void DedicatedState::process(const size_t samplesToDo,
+    const std::span<const FloatBufferLine> samplesIn, const std::span<FloatBufferLine> samplesOut)
+    noexcept NONBLOCKING
+{
+    MixSamples(std::span{samplesIn[0]}.first(samplesToDo), samplesOut, mCurrentGains, mTargetGains,
+        samplesToDo, 0);
+}
+
+
+struct DedicatedStateFactory final : public EffectStateFactory {
+    al::intrusive_ptr<EffectState> create() override
+    { return al::intrusive_ptr<EffectState>{new DedicatedState{}}; }
+};
+
+} // namespace
+
+auto DedicatedStateFactory_getFactory() -> gsl::not_null<EffectStateFactory*>
+{
+    static DedicatedStateFactory DedicatedFactory{};
+    return gsl::make_not_null(&DedicatedFactory);
+}
