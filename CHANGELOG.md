@@ -37,6 +37,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   value, removing a full container copy (and one `shared_ptr` refcount bump
   per element) on every access. The returned reference is valid only until
   the next mutating call (any `load*` method) on the provider.
+- **Performance:** logging no longer performs several heap allocations per
+  emitted line. `LogMessage` moves the stream buffer into
+  `LogRecord::message` instead of copying it, `Logger::getTimestamp()`
+  formats into a stack buffer instead of a `std::stringstream`, and
+  `StandardLogger::output()` writes directly to the destination stream
+  without building an intermediate `std::stringstream`. The emitted line
+  format is unchanged.
 
 ## [1.0.0] - 2025-08-25
 
