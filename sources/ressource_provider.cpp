@@ -359,7 +359,8 @@ namespace utility
 		// TODO: we should discuss about the format of the material file to be
 		// able to load the textures from the material file and store them in
 		// the material object
-		_materials[id] = material;
+		_materials[id]						= material;
+		_elementsIDs[materialAsset->path()] = id;
 
 		return _materials[id];
 	}
@@ -502,19 +503,21 @@ namespace utility
 			}
 		}
 
-		auto materialID = getMaterialID(
-			resolvePath(material));	   // Default material ID if not found
+		auto materialID = getMaterialID(material);
+
+		if (materialID == 0 && !material.empty()) {
+			// Textured models are lit by their albedo texture, which the
+			// "default" shader samples at binding 1. Load the texture as an
+			// image material so the model can carry it.
+			loadImageMaterial(material);
+			materialID = getMaterialID("image_" + material);
+		}
 
 		if (materialID == 0) {
-			loadMaterial(material, ShaderType::MESH_SHADER);
-			materialID = getMaterialID(resolvePath(material));
-
-			if (materialID == 0) {
-				getLogger().warning() << "Material not found: " << material
-									  << ". Using default material for model: "
-									  << modelAsset->path();
-				materialID = getDefaultMaterialID();
-			}
+			getLogger().warning() << "Material not found: " << material
+								  << ". Using default material for model: "
+								  << modelAsset->path();
+			materialID = getDefaultMaterialID();
 		}
 
 		auto model =
