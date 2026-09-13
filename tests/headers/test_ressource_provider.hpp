@@ -32,8 +32,9 @@ namespace tests::utility
 	class TestRessourceProvider: public ::testing::Test
 	{
 		protected:
-		utility::DefaultSystemIO _systemIO;
-		utility::RessourceProvider _provider { _systemIO };
+		::utility::DefaultSystemIO _systemIO;
+		::utility::RessourceProvider _provider { _systemIO };
+
 		void SetUp(void) override
 		{
 		}
