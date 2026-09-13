@@ -111,6 +111,7 @@ namespace
 TEST(LoggerTest, StreamSingleValue)
 {
 	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	logger.debug() << "hello world";
 	EXPECT_TRUE(logger.called);
 	EXPECT_EQ(logger.lastRecord.message, "hello world");
@@ -121,6 +122,7 @@ TEST(LoggerTest, StreamSingleValue)
 TEST(LoggerTest, StreamMultipleValues)
 {
 	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	logger.info() << "value=" << 42 << " done";
 	EXPECT_TRUE(logger.called);
 	EXPECT_EQ(logger.lastRecord.message, "value=42 done");
@@ -130,6 +132,7 @@ TEST(LoggerTest, StreamMultipleValues)
 TEST(LoggerTest, SourceLocationCaptured)
 {
 	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	logger.debug() << "loc test";
 	EXPECT_TRUE(logger.called);
 	EXPECT_NE(logger.lastRecord.file.find("test_logger.cpp"),
@@ -141,6 +144,7 @@ TEST(LoggerTest, SourceLocationCaptured)
 TEST(LoggerTest, SourceLocationSkippedForNonDebug)
 {
 	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 
 	logger.info() << "info test";
 	EXPECT_TRUE(logger.called);
@@ -231,6 +235,7 @@ TEST(LoggerTest, ConcurrentLoggingIsSafe)
 	};
 
 	CountingLogger logger("Concurrent");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	constexpr int kThreads	 = 8;
 	constexpr int kPerThread = 500;
 
@@ -262,6 +267,7 @@ TEST(LoggerTest, ThrowingOutputDoesNotTerminate)
 	};
 
 	ThrowingLogger logger("Throw");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	EXPECT_NO_THROW({ logger.info() << "should not terminate"; });
 }
 
