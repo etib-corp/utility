@@ -29,6 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Replaced `file(GLOB)` with explicit source lists for reproducible builds.
+- **API change (breaking):** `RessourceProvider` resource accessors
+  (`getMaterials`, `getTextures`, `getModels`, `getShaders`,
+  `getCodePoints`) now return their internal maps by `const&` instead of by
+  value, removing a full container copy (and one `shared_ptr` refcount bump
+  per element) on every access. The returned reference is valid only until
+  the next mutating call (any `load*` method) on the provider.
 
 ## [1.0.0] - 2025-08-25
 

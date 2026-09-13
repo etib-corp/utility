@@ -14,7 +14,8 @@ namespace tests::utility
 					|| demangled.find("int") != std::string::npos);
 	}
 
-	struct CustomType {};
+	struct CustomType {
+	};
 
 	TEST_F(TestDemangle, DemangleCustomType)
 	{
