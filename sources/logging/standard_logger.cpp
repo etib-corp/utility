@@ -88,11 +88,16 @@ namespace utility::logging
 		}
 		ss << record.message;
 
-		if (record.level == LogLevel::WARNING_LEVEL
-			|| record.level == LogLevel::ERROR_LEVEL) {
-			std::cerr << ss.str() << std::endl;
-		} else {
-			std::cout << ss.str() << std::endl;
+		const bool isErrorLevel = record.level == LogLevel::WARNING_LEVEL
+			|| record.level == LogLevel::ERROR_LEVEL;
+
+		std::ostream &stream = isErrorLevel ? std::cerr : std::cout;
+		stream << ss.str() << '\n';
+
+		const FlushPolicy policy = getFlushPolicy();
+		if (policy == FlushPolicy::ALWAYS
+			|| (policy == FlushPolicy::BUFFERED && isErrorLevel)) {
+			stream.flush();
 		}
 	}
 
