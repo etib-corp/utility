@@ -72,6 +72,47 @@ jobs:
           cp -r docs_deploy/. site/
           find test_results -type f -name 'tests-*.json' -exec cp {} site/tests/ \;
 
+          cd site/tests
+
+          # Build a JSON array of filenames
+          FILES_JSON=$(ls -1 tests-*.json 2>/dev/null | jq -R . | jq -s . || echo "[]")
+
+          cat > index.html << EOF
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Test results</title>
+              <style>
+                body { font-family: system-ui, sans-serif; margin: 2rem; }
+                ul { list-style: disc; padding-left: 1.5rem; }
+                a { text-decoration: none; }
+                a:hover { text-decoration: underline; }
+              </style>
+            </head>
+            <body>
+              <h1>Test results</h1>
+              <ul id="file-list"></ul>
+              <script>
+                const files = $FILES_JSON;
+                const list = document.getElementById('file-list');
+                if (files.length === 0) {
+                  list.innerHTML = '<li>No test results yet.</li>';
+                } else {
+                  files.sort().forEach(file => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = file;
+                    a.textContent = file;
+                    li.appendChild(a);
+                    list.appendChild(li);
+                  });
+                }
+              </script>
+            </body>
+          </html>
+          EOF
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5.0.0
         with:
