@@ -448,6 +448,25 @@ namespace utility
 									const std::string &fragmentPath) const;
 
 		/**
+		 * @brief Registers a loaded shader in the internal resource maps and
+		 * the shader-only lookup index used by getShaderID().
+		 *
+		 * The shader is stored under its unique id, its full shader path and
+		 * its canonical short name (the vertex shader file name without its
+		 * extension, e.g. "text" for "text.vs"). The index makes lookups
+		 * deterministic regardless of container iteration order.
+		 *
+		 * @param id The unique id assigned to the shader.
+		 * @param path The full shader path built by buildShaderPath().
+		 * @param vertexPath The (resolved) vertex shader file path used to
+		 * derive the canonical short name.
+		 * @param shader The loaded shader to register.
+		 */
+		void registerShader(uint32_t id, const std::string &path,
+							const std::string &vertexPath,
+							std::shared_ptr<graphic::Shader> shader);
+
+		/**
 		 * @brief Retrieves the next unique ID for a resource.
 		 *
 		 * This method increments the internal `nextID` counter and returns the
@@ -500,6 +519,16 @@ namespace utility
 		 * @brief Internal map to store loaded shaders for efficient retrieval.
 		 */
 		std::map<uint32_t, std::shared_ptr<graphic::Shader>> _shaders;
+
+		/**
+		 * @brief Shader-only index mapping a shader name to its id.
+		 *
+		 * Keys are the full shader path (e.g. "text.vs_with_text.fs") and the
+		 * canonical short name (e.g. "text"). Keeping this index separate from
+		 * _elementsIDs makes getShaderID() an O(1) average lookup and keeps
+		 * non-shader entries out of shader resolution.
+		 */
+		std::unordered_map<std::string, uint32_t> _shaderIDs;
 
 		/**
 		 * @brief Internal map to store loaded code points resources for

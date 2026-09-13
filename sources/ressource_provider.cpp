@@ -12,6 +12,24 @@
 
 namespace utility
 {
+	namespace
+	{
+		std::string pureFileName(const std::string &path)
+		{
+			return path.substr(path.find_last_of("/\\") + 1);
+		}
+
+		std::string shaderShortName(const std::string &vertexPath)
+		{
+			std::string name = pureFileName(vertexPath);
+			auto dot		 = name.find('.');
+
+			if (dot != std::string::npos) {
+				name.resize(dot);
+			}
+			return name;
+		}
+	}	 // namespace
 
 	RessourceProvider::RessourceProvider(SystemIO &systemInterface,
 										 const std::string &basePath)
@@ -58,14 +76,24 @@ namespace utility
 
 	uint32_t RessourceProvider::getShaderID(const std::string &shaderName) const
 	{
-		for (const auto &[name, id]: _elementsIDs) {
-			const auto &shaderIt = _shaders.find(id);
+		// Exact match: full shader path or canonical short name — O(1) average.
+		const auto exact = _shaderIDs.find(shaderName);
 
-			if (name.starts_with(shaderName) && shaderIt != _shaders.end()) {
-				return id;
+		if (exact != _shaderIDs.end()) {
+			return exact->second;
+		}
+
+		// Deterministic prefix fallback over the shader-only index: the
+		// matching shader with the lowest id (first registered) wins, so the
+		// result does not depend on the container's iteration order.
+		uint32_t best = 0;
+
+		for (const auto &[name, id]: _shaderIDs) {
+			if (name.starts_with(shaderName) && (best == 0 || id < best)) {
+				best = id;
 			}
 		}
-		return 0;	 // Return 0 if the shader name is not found
+		return best;
 	}
 
 	uint32_t RessourceProvider::getMaterialID(const std::string &materialName)
@@ -663,8 +691,7 @@ namespace utility
 														fragment->content());
 		auto id		= getNextID();
 
-		_shaders[id]	   = shader;
-		_elementsIDs[path] = id;
+		registerShader(id, path, resolvedVertexPath, shader);
 
 		return _shaders[id];
 	}
@@ -686,8 +713,7 @@ namespace utility
 			vertexAsset->content(), fragmentAsset->content());
 		auto id = getNextID();
 
-		_shaders[id]	   = shader;
-		_elementsIDs[path] = id;
+		registerShader(id, path, vertexAsset->path(), shader);
 
 		return _shaders[id];
 	}
@@ -806,14 +832,21 @@ namespace utility
 	// Protected Methods //
 	///////////////////////
 
+	void RessourceProvider::registerShader(
+		uint32_t id, const std::string &path, const std::string &vertexPath,
+		std::shared_ptr<graphic::Shader> shader)
+	{
+		_shaders[id]	   = shader;
+		_elementsIDs[path] = id;
+		_shaderIDs[path]   = id;
+		_shaderIDs.emplace(shaderShortName(vertexPath), id);
+	}
+
 	std::string RessourceProvider::buildShaderPath(
 		const std::string &vertexPath, const std::string &fragmentPath) const
 	{
-		std::string pureVertexName =
-			vertexPath.substr(vertexPath.find_last_of("/\\") + 1);
-		std::string pureFragmentName =
-			fragmentPath.substr(fragmentPath.find_last_of("/\\") + 1);
-		std::string path = pureVertexName + "_with_" + pureFragmentName;
+		std::string path =
+			pureFileName(vertexPath) + "_with_" + pureFileName(fragmentPath);
 
 		return path;
 	}
