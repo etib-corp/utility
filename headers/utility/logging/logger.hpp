@@ -41,6 +41,7 @@
 #include <sstream>
 #include <string>
 #include <type_traits>
+#include <utility>
 
 namespace utility::logging
 {
@@ -172,11 +173,15 @@ namespace utility::logging
 				if (!_active || !_logger || !_stream) {
 					return;
 				}
-				LogRecord record;
-				record.level	  = _level;
-				record.message	  = _stream->str();
-				record.timestamp  = Logger::getTimestamp();
-				record.loggerName = _logger->getName();
+				// `str() &&` (C++20) moves the buffer out of the stream, avoiding
+				// a copy; the stream is not read again afterwards. On toolchains
+				// without the rvalue overload this falls back to a copy.
+				LogRecord record {
+					.level		= _level,
+					.message	= std::move(*_stream).str(),
+					.timestamp	= Logger::getTimestamp(),
+					.loggerName = _logger->getName(),
+				};
 				if (_level == LogLevel::DEBUG_LEVEL) {
 					record.file		= _location.file_name();
 					record.line		= static_cast<int>(_location.line());
