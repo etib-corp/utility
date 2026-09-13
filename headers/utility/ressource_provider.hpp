@@ -71,46 +71,71 @@ namespace utility
 		/**
 		 * @brief Retrieves a map of loaded materials.
 		 *
-		 * @return A map where the keys are material IDs (uint32_t) and the
-		 * values are shared pointers to the corresponding Material objects.
+		 * @return A const reference to a map where the keys are material IDs
+		 * (uint32_t) and the values are shared pointers to the corresponding
+		 * Material objects.
+		 *
+		 * @warning The returned reference is valid only until the next mutating
+		 * call on this provider (any load* method).
 		 */
-		[[nodiscard]] std::map<uint32_t, std::shared_ptr<graphic::Material>>
+		[[nodiscard]] const std::map<uint32_t,
+									 std::shared_ptr<graphic::Material>> &
 			getMaterials() const;
 
 		/**
 		 * @brief Retrieves a map of loaded textures.
 		 *
-		 * @return A map where the keys are texture IDs (uint32_t) and the
-		 * values are shared pointers to the corresponding Texture objects.
+		 * @return A const reference to a map where the keys are texture IDs
+		 * (uint32_t) and the values are shared pointers to the corresponding
+		 * Texture objects.
+		 *
+		 * @warning The returned reference is valid only until the next mutating
+		 * call on this provider (any load* method).
 		 */
-		[[nodiscard]] std::map<uint32_t, std::shared_ptr<graphic::Texture>>
+		[[nodiscard]] const std::map<uint32_t,
+									 std::shared_ptr<graphic::Texture>> &
 			getTextures() const;
 
 		/**
 		 * @brief Retrieves a map of loaded models.
 		 *
-		 * @return A map where the keys are model IDs (uint32_t) and the values
-		 * are shared pointers to the corresponding Model objects.
+		 * @return A const reference to a map where the keys are model IDs
+		 * (uint32_t) and the values are shared pointers to the corresponding
+		 * Model objects.
+		 *
+		 * @warning The returned reference is valid only until the next mutating
+		 * call on this provider (any load* method).
 		 */
-		[[nodiscard]] std::map<uint32_t, std::shared_ptr<graphic::Model>>
+		[[nodiscard]] const std::map<uint32_t,
+									 std::shared_ptr<graphic::Model>> &
 			getModels() const;
 
 		/**
 		 * @brief Retrieves a map of loaded shaders.
 		 *
-		 * @return A map where the keys are shader IDs (uint32_t) and the values
-		 * are shared pointers to the corresponding Shader objects.
+		 * @return A const reference to a map where the keys are shader IDs
+		 * (uint32_t) and the values are shared pointers to the corresponding
+		 * Shader objects.
+		 *
+		 * @warning The returned reference is valid only until the next mutating
+		 * call on this provider (any load* method).
 		 */
-		[[nodiscard]] std::map<uint32_t, std::shared_ptr<graphic::Shader>>
+		[[nodiscard]] const std::map<uint32_t,
+									 std::shared_ptr<graphic::Shader>> &
 			getShaders() const;
 
 		/**
 		 * @brief Retrieves a map of loaded code points resources.
 		 *
-		 * @return A map where the keys are code points IDs (uint32_t) and the
-		 * values are shared pointers to the corresponding CodePoints objects.
+		 * @return A const reference to a map where the keys are code points IDs
+		 * (uint32_t) and the values are shared pointers to the corresponding
+		 * CodePoints objects.
+		 *
+		 * @warning The returned reference is valid only until the next mutating
+		 * call on this provider (any load* method).
 		 */
-		[[nodiscard]] std::map<uint32_t, std::shared_ptr<graphic::CodePoints>>
+		[[nodiscard]] const std::map<uint32_t,
+									 std::shared_ptr<graphic::CodePoints>> &
 			getCodePoints() const;
 
 		/**

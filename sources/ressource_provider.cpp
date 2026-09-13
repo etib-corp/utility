@@ -44,31 +44,31 @@ namespace utility
 	// Getters //
 	/////////////
 
-	std::map<uint32_t, std::shared_ptr<graphic::Material>>
+	const std::map<uint32_t, std::shared_ptr<graphic::Material>> &
 		RessourceProvider::getMaterials() const
 	{
 		return _materials;
 	}
 
-	std::map<uint32_t, std::shared_ptr<graphic::Texture>>
+	const std::map<uint32_t, std::shared_ptr<graphic::Texture>> &
 		RessourceProvider::getTextures() const
 	{
 		return _textures;
 	}
 
-	std::map<uint32_t, std::shared_ptr<graphic::Model>>
+	const std::map<uint32_t, std::shared_ptr<graphic::Model>> &
 		RessourceProvider::getModels() const
 	{
 		return _models;
 	}
 
-	std::map<uint32_t, std::shared_ptr<graphic::Shader>>
+	const std::map<uint32_t, std::shared_ptr<graphic::Shader>> &
 		RessourceProvider::getShaders() const
 	{
 		return _shaders;
 	}
 
-	std::map<uint32_t, std::shared_ptr<graphic::CodePoints>>
+	const std::map<uint32_t, std::shared_ptr<graphic::CodePoints>> &
 		RessourceProvider::getCodePoints() const
 	{
 		return _codePoints;
@@ -542,9 +542,9 @@ namespace utility
 		}
 
 		if (materialID == 0) {
-			getLogger().warning() << "Material not found: " << material
-								  << ". Using default material for model: "
-								  << modelAsset->path();
+			getLogger().warning()
+				<< "Material not found: " << material
+				<< ". Using default material for model: " << modelAsset->path();
 			materialID = getDefaultMaterialID();
 		}
 
