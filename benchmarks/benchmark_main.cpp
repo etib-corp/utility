@@ -23,9 +23,12 @@
 #include <benchmark/benchmark.h>
 
 #include <memory>
+#include <atomic>
+#include <cstddef>
 #include <string>
 
 #include <utility/cache.hpp>
+#include <utility/logging/logger.hpp>
 #include <utility/math/vector.hpp>
 #include <utility/ressource_provider.hpp>
 #include <utility/system_io/default_system_io.hpp>
@@ -91,11 +94,64 @@ namespace
 			benchmark::DoNotOptimize(provider.getShaderID("text"));
 		}
 	}
+
 	BENCHMARK(BM_RessourceProviderGetShaderID)
 		->Arg(0)
 		->Arg(10)
 		->Arg(100)
 		->Arg(1000);
+	// Counts emitted records without touching stdout so the benchmark measures
+	// the logging path (level check, allocation, mutex, output) only.
+	class CountingLogger: public utility::logging::Logger
+	{
+		public:
+		std::atomic<std::size_t> emitted { 0 };
+
+		CountingLogger(void)
+			: Logger("Benchmark")
+		{
+		}
+
+		void output(const utility::logging::LogRecord &) override
+		{
+			emitted.fetch_add(1, std::memory_order_relaxed);
+		}
+	};
+
+	void BM_LoggerSuppressed(benchmark::State &state)
+	{
+		CountingLogger logger;
+		logger.setMinLevel(utility::logging::LogLevel::WARNING_LEVEL);
+		for (auto _: state) {
+			for (int i = 0; i < state.range(0); ++i) {
+				auto message = logger.debug();
+				message << "entity " << i;
+				auto *box = &message;
+				benchmark::DoNotOptimize(box);
+			}
+		}
+		state.counters["emitted"] =
+			static_cast<double>(logger.emitted.load(std::memory_order_relaxed));
+	}
+	BENCHMARK(BM_LoggerSuppressed)->Arg(100)->Arg(1000);
+
+	void BM_LoggerActive(benchmark::State &state)
+	{
+		CountingLogger logger;
+		logger.setMinLevel(utility::logging::LogLevel::DEBUG_LEVEL);
+		for (auto _: state) {
+			for (int i = 0; i < state.range(0); ++i) {
+				auto message = logger.debug();
+				message << "entity " << i;
+				auto *box = &message;
+				benchmark::DoNotOptimize(box);
+			}
+		}
+		state.counters["emitted"] =
+			static_cast<double>(logger.emitted.load(std::memory_order_relaxed));
+	}
+	BENCHMARK(BM_LoggerActive)->Arg(100)->Arg(1000);
+
 }	 // namespace
 
 BENCHMARK_MAIN();
