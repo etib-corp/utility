@@ -25,9 +25,9 @@
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
+#include <limits>
 #include <iomanip>
 #include <mutex>
-#include <sstream>
 
 #include "utility/logging/logger.hpp"
 
@@ -99,10 +99,18 @@ namespace utility::logging
 		localtime_r(&time, &local);
 #endif
 
-		std::stringstream ss;
-		ss << std::put_time(&local, "%Y-%m-%d %H:%M:%S");
-		ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
-		return ss.str();
+		// Format into a stack buffer instead of a `std::stringstream`: this
+		// leaves a single allocation (the returned string), none for the
+		// formatting. The millisecond field is zero-padded to three digits.
+		char buffer[32];
+		std::size_t length =
+			std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &local);
+		const int millis	= static_cast<int>(ms.count());
+		buffer[length++] = '.';
+		buffer[length++] = static_cast<char>('0' + (millis / 100) % 10);
+		buffer[length++] = static_cast<char>('0' + (millis / 10) % 10);
+		buffer[length++] = static_cast<char>('0' + millis % 10);
+		return std::string(buffer, length);
 	}
 
 	Logger::Logger(const std::string &name)

@@ -22,7 +22,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
 
 #include "utility/logging/standard_logger.hpp"
 
@@ -69,22 +68,28 @@ namespace utility::logging
 
 	void StandardLogger::output(const LogRecord &record)
 	{
-		std::stringstream ss;
-		ss << "[" << record.timestamp << "] ";
-		ss << "[" << record.loggerName << "] ";
+		// Write straight to the destination stream instead of composing the
+		// line in an intermediate `std::stringstream` and copying it with
+		// `str()`. The emitted bytes are identical.
+		const bool isError = record.level == LogLevel::WARNING_LEVEL
+			|| record.level == LogLevel::ERROR_LEVEL;
+		std::ostream &stream = isError ? std::cerr : std::cout;
+
+		stream << "[" << record.timestamp << "] ";
+		stream << "[" << record.loggerName << "] ";
 
 		bool color = useColor();
 		if (color) {
-			ss << levelColor(record.level);
+			stream << levelColor(record.level);
 		}
-		ss << "[" << levelToString(record.level) << "] ";
+		stream << "[" << levelToString(record.level) << "] ";
 		if (color) {
-			ss << resetColor();
+			stream << resetColor();
 		}
 
 		if (record.level == LogLevel::DEBUG_LEVEL) {
-			ss << "[" << record.file << ":" << record.line << " "
-			   << record.function << "] ";
+			stream << "[" << record.file << ":" << record.line << " "
+				   << record.function << "] ";
 		}
 		ss << record.message;
 
@@ -99,6 +104,7 @@ namespace utility::logging
 			|| (policy == FlushPolicy::BUFFERED && isErrorLevel)) {
 			stream.flush();
 		}
+		stream << record.message << std::endl;
 	}
 
 }	 // namespace utility::logging

@@ -23,10 +23,14 @@
 #include <gtest/gtest.h>
 
 #include <atomic>
+#include <iostream>
+#include <regex>
+#include <sstream>
 #include <cstddef>
 #include <cstdlib>
 #include <new>
 #include <stdexcept>
+#include <string>
 #include <thread>
 #include <vector>
 
@@ -106,6 +110,60 @@ namespace
 		}
 	};
 
+	/**
+	 * @brief Force the `NO_COLOR` environment variable for the test scope so
+	 * that `StandardLogger` emits deterministic, escape-free lines.
+	 */
+	class ScopedNoColor
+	{
+		public:
+		ScopedNoColor()
+		{
+#if defined(_WIN32)
+			_putenv_s("NO_COLOR", "1");
+#else
+			setenv("NO_COLOR", "1", 1);
+#endif
+		}
+
+		~ScopedNoColor()
+		{
+#if defined(_WIN32)
+			_putenv_s("NO_COLOR", "");
+#else
+			unsetenv("NO_COLOR");
+#endif
+		}
+	};
+
+	/**
+	 * @brief Redirect an output stream's buffer for the test scope.
+	 */
+	class ScopedStreamCapture
+	{
+		public:
+		explicit ScopedStreamCapture(std::ostream &stream)
+			: _stream(stream)
+			, _old(stream.rdbuf(_buffer.rdbuf()))
+		{
+		}
+
+		~ScopedStreamCapture()
+		{
+			_stream.rdbuf(_old);
+		}
+
+		std::string str() const
+		{
+			return _buffer.str();
+		}
+
+		private:
+		std::ostream &_stream;
+		std::streambuf *_old;
+		std::ostringstream _buffer;
+	};
+
 }	 // namespace
 
 TEST(LoggerTest, StreamSingleValue)
@@ -127,6 +185,17 @@ TEST(LoggerTest, StreamMultipleValues)
 	EXPECT_TRUE(logger.called);
 	EXPECT_EQ(logger.lastRecord.message, "value=42 done");
 	EXPECT_EQ(logger.lastRecord.level, LogLevel::INFO_LEVEL);
+}
+
+TEST(LoggerTest, MessageIsOwnedNotAView)
+{
+	// A message exceeding the small-string optimization must still be owned
+	// by the record after the `LogMessage` proxy is destroyed.
+	TestLogger logger("Test");
+	const std::string longText(256, 'x');
+	logger.info() << longText;
+	EXPECT_TRUE(logger.called);
+	EXPECT_EQ(logger.lastRecord.message, longText);
 }
 
 TEST(LoggerTest, SourceLocationCaptured)
@@ -218,6 +287,84 @@ TEST(StandardLoggerTest, LevelToString)
 	EXPECT_EQ(Logger::levelToString(LogLevel::INFO_LEVEL), "Info");
 	EXPECT_EQ(Logger::levelToString(LogLevel::WARNING_LEVEL), "Warning");
 	EXPECT_EQ(Logger::levelToString(LogLevel::ERROR_LEVEL), "Error");
+}
+
+TEST(StandardLoggerTest, TimestampFormat)
+{
+	const std::string timestamp = Logger::getTimestamp();
+	const std::regex pattern(
+		R"(^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$)");
+	EXPECT_TRUE(std::regex_match(timestamp, pattern)) << timestamp;
+}
+
+TEST(StandardLoggerTest, GoldenInfoLineFormat)
+{
+	ScopedNoColor noColor;
+	const std::regex pattern(
+		R"(^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\] \[Golden\] \[Info\] hello 42\n$)");
+
+	std::string captured;
+	{
+		ScopedStreamCapture capture(std::cout);
+		StandardLogger logger("Golden");
+		logger.info() << "hello " << 42;
+		captured = capture.str();
+	}
+	EXPECT_TRUE(std::regex_match(captured, pattern)) << captured;
+}
+
+TEST(StandardLoggerTest, GoldenDebugLineFormat)
+{
+	ScopedNoColor noColor;
+	const std::regex pattern(
+		R"(^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\] \[Golden\] \[Debug\] \[.*test_logger\.cpp:\d+ [^\]]+\] hello\n$)");
+
+	std::string captured;
+	{
+		ScopedStreamCapture capture(std::cout);
+		StandardLogger logger("Golden");
+		logger.debug() << "hello";
+		captured = capture.str();
+	}
+	EXPECT_TRUE(std::regex_match(captured, pattern)) << captured;
+}
+
+TEST(StandardLoggerTest, WarningAndErrorGoToStderr)
+{
+	ScopedNoColor noColor;
+	const std::regex pattern(
+		R"(^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\] \[Golden\] \[Error\] boom\n$)");
+
+	std::string out;
+	std::string err;
+	{
+		ScopedStreamCapture outCapture(std::cout);
+		ScopedStreamCapture errCapture(std::cerr);
+		StandardLogger logger("Golden");
+		logger.error() << "boom";
+		out = outCapture.str();
+		err = errCapture.str();
+	}
+	EXPECT_TRUE(out.empty());
+	EXPECT_TRUE(std::regex_match(err, pattern)) << err;
+}
+
+TEST(StandardLoggerTest, InfoGoesToStdout)
+{
+	ScopedNoColor noColor;
+
+	std::string out;
+	std::string err;
+	{
+		ScopedStreamCapture outCapture(std::cout);
+		ScopedStreamCapture errCapture(std::cerr);
+		StandardLogger logger("Golden");
+		logger.info() << "plain";
+		out = outCapture.str();
+		err = errCapture.str();
+	}
+	EXPECT_TRUE(err.empty());
+	EXPECT_NE(out.find("[Info] plain\n"), std::string::npos) << out;
 }
 
 TEST(LoggerTest, ConcurrentLoggingIsSafe)

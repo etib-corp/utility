@@ -152,6 +152,43 @@ namespace
 	}
 	BENCHMARK(BM_LoggerActive)->Arg(100)->Arg(1000);
 
+	/**
+	 * @brief Logger with a no-op sink, isolating record-building cost from
+	 * stdout/stderr I/O.
+	 */
+	class NullLogger: public utility::logging::Logger
+	{
+		public:
+		explicit NullLogger(const std::string &name)
+			: utility::logging::Logger(name)
+		{
+		}
+
+		void output(const utility::logging::LogRecord &record) override
+		{
+			std::size_t size = record.message.size();
+			benchmark::DoNotOptimize(size);
+		}
+	};
+
+	void BM_LoggerInfo(benchmark::State &state)
+	{
+		NullLogger logger("Bench");
+		for (auto _: state) {
+			logger.info() << "mesh " << 42 << " ready";
+		}
+	}
+	BENCHMARK(BM_LoggerInfo);
+
+	void BM_LoggerDebug(benchmark::State &state)
+	{
+		NullLogger logger("Bench");
+		for (auto _: state) {
+			logger.debug() << "mesh " << 42 << " ready";
+		}
+	}
+	BENCHMARK(BM_LoggerDebug);
+
 }	 // namespace
 
 BENCHMARK_MAIN();
