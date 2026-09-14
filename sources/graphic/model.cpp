@@ -86,10 +86,6 @@ namespace utility::graphic
 
 	void Model::loadOBJ(std::shared_ptr<utility::File> modelAsset)
 	{
-		float x = getPose().getPosition().getX();
-		float y = getPose().getPosition().getY();
-		float z = getPose().getPosition().getZ();
-
 		std::vector<VertexF> vertices;
 		std::vector<uint32_t> indices;
 
@@ -126,11 +122,14 @@ namespace utility::graphic
 					continue;
 				}
 
+				// Vertices are kept in local (object) space: the world
+				// transform is supplied per instance through the model matrix
+				// (see utility::graphic::poseToMatrix).
 				utility::graphic::VertexF vertex {};
 				vertex.setPosition(utility::graphic::PositionF(
-					attrib.vertices[vertexBase + 0] + x,
-					attrib.vertices[vertexBase + 1] + y,
-					attrib.vertices[vertexBase + 2] + z));
+					attrib.vertices[vertexBase + 0],
+					attrib.vertices[vertexBase + 1],
+					attrib.vertices[vertexBase + 2]));
 
 				if (index.texcoord_index >= 0) {
 					const size_t texcoordBase =
