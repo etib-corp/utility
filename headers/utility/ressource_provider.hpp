@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include <utility/system_io/file.hpp>
 #include <utility/system_io/system_io.hpp>
 
@@ -137,6 +139,20 @@ namespace utility
 		[[nodiscard]] const std::map<uint32_t,
 									 std::shared_ptr<graphic::CodePoints>> &
 			getCodePoints() const;
+
+		/**
+		 * @brief Retrieves a monotonic counter bumped on every mutation of the
+		 * provider's resource maps.
+		 *
+		 * The counter is incremented both when a new resource is registered
+		 * (new id) and when an existing resource's contents are updated in
+		 * place without allocating a new id (e.g. a font atlas updating an
+		 * existing TextMaterial). Consumers can cache the value and skip their
+		 * whole synchronization work while it is unchanged.
+		 *
+		 * @return The current version of the provider's resource maps.
+		 */
+		[[nodiscard]] uint64_t version() const noexcept;
 
 		/**
 		 * @brief Retrieves the unique shader ID associated with a given shader
@@ -473,6 +489,22 @@ namespace utility
 									const std::string &fragmentPath) const;
 
 		/**
+		 * @brief Registers a font texture atlas produced by a Font instance.
+		 *
+		 * Adds the atlas to the texture map, lazily creates the matching
+		 * TextMaterial when it does not exist yet, and records the atlas on
+		 * that material. Because the atlas updates the contents of an existing
+		 * material without allocating a new id, this method calls touch()
+		 * explicitly so that version() reflects the change.
+		 *
+		 * @param name The font face name suffixed with the font size (e.g.
+		 * "DejaVuSans_16").
+		 * @param atlas The generated texture atlas.
+		 */
+		void onFontAtlasCreated(const std::string &name,
+								std::shared_ptr<graphic::Texture> atlas);
+
+		/**
 		 * @brief Registers a loaded shader in the internal resource maps and
 		 * the shader-only lookup index used by getShaderID().
 		 *
@@ -511,6 +543,15 @@ namespace utility
 		uint32_t getNextID();
 
 		/**
+		 * @brief Records a mutation of the provider's resource maps.
+		 *
+		 * Must be called for every change to the resource containers,
+		 * including in-place content updates that do not allocate a new id
+		 * (e.g. a font atlas updating an existing TextMaterial).
+		 */
+		void touch() noexcept;
+
+		/**
 		 * @brief Internal counter for generating unique IDs for resources
 		 *
 		 * @note Do not modify this variable directly.
@@ -518,6 +559,15 @@ namespace utility
 		 * resource.
 		 */
 		uint32_t _currentID = 1;
+
+		/**
+		 * @brief Monotonic counter bumped on every mutation of the resource
+		 * maps.
+		 *
+		 * @note Do not modify this variable directly. Use the touch() method to
+		 * record a mutation.
+		 */
+		uint64_t _version = 0;
 
 		/**
 		 * @brief Internal maps to store loaded fonts for efficient retrieval.
