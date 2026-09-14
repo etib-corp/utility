@@ -192,6 +192,9 @@ TEST(LoggerTest, MessageIsOwnedNotAView)
 	// A message exceeding the small-string optimization must still be owned
 	// by the record after the `LogMessage` proxy is destroyed.
 	TestLogger logger("Test");
+	// Pin the level: the default is build-type dependent (WARNING under
+	// NDEBUG), so an unpinned `info` would be suppressed in release builds.
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	const std::string longText(256, 'x');
 	logger.info() << longText;
 	EXPECT_TRUE(logger.called);
@@ -307,6 +310,7 @@ TEST(StandardLoggerTest, GoldenInfoLineFormat)
 	{
 		ScopedStreamCapture capture(std::cout);
 		StandardLogger logger("Golden");
+		logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 		logger.info() << "hello " << 42;
 		captured = capture.str();
 	}
@@ -323,6 +327,7 @@ TEST(StandardLoggerTest, GoldenDebugLineFormat)
 	{
 		ScopedStreamCapture capture(std::cout);
 		StandardLogger logger("Golden");
+		logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 		logger.debug() << "hello";
 		captured = capture.str();
 	}
@@ -359,6 +364,7 @@ TEST(StandardLoggerTest, InfoGoesToStdout)
 		ScopedStreamCapture outCapture(std::cout);
 		ScopedStreamCapture errCapture(std::cerr);
 		StandardLogger logger("Golden");
+		logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 		logger.info() << "plain";
 		out = outCapture.str();
 		err = errCapture.str();
