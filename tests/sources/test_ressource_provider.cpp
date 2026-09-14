@@ -1,9 +1,11 @@
 #include "test_ressource_provider.hpp"
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <map>
 #include <type_traits>
+#include <vector>
 
 #include "utility/ressource_provider.hpp"
 #include "utility/system_io/default_system_io.hpp"
@@ -40,6 +42,10 @@ static_assert(
 		const std::map<uint32_t, std::shared_ptr<graphic::CodePoints>> &>,
 	"getCodePoints() must return a const reference");
 
+static_assert(std::is_same_v<
+				  decltype(std::declval<const RessourceProvider &>().version()),
+				  uint64_t>,
+			  "version() must return a 64-bit change counter");
 
 namespace tests::utility
 {
@@ -49,6 +55,23 @@ namespace tests::utility
 		{
 			return std::make_shared<File>(path, std::string("AAAA"));
 		}
+
+		// Exposes the protected mutation hook so the version counter can be
+		// exercised without a real font asset: FreeType rejects synthetic font
+		// data and the repository ships no font fixture.
+		class ExposedRessourceProvider: public ::utility::RessourceProvider
+		{
+			public:
+			using ::utility::RessourceProvider::onFontAtlasCreated;
+			using ::utility::RessourceProvider::RessourceProvider;
+
+			uint32_t lookupID(const std::string &key) const
+			{
+				const auto it = _elementsIDs.find(key);
+
+				return it == _elementsIDs.end() ? 0 : it->second;
+			}
+		};
 	}	 // namespace
 
 	TEST_F(TestRessourceProvider, ExactPathAndShortNameAgree)
@@ -73,8 +96,8 @@ namespace tests::utility
 
 	TEST_F(TestRessourceProvider, AmbiguousPrefixIsDeterministic)
 	{
-		auto first = _provider.loadShaderFromAssets(shaderFile("alpha.vs"),
-													shaderFile("alpha.fs"));
+		auto first	= _provider.loadShaderFromAssets(shaderFile("alpha.vs"),
+													 shaderFile("alpha.fs"));
 		auto second = _provider.loadShaderFromAssets(shaderFile("alpha.vs"),
 													 shaderFile("beta.fs"));
 		ASSERT_NE(first, nullptr);
@@ -122,5 +145,81 @@ namespace tests::utility
 		EXPECT_TRUE(provider.getModels().empty());
 		EXPECT_TRUE(provider.getShaders().empty());
 		EXPECT_TRUE(provider.getCodePoints().empty());
+	}
+
+	TEST_F(TestRessourceProvider, VersionIsStableWhenProviderIsUnchanged)
+	{
+		const uint64_t initial = _provider.version();
+
+		EXPECT_TRUE(_provider.getShaders().empty());
+		EXPECT_TRUE(_provider.getMaterials().empty());
+		EXPECT_TRUE(_provider.getTextures().empty());
+		EXPECT_TRUE(_provider.getModels().empty());
+		EXPECT_TRUE(_provider.getCodePoints().empty());
+		EXPECT_EQ(_provider.getShaderID("missing"), 0u);
+
+		EXPECT_EQ(_provider.version(), initial);
+	}
+
+	TEST_F(TestRessourceProvider, VersionBumpsOnEveryNewResource)
+	{
+		uint64_t previous = _provider.version();
+
+		ASSERT_NE(_provider.loadShaderFromAssets(shaderFile("mesh.vs"),
+												 shaderFile("mesh.fs")),
+				  nullptr);
+		EXPECT_GT(_provider.version(), previous);
+
+		previous = _provider.version();
+
+		ASSERT_NE(_provider.loadCodePointsFromAsset(std::make_shared<File>(
+					  "glyphs.codepoints", std::string("A 0041\n"))),
+				  nullptr);
+		EXPECT_GT(_provider.version(), previous);
+	}
+
+	TEST_F(TestRessourceProvider, VersionBumpsOnFontAtlasContentUpdate)
+	{
+		ExposedRessourceProvider provider(_systemIO);
+		auto atlas = std::make_shared<::utility::graphic::Texture>(4, 4);
+
+		const uint64_t initial = provider.version();
+
+		provider.onFontAtlasCreated("DejaVuSans_16", atlas);
+		EXPECT_GT(provider.version(), initial);
+
+		// A second atlas for the same face and size reuses the material id and
+		// only updates its contents in place, yet the version must still move
+		// so that consumers re-run their synchronization.
+		const uint32_t materialID = provider.lookupID("DejaVuSans_16_material");
+
+		EXPECT_NE(materialID, 0u);
+
+		const uint64_t afterFirst = provider.version();
+
+		provider.onFontAtlasCreated("DejaVuSans_16", atlas);
+		EXPECT_EQ(provider.lookupID("DejaVuSans_16_material"), materialID);
+		EXPECT_GT(provider.version(), afterFirst);
+	}
+
+	TEST_F(TestRessourceProvider, LogicalShaderNamesAreResolvable)
+	{
+		const std::vector<std::string> names { "mesh", "text", "default" };
+
+		for (const auto &name: names) {
+			ASSERT_NE(_provider.loadShaderFromAssets(shaderFile(name + ".vs"),
+													 shaderFile(name + ".fs")),
+					  nullptr)
+				<< name;
+		}
+
+		for (const auto &name: names) {
+			const uint32_t byName = _provider.getShaderID(name);
+			const uint32_t byPath =
+				_provider.getShaderID(name + ".vs_with_" + name + ".fs");
+
+			EXPECT_NE(byName, 0u) << name;
+			EXPECT_EQ(byName, byPath) << name;
+		}
 	}
 }	 // namespace tests::utility
