@@ -58,7 +58,8 @@ external synchronization. Specifically:
 
 Vectors, matrices, quaternions, and scalar helpers backed by GLM.
 
-- Types: `Vector`, `Matrix`, `Quaternion`, and free functions for perspective,
+- Types: `Vector`, `Matrix`, `Quaternion`, `Aabb` (3D axis-aligned bounding
+  box, with `AabbF`/`AabbD` aliases), and free functions for perspective,
   look-at, rotation, and integer/trigonometric helpers.
 - Invariants: square matrices default to a documented construction; component
   counts are fixed at compile time and validated at construction.
