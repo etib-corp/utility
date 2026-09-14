@@ -35,6 +35,8 @@
 
 #pragma once
 
+#include <atomic>
+#include <limits>
 #include <memory>
 #include <mutex>
 #include <source_location>
@@ -55,6 +57,18 @@ namespace utility::logging
 		WARNING_LEVEL,	  ///< Warning messages for potentially harmful
 						  ///< situations
 		ERROR_LEVEL		  ///< Error messages for serious problems
+	};
+
+	/**
+	 * @brief Controls when a stream-backed logger flushes its output.
+	 *
+	 * Buffering avoids a per-line flush (`std::endl`) while still guaranteeing
+	 * that warnings and errors reach the console promptly.
+	 */
+	enum class FlushPolicy {
+		BUFFERED,	///< Buffer debug/info; flush warnings/errors (default)
+		ALWAYS,		///< Flush after every message (legacy behavior)
+		NEVER		///< Never flush except on destruction
 	};
 
 	/**
@@ -82,10 +96,30 @@ namespace utility::logging
 	{
 		private:
 		std::string _name;	  ///< Logger name
-		LogLevel _minLevel = LogLevel::DEBUG_LEVEL;
+		std::atomic<LogLevel> _minLevel {
+			defaultMinLevel()
+		};	  ///< Minimum emitted level (lock-free)
+		std::atomic<FlushPolicy> _flushPolicy {
+			FlushPolicy::BUFFERED
+		};	  ///< Stream flush policy (ignored by non-stream loggers)
+
+		/**
+		 * @brief Lock-free check whether a level passes the current minimum.
+		 *
+		 * The check is performed before any allocation so a suppressed message
+		 * costs only a relaxed atomic load and an integer comparison.
+		 *
+		 * @param level The level to test.
+		 * @return True if the level should be emitted.
+		 */
+		bool isEnabled(LogLevel level) const noexcept
+		{
+			return levelValue(level)
+				>= levelValue(_minLevel.load(std::memory_order_relaxed));
+		}
 
 		protected:
-		mutable std::mutex _mutex;	  ///< Serializes output and level access
+		mutable std::mutex _mutex;	  ///< Serializes output access
 
 		public:
 		/**
@@ -209,17 +243,48 @@ namespace utility::logging
 		virtual ~Logger(void) = default;
 
 		/**
+		 * @brief Default minimum level for the current build type.
+		 *
+		 * Release builds (`NDEBUG`) default to `WARNING_LEVEL` so hot-loop
+		 * `debug`/`info` calls are suppressed; debug builds keep
+		 * `DEBUG_LEVEL`. The `UTILITY_LOG_LEVEL` environment variable
+		 * (`debug`/`info`/`warning`/`error`) overrides this at construction.
+		 *
+		 * @return The default minimum level.
+		 */
+		static constexpr LogLevel defaultMinLevel(void) noexcept
+		{
+#if defined(NDEBUG)
+			return LogLevel::WARNING_LEVEL;
+#else
+			return LogLevel::DEBUG_LEVEL;
+#endif
+		}
+
+		/**
 		 * @brief Set the minimum log level. Messages below this level are
 		 * suppressed.
 		 * @param level Minimum level to emit.
 		 */
-		void setMinLevel(LogLevel level);
+		void setMinLevel(LogLevel level) noexcept;
 
 		/**
 		 * @brief Get the current minimum log level.
 		 * @return Minimum emitted level.
 		 */
-		LogLevel getMinLevel(void) const;
+		LogLevel getMinLevel(void) const noexcept;
+
+		/**
+		 * @brief Set the output flush policy.
+		 * @param policy The flush policy to apply.
+		 */
+		void setFlushPolicy(FlushPolicy policy) noexcept;
+
+		/**
+		 * @brief Get the current output flush policy.
+		 * @return The active flush policy.
+		 */
+		FlushPolicy getFlushPolicy(void) const noexcept;
 
 		/**
 		 * @brief Get string representation of log level.
@@ -236,10 +301,31 @@ namespace utility::logging
 
 		/**
 		 * @brief Get numeric value of a log level for comparison.
+		 *
+		 * Inline and `constexpr` so the call-site filter is a single
+		 * comparison that the optimizer can fold.
+		 *
 		 * @param level The log level.
-		 * @return Integer value (Debug=0, Info=1, Warning=2, Error=3).
+		 * @return Integer value (Debug=0, Info=1, Warning=2, Error=3); unknown
+		 * levels map to a high sentinel so they are never silently dropped.
 		 */
-		static int levelValue(LogLevel level);
+		static constexpr int levelValue(LogLevel level) noexcept
+		{
+			switch (level) {
+				case LogLevel::DEBUG_LEVEL:
+					return 0;
+				case LogLevel::INFO_LEVEL:
+					return 1;
+				case LogLevel::WARNING_LEVEL:
+					return 2;
+				case LogLevel::ERROR_LEVEL:
+					return 3;
+				default:
+					// Return a high sentinel so an unknown/future level is
+					// treated as most severe and never silently dropped.
+					return std::numeric_limits<int>::max();
+			}
+		}
 
 		/**
 		 * @brief Begin a debug-level log message.
@@ -250,8 +336,7 @@ namespace utility::logging
 			debug(std::source_location loc = std::source_location::current())
 		{
 			return LogMessage(this, LogLevel::DEBUG_LEVEL, loc,
-							  levelValue(LogLevel::DEBUG_LEVEL)
-								  >= levelValue(_minLevel));
+							  isEnabled(LogLevel::DEBUG_LEVEL));
 		}
 
 		/**
@@ -263,8 +348,7 @@ namespace utility::logging
 			info(std::source_location loc = std::source_location::current())
 		{
 			return LogMessage(this, LogLevel::INFO_LEVEL, loc,
-							  levelValue(LogLevel::INFO_LEVEL)
-								  >= levelValue(_minLevel));
+							  isEnabled(LogLevel::INFO_LEVEL));
 		}
 
 		/**
@@ -276,8 +360,7 @@ namespace utility::logging
 			warning(std::source_location loc = std::source_location::current())
 		{
 			return LogMessage(this, LogLevel::WARNING_LEVEL, loc,
-							  levelValue(LogLevel::WARNING_LEVEL)
-								  >= levelValue(_minLevel));
+							  isEnabled(LogLevel::WARNING_LEVEL));
 		}
 
 		/**
@@ -289,8 +372,7 @@ namespace utility::logging
 			error(std::source_location loc = std::source_location::current())
 		{
 			return LogMessage(this, LogLevel::ERROR_LEVEL, loc,
-							  levelValue(LogLevel::ERROR_LEVEL)
-								  >= levelValue(_minLevel));
+							  isEnabled(LogLevel::ERROR_LEVEL));
 		}
 
 		/**
@@ -303,8 +385,7 @@ namespace utility::logging
 			log(LogLevel level,
 				std::source_location loc = std::source_location::current())
 		{
-			return LogMessage(this, level, loc,
-							  levelValue(level) >= levelValue(_minLevel));
+			return LogMessage(this, level, loc, isEnabled(level));
 		}
 
 		/**

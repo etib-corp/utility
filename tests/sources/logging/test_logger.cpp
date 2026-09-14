@@ -23,10 +23,12 @@
 #include <gtest/gtest.h>
 
 #include <atomic>
-#include <cstdlib>
 #include <iostream>
 #include <regex>
 #include <sstream>
+#include <cstddef>
+#include <cstdlib>
+#include <new>
 #include <stdexcept>
 #include <string>
 #include <thread>
@@ -37,10 +39,55 @@
 #include "utility/logging/default_logger.hpp"
 
 using utility::logging::DefaultLogger;
+using utility::logging::FlushPolicy;
 using utility::logging::Logger;
 using utility::logging::LogLevel;
 using utility::logging::LogRecord;
 using utility::logging::StandardLogger;
+
+namespace
+{
+	std::atomic<std::size_t> g_allocationCount { 0 };
+}
+
+// Replacement allocation functions used to assert that a suppressed message
+// performs zero heap allocations. This intentionally instruments the whole
+// test binary; the counter is only sampled immediately around the code under
+// test.
+void *operator new(std::size_t size)
+{
+	g_allocationCount.fetch_add(1, std::memory_order_relaxed);
+	void *ptr = std::malloc(size == 0 ? 1 : size);
+	if (ptr == nullptr) {
+		throw std::bad_alloc();
+	}
+	return ptr;
+}
+
+void *operator new[](std::size_t size)
+{
+	return ::operator new(size);
+}
+
+void operator delete(void *ptr) noexcept
+{
+	std::free(ptr);
+}
+
+void operator delete[](void *ptr) noexcept
+{
+	std::free(ptr);
+}
+
+void operator delete(void *ptr, std::size_t) noexcept
+{
+	std::free(ptr);
+}
+
+void operator delete[](void *ptr, std::size_t) noexcept
+{
+	std::free(ptr);
+}
 
 namespace
 {
@@ -122,6 +169,7 @@ namespace
 TEST(LoggerTest, StreamSingleValue)
 {
 	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	logger.debug() << "hello world";
 	EXPECT_TRUE(logger.called);
 	EXPECT_EQ(logger.lastRecord.message, "hello world");
@@ -132,6 +180,7 @@ TEST(LoggerTest, StreamSingleValue)
 TEST(LoggerTest, StreamMultipleValues)
 {
 	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	logger.info() << "value=" << 42 << " done";
 	EXPECT_TRUE(logger.called);
 	EXPECT_EQ(logger.lastRecord.message, "value=42 done");
@@ -152,6 +201,7 @@ TEST(LoggerTest, MessageIsOwnedNotAView)
 TEST(LoggerTest, SourceLocationCaptured)
 {
 	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	logger.debug() << "loc test";
 	EXPECT_TRUE(logger.called);
 	EXPECT_NE(logger.lastRecord.file.find("test_logger.cpp"),
@@ -163,6 +213,7 @@ TEST(LoggerTest, SourceLocationCaptured)
 TEST(LoggerTest, SourceLocationSkippedForNonDebug)
 {
 	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 
 	logger.info() << "info test";
 	EXPECT_TRUE(logger.called);
@@ -331,6 +382,7 @@ TEST(LoggerTest, ConcurrentLoggingIsSafe)
 	};
 
 	CountingLogger logger("Concurrent");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	constexpr int kThreads	 = 8;
 	constexpr int kPerThread = 500;
 
@@ -362,5 +414,86 @@ TEST(LoggerTest, ThrowingOutputDoesNotTerminate)
 	};
 
 	ThrowingLogger logger("Throw");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
 	EXPECT_NO_THROW({ logger.info() << "should not terminate"; });
+}
+
+TEST(LoggerTest, DefaultMinLevelFollowsBuildType)
+{
+#if defined(NDEBUG)
+	EXPECT_EQ(Logger::defaultMinLevel(), LogLevel::WARNING_LEVEL);
+#else
+	EXPECT_EQ(Logger::defaultMinLevel(), LogLevel::DEBUG_LEVEL);
+#endif
+
+	// The constructor default is only overridden when the env var is set.
+	if (std::getenv("UTILITY_LOG_LEVEL") == nullptr) {
+		TestLogger logger("Test");
+		EXPECT_EQ(logger.getMinLevel(), Logger::defaultMinLevel());
+	}
+}
+
+TEST(LoggerTest, FlushPolicyDefaultsToBufferedAndRoundTrips)
+{
+	TestLogger logger("Test");
+	EXPECT_EQ(logger.getFlushPolicy(), FlushPolicy::BUFFERED);
+
+	logger.setFlushPolicy(FlushPolicy::ALWAYS);
+	EXPECT_EQ(logger.getFlushPolicy(), FlushPolicy::ALWAYS);
+
+	logger.setFlushPolicy(FlushPolicy::NEVER);
+	EXPECT_EQ(logger.getFlushPolicy(), FlushPolicy::NEVER);
+}
+
+TEST(LoggerTest, SuppressedMessageDoesNotAllocate)
+{
+	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::WARNING_LEVEL);
+	logger.called = false;
+
+	const std::size_t before =
+		g_allocationCount.load(std::memory_order_relaxed);
+	logger.debug() << "suppressed " << 42 << " times";
+	logger.info() << "suppressed too";
+	const std::size_t after =
+		g_allocationCount.load(std::memory_order_relaxed);
+
+	EXPECT_EQ(before, after);
+	EXPECT_FALSE(logger.called);
+}
+
+TEST(LoggerTest, ActiveMessageAllocates)
+{
+	TestLogger logger("Test");
+	logger.setMinLevel(LogLevel::DEBUG_LEVEL);
+
+	const std::size_t before =
+		g_allocationCount.load(std::memory_order_relaxed);
+	logger.debug() << "active " << 42;
+	const std::size_t after =
+		g_allocationCount.load(std::memory_order_relaxed);
+
+	EXPECT_GT(after, before);
+	EXPECT_TRUE(logger.called);
+}
+
+TEST(LoggerTest, MinLevelWritesAreRaceFree)
+{
+	TestLogger logger("Test");
+	std::atomic<bool> stop { false };
+
+	// Level writes race with the accessor reads; the sanitizer CI build
+	// (TSan) is what actually guards against the previous data race.
+	std::thread writer([&]() {
+		for (int i = 0; i < 1000; ++i) {
+			logger.setMinLevel(LogLevel::ERROR_LEVEL);
+			logger.setMinLevel(LogLevel::DEBUG_LEVEL);
+		}
+		stop.store(true, std::memory_order_relaxed);
+	});
+	while (!stop.load(std::memory_order_relaxed)) {
+		logger.debug() << "racer";
+	}
+	writer.join();
+	SUCCEED();
 }

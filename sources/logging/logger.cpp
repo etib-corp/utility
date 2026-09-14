@@ -20,15 +20,53 @@
  SOFTWARE.
  */
 
+#include <algorithm>
+#include <cctype>
 #include <chrono>
+#include <cstdlib>
 #include <ctime>
 #include <limits>
+#include <iomanip>
 #include <mutex>
 
 #include "utility/logging/logger.hpp"
 
 namespace utility::logging
 {
+
+	namespace
+	{
+		/**
+		 * @brief Parse a case-insensitive level name.
+		 * @param text Level name (debug/info/warning/error).
+		 * @param fallback Value returned when @p text is null or unknown.
+		 * @return The parsed level, or @p fallback.
+		 */
+		LogLevel parseLevel(const char *text, LogLevel fallback)
+		{
+			if (text == nullptr) {
+				return fallback;
+			}
+			std::string value(text);
+			std::transform(value.begin(), value.end(), value.begin(),
+						   [](unsigned char c) {
+							   return static_cast<char>(std::tolower(c));
+						   });
+			if (value == "debug") {
+				return LogLevel::DEBUG_LEVEL;
+			}
+			if (value == "info") {
+				return LogLevel::INFO_LEVEL;
+			}
+			if (value == "warning") {
+				return LogLevel::WARNING_LEVEL;
+			}
+			if (value == "error") {
+				return LogLevel::ERROR_LEVEL;
+			}
+			return fallback;
+		}
+	}	 // namespace
 
 	std::string Logger::levelToString(LogLevel level)
 	{
@@ -43,24 +81,6 @@ namespace utility::logging
 				return "Error";
 			default:
 				return "Unknown";
-		}
-	}
-
-	int Logger::levelValue(LogLevel level)
-	{
-		switch (level) {
-			case LogLevel::DEBUG_LEVEL:
-				return 0;
-			case LogLevel::INFO_LEVEL:
-				return 1;
-			case LogLevel::WARNING_LEVEL:
-				return 2;
-			case LogLevel::ERROR_LEVEL:
-				return 3;
-			default:
-				// Return a high sentinel so an unknown/future level is treated
-				// as most severe and never silently dropped by the filter.
-				return std::numeric_limits<int>::max();
 		}
 	}
 
@@ -96,18 +116,34 @@ namespace utility::logging
 	Logger::Logger(const std::string &name)
 		: _name(name)
 	{
+		// Allow deployments to restore verbosity without a recompile.
+		const char *envLevel = std::getenv("UTILITY_LOG_LEVEL");
+		if (envLevel != nullptr) {
+			_minLevel.store(
+				parseLevel(envLevel,
+						   _minLevel.load(std::memory_order_relaxed)),
+				std::memory_order_relaxed);
+		}
 	}
 
-	void Logger::setMinLevel(LogLevel level)
+	void Logger::setMinLevel(LogLevel level) noexcept
 	{
-		std::lock_guard<std::mutex> guard(_mutex);
-		_minLevel = level;
+		_minLevel.store(level, std::memory_order_relaxed);
 	}
 
-	LogLevel Logger::getMinLevel() const
+	LogLevel Logger::getMinLevel(void) const noexcept
 	{
-		std::lock_guard<std::mutex> guard(_mutex);
-		return _minLevel;
+		return _minLevel.load(std::memory_order_relaxed);
+	}
+
+	void Logger::setFlushPolicy(FlushPolicy policy) noexcept
+	{
+		_flushPolicy.store(policy, std::memory_order_relaxed);
+	}
+
+	FlushPolicy Logger::getFlushPolicy(void) const noexcept
+	{
+		return _flushPolicy.load(std::memory_order_relaxed);
 	}
 
 }	 // namespace utility::logging

@@ -91,6 +91,19 @@ namespace utility::logging
 			stream << "[" << record.file << ":" << record.line << " "
 				   << record.function << "] ";
 		}
+		ss << record.message;
+
+		const bool isErrorLevel = record.level == LogLevel::WARNING_LEVEL
+			|| record.level == LogLevel::ERROR_LEVEL;
+
+		std::ostream &stream = isErrorLevel ? std::cerr : std::cout;
+		stream << ss.str() << '\n';
+
+		const FlushPolicy policy = getFlushPolicy();
+		if (policy == FlushPolicy::ALWAYS
+			|| (policy == FlushPolicy::BUFFERED && isErrorLevel)) {
+			stream.flush();
+		}
 		stream << record.message << std::endl;
 	}
 
