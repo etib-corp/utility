@@ -57,6 +57,7 @@ set(UTILITY_SOURCES
     sources/logging/loggable.cpp
     sources/logging/logger.cpp
     sources/logging/standard_logger.cpp
+    sources/math/aabb.cpp
     sources/math/common.cpp
     sources/math/integer.cpp
     sources/math/matrix.cpp
@@ -95,6 +96,7 @@ set(UTILITY_TEST_SOURCES
     sources/graphic/test_vertex.cpp
     sources/graphic/test_view.cpp
     sources/logging/test_logger.cpp
+    sources/math/test_aabb.cpp
     sources/math/test_matrix.cpp
     sources/math/test_quaternion.cpp
     sources/math/test_vector.cpp
