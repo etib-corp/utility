@@ -56,6 +56,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   per element) on every access. The returned reference is valid only until
   the next mutating call (any `load*` method) on the provider.
 
+### Fixed
+
+- `RessourceProvider::getShaderID()` no longer scans `_elementsIDs`, which made
+  `evan::RessourceManager::sync()` O(M·E). Shaders are now resolved through a
+  dedicated, shader-only index (`_shaderIDs`), giving O(1) average lookups.
+  Ambiguous prefixes resolve deterministically to the first-registered shader
+  (lowest id) instead of following an unspecified `unordered_map` iteration
+  order; unknown names still return `0`.
+
 ## [1.0.0] - 2025-08-25
 
 ### Added

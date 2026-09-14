@@ -22,6 +22,7 @@
 
 #include <benchmark/benchmark.h>
 
+#include <memory>
 #include <atomic>
 #include <cstddef>
 #include <string>
@@ -29,6 +30,9 @@
 #include <utility/cache.hpp>
 #include <utility/logging/logger.hpp>
 #include <utility/math/vector.hpp>
+#include <utility/ressource_provider.hpp>
+#include <utility/system_io/default_system_io.hpp>
+#include <utility/system_io/file.hpp>
 
 namespace
 {
@@ -68,7 +72,34 @@ namespace
 		}
 	}
 	BENCHMARK(BM_CachePutGet)->Range(8, 8 << 10);
+	void BM_RessourceProviderGetShaderID(benchmark::State &state)
+	{
+		utility::DefaultSystemIO systemIO;
+		utility::RessourceProvider provider(systemIO);
 
+		for (const std::string name: { "text", "mesh", "default" }) {
+			provider.loadShaderFromAssets(
+				std::make_shared<utility::File>(name + ".vs", "AAAA"),
+				std::make_shared<utility::File>(name + ".fs", "AAAA"));
+		}
+
+		// Inflate the generic element-ID map with non-shader entries to show
+		// the shader lookup is independent of the number of elements.
+		for (int i = 0; i < state.range(0); ++i) {
+			provider.loadCodePointsFromAsset(std::make_shared<utility::File>(
+				"cp" + std::to_string(i) + ".codepoints", std::string()));
+		}
+
+		for (auto _: state) {
+			benchmark::DoNotOptimize(provider.getShaderID("text"));
+		}
+	}
+
+	BENCHMARK(BM_RessourceProviderGetShaderID)
+		->Arg(0)
+		->Arg(10)
+		->Arg(100)
+		->Arg(1000);
 	// Counts emitted records without touching stdout so the benchmark measures
 	// the logging path (level check, allocation, mutex, output) only.
 	class CountingLogger: public utility::logging::Logger
