@@ -93,6 +93,7 @@ set(UTILITY_TEST_SOURCES
     sources/graphic/test_ray.cpp
     sources/graphic/test_scale.cpp
     sources/graphic/test_shader.cpp
+    sources/graphic/test_transform.cpp
     sources/graphic/test_vertex.cpp
     sources/graphic/test_view.cpp
     sources/logging/test_logger.cpp

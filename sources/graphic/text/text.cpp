@@ -109,9 +109,10 @@ namespace utility::graphic
 		_meshes.front() = std::make_shared<Mesh>(std::vector<VertexF> {},
 												 std::vector<uint32_t> {});
 
-		float x = getPose().getPosition().getX();
-		float y = getPose().getPosition().getY();
-		float z = getPose().getPosition().getZ();
+		// Glyph quads are built in local (object) space: the pose position and
+		// orientation are applied later through the model matrix, so they are
+		// not baked into positions or normals here.
+		const math::Vector3F localNormal { 0.0f, 0.0f, -1.0f };
 
 		uint32_t indexOffset			 = 0;
 		std::vector<uint32_t> codepoints = utf8ToCodepoints(_content);
@@ -123,30 +124,26 @@ namespace utility::graphic
 
 		for (const auto &g: glyphs) {
 			const float xpos =
-				static_cast<float>(std::round(x + penX + g.bearing[VEC_X]));
+				static_cast<float>(std::round(penX + g.bearing[VEC_X]));
 			const float ypos =
-				static_cast<float>(std::round(y - baseline + g.bearing[VEC_Y]));
+				static_cast<float>(std::round(-baseline + g.bearing[VEC_Y]));
 
 			const float w = g.size[VEC_X];
 			const float h = g.size[VEC_Y];
 
-			VertexF v0(PositionF(xpos, ypos, z),
-					   getPose().getOrientation().getForward(),
+			VertexF v0(PositionF(xpos, ypos, 0.0f), localNormal,
 					   math::Vector2F({ g.uvMin[VEC_X], g.uvMin[VEC_Y] }),
 					   _color);
 
-			VertexF v1(PositionF(xpos, ypos - h, z),
-					   getPose().getOrientation().getForward(),
+			VertexF v1(PositionF(xpos, ypos - h, 0.0f), localNormal,
 					   math::Vector2F({ g.uvMin[VEC_X], g.uvMax[VEC_Y] }),
 					   _color);
 
-			VertexF v2(PositionF(xpos + w, ypos - h, z),
-					   getPose().getOrientation().getForward(),
+			VertexF v2(PositionF(xpos + w, ypos - h, 0.0f), localNormal,
 					   math::Vector2F({ g.uvMax[VEC_X], g.uvMax[VEC_Y] }),
 					   _color);
 
-			VertexF v3(PositionF(xpos + w, ypos, z),
-					   getPose().getOrientation().getForward(),
+			VertexF v3(PositionF(xpos + w, ypos, 0.0f), localNormal,
 					   math::Vector2F({ g.uvMax[VEC_X], g.uvMin[VEC_Y] }),
 					   _color);
 

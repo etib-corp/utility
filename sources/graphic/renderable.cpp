@@ -6,6 +6,7 @@
 */
 
 #include <utility/graphic/renderable.hpp>
+#include <utility/graphic/transform.hpp>
 
 namespace utility::graphic
 {
@@ -27,6 +28,11 @@ namespace utility::graphic
 	const Color32Bit &Renderable::getColor(void) const
 	{
 		return _color;
+	}
+
+	glm::mat4 Renderable::getModelMatrix(void) const
+	{
+		return poseToMatrix(_pose);
 	}
 
 	std::vector<std::shared_ptr<Mesh>> Renderable::getMeshes() const

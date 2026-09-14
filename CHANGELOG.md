@@ -47,9 +47,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   growth via `include()`, and queries (`center`, `extents`, `halfSize`,
   `radius`, `positiveVertex`, `contains`, `intersects`, `isEmpty`) for frustum
   and distance culling.
+- Graphics: `utility::graphic::transform.hpp` with `poseToMatrix()`,
+  `orientationToMatrix()` and `modelMatrix(pose, scale)` helpers, plus
+  `Renderable::getModelMatrix()`, to convert a `PoseF`/`ScaleF` into the
+  `glm::mat4` model matrix expected by per-instance rendering.
 
 ### Changed
 
+- **Behaviour change (breaking):** meshes are now stored in local (object)
+  space. `Model::loadOBJ` no longer bakes the pose position into vertex
+  positions, and `Text::updateMesh` no longer bakes the pose position or
+  orientation into its glyph quads. Callers must apply the world transform
+  through the model matrix (`Renderable::getModelMatrix()` or
+  `poseToMatrix()`) instead of relying on pre-transformed vertices. This
+  matches `evan`'s per-instance model matrix (instance attribute locations
+  3..6).
 - Replaced `file(GLOB)` with explicit source lists for reproducible builds.
 - Logging: the default minimum level is now `WARNING_LEVEL` in release builds
   (`NDEBUG`) and `DEBUG_LEVEL` in debug builds, instead of always
