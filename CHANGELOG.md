@@ -40,6 +40,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RessourceProvider::version()`, a monotonic counter bumped on every mutation
   of the provider's resource maps (new ids and in-place content updates such
   as font atlases), letting consumers skip their work while it is unchanged.
+- Math: `utility::math::Aabb` — a 3D axis-aligned bounding box template with
+  `AabbF`/`AabbD` aliases, construction from point ranges (`fromPoints`),
+  growth via `include()`, and queries (`center`, `extents`, `halfSize`,
+  `radius`, `positiveVertex`, `contains`, `intersects`, `isEmpty`) for frustum
+  and distance culling.
 
 ### Changed
 
