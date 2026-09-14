@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Logger::setFlushPolicy()` / `getFlushPolicy()`, and a
   `Logger::defaultMinLevel()` helper.
 - Logging benchmarks comparing suppressed vs. active emission at N=100/1000.
+- `RessourceProvider::version()`, a monotonic counter bumped on every mutation
+  of the provider's resource maps (new ids and in-place content updates such
+  as font atlases), letting consumers skip their work while it is unchanged.
 
 ### Changed
 
@@ -62,6 +65,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `StandardLogger::output()` writes directly to the destination stream
   without building an intermediate `std::stringstream`. The emitted line
   format is unchanged.
+- `RessourceProvider` font-atlas handling is centralized in the new
+  `onFontAtlasCreated()` helper instead of being duplicated in
+  `loadFontFromAsset()` and `loadFontFamilyFromAssets()`; the shared
+  implementation records the in-place material update with `touch()`.
 
 ### Fixed
 
