@@ -53,6 +53,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `orientationToMatrix()` and `modelMatrix(pose, scale)` helpers, plus
   `Renderable::getModelMatrix()`, to convert a `PoseF`/`ScaleF` into the
   `glm::mat4` model matrix expected by per-instance rendering.
+- Graphics: `utility::graphic::AlphaMode` (`Opaque`, `Mask`, `Blend`) with
+  `Material::getAlphaMode()` and `Material::getAlphaCutoff()`, giving materials
+  an authoritative source of truth for alpha semantics. Materials default to
+  `Opaque` with a `0.5` cutoff (the glTF defaults); `TextMaterial` is `Blend`,
+  so consumers no longer have to infer transparency from texture types or
+  shader names.
 
 ### Changed
 
