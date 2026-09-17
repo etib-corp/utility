@@ -78,6 +78,13 @@ Rendering-friendly data types.
   `transform.hpp` helpers (`poseToMatrix`, `modelMatrix`) convert a pose (and an
   optional scale) into the `glm::mat4` model matrix consumed by per-instance
   rendering.
+- `Material` carries renderer-agnostic alpha semantics through
+  `AlphaMode::Opaque` (default), `AlphaMode::Mask` (alpha-tested against
+  `getAlphaCutoff()`, default `0.5`) and `AlphaMode::Blend`, so consumers pick
+  an opaque or an alpha pipeline variant without inferring intent from texture
+  types or shader names. `TextMaterial` is `Blend`. `Mask` is data only until a
+  fragment shader implements `discard`; renderers should treat it as `Blend`
+  in the meantime.
 - Assets such as materials, models, shaders, and textures are usually loaded
   through `utility::RessourceProvider` rather than constructed directly.
 - OBJ models are imported via tinyobjloader; images via stb.

@@ -24,6 +24,23 @@ namespace utility::graphic
 {
 
 	/**
+	 * @brief Describes how a material's alpha is interpreted at render time.
+	 *
+	 * This is renderer-agnostic semantics, not rasterizer state: a renderer
+	 * projects each value onto its own pipeline variant.
+	 *
+	 * The default mode and the default cutoff match the glTF `alphaMode` and
+	 * `alphaCutoff` defaults.
+	 */
+	enum class AlphaMode {
+		Opaque,	   ///< Fully opaque; no blending, depth write enabled.
+		Mask,	   ///< Alpha-tested; opaque/transparent decided by a cutoff.
+				   ///< Requires a fragment shader that discards samples below
+				   ///< the cutoff; no shipped shader implements this yet.
+		Blend	   ///< Alpha-blended; blended with the framebuffer.
+	};
+
+	/**
 	 * @brief The Material class represents a material that can be used for
 	 * rendering objects in a graphics application.
 	 *
@@ -116,6 +133,26 @@ namespace utility::graphic
 		const std::string &getShaderName() const;
 
 		/**
+		 * @brief Retrieves the alpha semantics of this material.
+		 *
+		 * Consumers use this to select the appropriate rendering behaviour
+		 * without inferring it from texture types or shader names.
+		 *
+		 * @return The AlphaMode of this material.
+		 */
+		[[nodiscard]] AlphaMode getAlphaMode(void) const;
+
+		/**
+		 * @brief Retrieves the alpha cutoff of this material.
+		 *
+		 * The cutoff is only meaningful for AlphaMode::Mask, where a sampled
+		 * alpha below the cutoff is fully transparent.
+		 *
+		 * @return The alpha cutoff, in the [0, 1] range.
+		 */
+		[[nodiscard]] float getAlphaCutoff(void) const;
+
+		/**
 		 * @brief Retrieves the version number of the material.
 		 *
 		 * This method returns the version number of the material, which is used
@@ -143,5 +180,15 @@ namespace utility::graphic
 		 * and updates.
 		 */
 		uint32_t _version = 0;
+
+		/**
+		 * @brief The alpha semantics of this material.
+		 */
+		AlphaMode _alphaMode = AlphaMode::Opaque;
+
+		/**
+		 * @brief The alpha cutoff, only meaningful for AlphaMode::Mask.
+		 */
+		float _alphaCutoff = 0.5f;
 	};
 }	 // namespace utility::graphic

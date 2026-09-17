@@ -86,6 +86,7 @@ set(UTILITY_TEST_SOURCES
     sources/graphic/test_code_points.cpp
     sources/graphic/test_color.cpp
     sources/graphic/test_field_of_view.cpp
+    sources/graphic/test_material.cpp
     sources/graphic/test_mesh.cpp
     sources/graphic/test_orientation.cpp
     sources/graphic/test_pose.cpp
