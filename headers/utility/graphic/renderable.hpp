@@ -9,6 +9,8 @@
 
 #include <memory>
 
+#include <glm/mat4x4.hpp>
+
 #include <utility/graphic/color.hpp>
 #include <utility/graphic/pose.hpp>
 #include <utility/graphic/mesh.hpp>
@@ -65,6 +67,18 @@ namespace utility::graphic
 		 * @return Const reference to the text pose (position and orientation).
 		 */
 		const PoseF &getPose(void) const;
+
+		/**
+		 * @brief Get the object-to-world model matrix of this renderable.
+		 *
+		 * Converts the renderable pose (position + orientation) into the
+		 * `glm::mat4` expected by per-instance rendering. Meshes are stored in
+		 * local (object) space, so this matrix is what positions them in the
+		 * world instead of a CPU-baked transform.
+		 *
+		 * @return The model matrix (translation * rotation).
+		 */
+		[[nodiscard]] glm::mat4 getModelMatrix(void) const;
 
 		/**
 		 * @brief Set the text color.

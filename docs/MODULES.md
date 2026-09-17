@@ -73,6 +73,11 @@ Rendering-friendly data types.
 - Types: `Color`, `Pose`, `Position`, `Scale`, `Orientation`, `Vertex`,
   `Mesh`, `Material`, `Shader`, `Texture`, `View`, `Ray`, and text/font types
   (`Font`, `FontSized`, `CodePoints`, `Text`).
+- Meshes store geometry in local (object) space; world placement comes from the
+  pose, not from baked vertex positions. `Renderable::getModelMatrix()` and the
+  `transform.hpp` helpers (`poseToMatrix`, `modelMatrix`) convert a pose (and an
+  optional scale) into the `glm::mat4` model matrix consumed by per-instance
+  rendering.
 - Assets such as materials, models, shaders, and textures are usually loaded
   through `utility::RessourceProvider` rather than constructed directly.
 - OBJ models are imported via tinyobjloader; images via stb.
