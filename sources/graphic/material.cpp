@@ -54,6 +54,16 @@ namespace utility::graphic
 		return _shaderName;
 	}
 
+	AlphaMode Material::getAlphaMode(void) const
+	{
+		return _alphaMode;
+	}
+
+	float Material::getAlphaCutoff(void) const
+	{
+		return _alphaCutoff;
+	}
+
 	uint32_t Material::getVersion() const
 	{
 		return _version;

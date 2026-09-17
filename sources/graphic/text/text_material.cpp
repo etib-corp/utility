@@ -12,6 +12,7 @@ namespace utility::graphic
 	TextMaterial::TextMaterial()
 	{
 		_shaderName = "text";
+		_alphaMode	= AlphaMode::Blend;
 		_version	= 0;
 	}
 
