@@ -121,6 +121,20 @@ namespace utility::graphic
 		 */
 		uint32_t getMaterialID(void) const;
 
+		/**
+		 * @brief Get the Renderable Type object
+		 *
+		 * @return RenderableType::Model
+		 */
+		RenderableType getRenderableType() const override;
+
+		/**
+		 * @brief Get the material name.
+		 *
+		 * @return The name of the material used for rendering the model.
+		 */
+		std::string getMaterialName() const override;
+
 		protected:
 		/**
 		 * @brief Loads a model from a given File containing the model data.

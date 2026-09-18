@@ -1,2 +1,4 @@
 # CMake build files
-/build/
+build/
+# Gradle build files
+.gradle/

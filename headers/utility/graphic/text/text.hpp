@@ -228,6 +228,18 @@ namespace utility::graphic
 		Text &setFontSize(uint32_t fontSize);
 
 		/**
+		 * @brief Get the RenderableType of this object.
+		 * @return RenderableType::Text
+		 */
+		RenderableType getRenderableType(void) const override;
+
+		/**
+		 * @brief Get the material name.
+		 * @return The name of the material used for rendering the text.
+		 */
+		std::string getMaterialName() const override;
+
+		/**
 		 * @brief Check if text content is empty.
 		 * @return True if content has no characters.
 		 */

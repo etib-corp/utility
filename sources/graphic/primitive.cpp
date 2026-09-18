@@ -21,4 +21,14 @@ namespace utility::graphic
 	{
 		_meshes.push_back(std::make_shared<Mesh>(mesh));
 	}
+
+	Renderable::RenderableType Primitive::getRenderableType(void) const
+	{
+		return RenderableType::Mesh;
+	}
+
+	std::string Primitive::getMaterialName(void) const
+	{
+		return "mesh_material";
+	}
 }	 // namespace utility::graphic

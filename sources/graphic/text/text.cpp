@@ -81,6 +81,16 @@ namespace utility::graphic
 		return *this;
 	}
 
+	Renderable::RenderableType Text::getRenderableType(void) const
+	{
+		return RenderableType::Text;
+	}
+
+	std::string Text::getMaterialName() const
+	{
+		return this->getFontFamily() + "_" + std::to_string(this->getFontSize()) + "_material";
+	}
+
 	graphic::SizeF Text::getTextDimensions(void) const
 	{
 		graphic::SizeF dimensions({ 0.0, 0.0 });
