@@ -165,12 +165,6 @@ namespace utility
 		virtual utility::graphic::ViewF getView(void) const = 0;
 
 		/**
-		 * @brief Add a scene to the engine.
-		 * @param sceneIndex The index of the scene to add.
-		 */
-		virtual void addScene(size_t sceneIndex) = 0;
-
-		/**
 		 * @brief Set the event callback function.
 		 *
 		 * The callback will be invoked for each event when pollEvents() is
@@ -195,7 +189,7 @@ namespace utility
 		 * This method should handle logic updates, input processing, and other
 		 * non-rendering related tasks. It is typically called once per frame,
 		 * allowing the engine to respond to user input and update the state of
-		 * objects in the scene.
+		 * objects in the renderer.
 		 */
 		virtual void update(void) = 0;
 	};
