@@ -123,25 +123,6 @@ namespace utility
 		virtual void present(void) = 0;
 
 		/**
-		 * @brief Add a mesh to the engine.
-		 *
-		 * @param mesh The mesh to add to the engine.
-		 * @param materialName The name of the material to use for rendering the
-		 * mesh.
-		 * @return A unique identifier for the added mesh.
-		 */
-		virtual size_t addMesh(const utility::graphic::Mesh &mesh,
-							   const std::string &materialName) = 0;
-
-		/**
-		 * @brief Remove a previously added render object.
-		 *
-		 * @param objectID The identifier returned by addMesh/addText.
-		 * @return True when the object was removed.
-		 */
-		virtual bool removeObject(size_t objectID) = 0;
-
-		/**
 		 * @brief Measures the pixel dimensions of a given text string when
 		 * rendered with a specific font.
 		 * @param text The text to measure.
@@ -152,31 +133,36 @@ namespace utility
 			measureText(const utility::graphic::Text &text) const = 0;
 
 		/**
-		 * @brief Add a text element to the engine at a specified pose.
-		 * @param text The text to draw.
-		 * @return A unique identifier for the added text.
+		 * @brief Create a new render object.
+		 *
+		 * @param object A shared pointer to the renderable object to create.
+		 * @return A unique identifier for the created object.
 		 */
-		virtual size_t addText(utility::graphic::Text text) = 0;
+		virtual size_t createObject(std::shared_ptr<utility::graphic::Renderable> object) = 0;
 
 		/**
-		 * @brief Add a model to the engine for rendering.
-		 * @param model A shared pointer to the model to add.
-		 * @return A unique identifier for the added model.
+		 * @brief Update a previously added render object.
+		 *
+		 * @param object The updated renderable object.
+		 * @param objectID The identifier returned by createObject.
+		 * @return True when the object was updated.
 		 */
-		virtual size_t
-			addModel(std::shared_ptr<utility::graphic::Model> model) = 0;
+		virtual bool updateObject(std::shared_ptr<utility::graphic::Renderable> object, size_t objectID) = 0;
+
+		/**
+		 * @brief Remove a previously added render object.
+		 *
+		 * @param object The renderable object to remove.
+		 * @param objectID The identifier returned by createObject.
+		 * @return True when the object was removed.
+		 */
+		virtual bool removeObject(std::shared_ptr<utility::graphic::Renderable> object, size_t objectID) = 0;
 
 		/**
 		 * @brief Get the full view model.
 		 * @return The view instance.
 		 */
 		virtual utility::graphic::ViewF getView(void) const = 0;
-
-		/**
-		 * @brief Add a scene to the engine.
-		 * @param sceneIndex The index of the scene to add.
-		 */
-		virtual void addScene(size_t sceneIndex) = 0;
 
 		/**
 		 * @brief Set the event callback function.
@@ -203,7 +189,7 @@ namespace utility
 		 * This method should handle logic updates, input processing, and other
 		 * non-rendering related tasks. It is typically called once per frame,
 		 * allowing the engine to respond to user input and update the state of
-		 * objects in the scene.
+		 * objects in the renderer.
 		 */
 		virtual void update(void) = 0;
 	};

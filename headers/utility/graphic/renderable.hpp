@@ -31,6 +31,14 @@ namespace utility::graphic
 	class Renderable
 	{
 		public:
+
+		enum class RenderableType {
+			Unknown = 0, /**< Unknown renderable type */
+			Model	= 1, /**< Model renderable type */
+			Text	= 3, /**< Text renderable type */
+			Mesh	= 4, /**< Mesh renderable type */
+		};
+
 		/**
 		 * @brief Default constructor for Renderable.
 		 * @param pose The initial pose (position and orientation) of the
@@ -118,6 +126,26 @@ namespace utility::graphic
 		 * this renderable object.
 		 */
 		[[nodiscard]] std::vector<std::shared_ptr<Mesh>> getMeshes() const;
+
+		/**
+		 * @brief Get the type of this renderable object.
+		 *
+		 * This method returns the RenderableType enumeration value that
+		 * indicates the specific type of this renderable object. The
+		 * RenderableType can be used to identify whether the object is a model,
+		 * text, mesh, or any other defined renderable type. This information can
+		 * be useful for rendering systems to handle different types of renderable
+		 * objects appropriately based on their characteristics and requirements.
+		 *
+		 * @return The RenderableType of this renderable object.
+		 */
+		virtual RenderableType getRenderableType() const = 0;
+
+		/**
+		 * @brief Get the material name.
+		 * @return The name of the material used for rendering the text.
+		 */
+		virtual std::string getMaterialName() const = 0;
 
 		protected:
 		std::vector<std::shared_ptr<Mesh>>

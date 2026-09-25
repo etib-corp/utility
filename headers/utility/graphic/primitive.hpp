@@ -64,6 +64,26 @@ namespace utility::graphic
 		void addMesh(const Mesh &mesh);
 
 		/**
+		 * @brief Get the type of this renderable object.
+		 *
+		 * This method returns the RenderableType enumeration value that
+		 * indicates the specific type of this renderable object. The
+		 * RenderableType can be used to identify whether the object is a model,
+		 * text, mesh, or any other defined renderable type. This information can
+		 * be useful for rendering systems to handle different types of renderable
+		 * objects appropriately based on their characteristics and requirements.
+		 *
+		 * @return The RenderableType of this renderable object.
+		 */
+		RenderableType getRenderableType(void) const override;
+
+		/**
+		 * @brief Get the material name.
+		 * @return The name of the material used for rendering the primitive.
+		 */
+		std::string getMaterialName(void) const override;
+
+		/**
 		 * @brief Deleted copy assignment operator for Primitive.
 		 */
 		Primitive &operator=(const Primitive &) = delete;

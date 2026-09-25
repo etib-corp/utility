@@ -80,6 +80,16 @@ namespace utility::graphic
 		return _materialID;
 	}
 
+	Renderable::RenderableType Model::getRenderableType() const
+	{
+		return RenderableType::Model;
+	}
+
+	std::string Model::getMaterialName() const
+	{
+		return "default_material"; // Placeholder: Replace with actual material name retrieval logic if available
+	}
+
 	///////////////////////
 	// Protected methods //
 	///////////////////////
