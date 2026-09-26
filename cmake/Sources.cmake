@@ -104,6 +104,7 @@ set(UTILITY_TEST_SOURCES
     sources/math/test_vector.cpp
     sources/test_cache.cpp
     sources/test_demangle.cpp
+    sources/test_engine.cpp
     sources/test_file.cpp
     sources/test_ressource_provider.cpp
     sources/test_singleton.cpp

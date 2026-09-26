@@ -20,53 +20,20 @@
  SOFTWARE.
  */
 
-#include "utility/engine.hpp"
+#pragma once
 
-namespace utility
+#include <gtest/gtest.h>
+
+namespace tests::utility
 {
-	Engine::Engine(void)
-
+	class TestEngine: public ::testing::Test
 	{
-	}
-
-	Engine::Handler &Engine::getEventCallback(void)
-	{
-		return _callback;
-	}
-
-	void Engine::setEventCallback(const Handler &callback)
-	{
-		_callback = callback;
-	}
-
-	bool Engine::shouldCaptureViewportInput(void) const
-	{
-		return _shouldCaptureViewportInput;
-	}
-
-	void Engine::setShouldCaptureViewportInput(bool capture)
-	{
-		_shouldCaptureViewportInput = capture;
-	}
-
-	float Engine::getDeltaTime(void) const
-	{
-		return 0.0f;
-	}
-
-	void Engine::setScissor(const utility::graphic::ScissorRect &rect)
-	{
-		_scissor = rect;
-	}
-
-	void Engine::clearScissor(void)
-	{
-		_scissor.reset();
-	}
-
-	std::optional<utility::graphic::ScissorRect> Engine::getScissor(void) const
-	{
-		return _scissor;
-	}
-
-}	 // namespace utility
+		protected:
+		void SetUp(void) override
+		{
+		}
+		void TearDown(void) override
+		{
+		}
+	};
+}	 // namespace tests::utility
