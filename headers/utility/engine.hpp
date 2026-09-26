@@ -24,6 +24,7 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
 #include <string>
 #include <type_traits>
 
@@ -33,6 +34,7 @@
 #include <utility/graphic/view.hpp>
 #include <utility/graphic/mesh.hpp>
 #include <utility/graphic/model.hpp>
+#include <utility/graphic/scissor.hpp>
 #include <utility/graphic/size.hpp>
 #include <utility/graphic/text/text.hpp>
 
@@ -77,6 +79,9 @@ namespace utility
 		bool _shouldCaptureViewportInput {
 			true
 		};	  ///< Viewport input capture state
+		std::optional<utility::graphic::ScissorRect> _scissor {
+			std::nullopt
+		};	  ///< Active scissor rectangle
 
 		protected:
 		/**
@@ -138,7 +143,8 @@ namespace utility
 		 * @param object A shared pointer to the renderable object to create.
 		 * @return A unique identifier for the created object.
 		 */
-		virtual size_t createObject(std::shared_ptr<utility::graphic::Renderable> object) = 0;
+		virtual size_t createObject(
+			std::shared_ptr<utility::graphic::Renderable> object) = 0;
 
 		/**
 		 * @brief Update a previously added render object.
@@ -147,7 +153,9 @@ namespace utility
 		 * @param objectID The identifier returned by createObject.
 		 * @return True when the object was updated.
 		 */
-		virtual bool updateObject(std::shared_ptr<utility::graphic::Renderable> object, size_t objectID) = 0;
+		virtual bool
+			updateObject(std::shared_ptr<utility::graphic::Renderable> object,
+						 size_t objectID) = 0;
 
 		/**
 		 * @brief Remove a previously added render object.
@@ -156,13 +164,50 @@ namespace utility
 		 * @param objectID The identifier returned by createObject.
 		 * @return True when the object was removed.
 		 */
-		virtual bool removeObject(std::shared_ptr<utility::graphic::Renderable> object, size_t objectID) = 0;
+		virtual bool
+			removeObject(std::shared_ptr<utility::graphic::Renderable> object,
+						 size_t objectID) = 0;
 
 		/**
 		 * @brief Get the full view model.
 		 * @return The view instance.
 		 */
 		virtual utility::graphic::ViewF getView(void) const = 0;
+
+		/**
+		 * @brief Get the time elapsed since the previous frame.
+		 *
+		 * Implementations backed by a real clock should override this so that
+		 * time-based systems (animations, transitions) advance with the
+		 * platform frame rate. The default returns 0, in which case callers
+		 * fall back to their own monotonic clock.
+		 *
+		 * @return Delta time in seconds.
+		 */
+		virtual float getDeltaTime(void) const;
+
+		/**
+		 * @brief Set the active scissor (clip) rectangle.
+		 *
+		 * The rectangle is expressed in framebuffer pixels. Implementations
+		 * backed by a renderer should clip subsequent draws to it; the base
+		 * implementation only stores the rectangle so it can be queried with
+		 * getScissor().
+		 *
+		 * @param rect The scissor rectangle to apply.
+		 */
+		virtual void setScissor(const utility::graphic::ScissorRect &rect);
+
+		/**
+		 * @brief Clear the active scissor (clip) rectangle.
+		 */
+		virtual void clearScissor(void);
+
+		/**
+		 * @brief Get the active scissor (clip) rectangle.
+		 * @return The active rectangle, or std::nullopt when none is set.
+		 */
+		std::optional<utility::graphic::ScissorRect> getScissor(void) const;
 
 		/**
 		 * @brief Set the event callback function.

@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Engine: `Engine::getDeltaTime()` (frame delta time, default 0) and a
+  scissor/clip API — `utility::graphic::ScissorRect` plus
+  `Engine::setScissor()` / `clearScissor()` / `getScissor()` — so time-based
+  systems and clipping can be driven through the engine interface.
 - Standard open-source documentation: `CHANGELOG.md`, `CODE_OF_CONDUCT.md`,
   `CONTRIBUTING.md`, `SECURITY.md`, `AUTHORS.md`, and `LICENSE`.
 - CPack packaging rules.
