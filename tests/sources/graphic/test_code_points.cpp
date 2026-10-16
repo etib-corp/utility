@@ -44,3 +44,24 @@ TEST_F(TestCodePoints, ToUtf8FourByte)
 {
 	EXPECT_EQ(CodePoints::toUtf8(0x1F600), std::string("\xF0\x9F\x98\x80"));
 }
+
+TEST_F(TestCodePoints, MalformedLinesAreSkipped)
+{
+	CodePoints codes("blank \nword xyz\nhuge 10000000000000000\nA 41\n");
+	EXPECT_EQ(codes.getCode("blank"), 0);
+	EXPECT_EQ(codes.getCode("word"), 0);
+	EXPECT_EQ(codes.getCode("huge"), 0);
+	EXPECT_EQ(codes.getCode("A"), 0x41);
+}
+
+TEST_F(TestCodePoints, CodeAbove32BitsIsNotTruncated)
+{
+	CodePoints codes("wrapped 100000041\n");
+	EXPECT_EQ(codes.getCode("wrapped"), 0);
+}
+
+TEST_F(TestCodePoints, CarriageReturnAndExtraSpacesAreAccepted)
+{
+	CodePoints codes("home  e88a\r\n");
+	EXPECT_EQ(codes.getCode("home"), 0xe88a);
+}

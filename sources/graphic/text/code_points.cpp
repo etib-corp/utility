@@ -5,6 +5,7 @@
 ** code_points
 */
 
+#include <charconv>
 #include <sstream>
 #include <utility/graphic/text/code_points.hpp>
 
@@ -20,13 +21,27 @@ namespace utility::graphic
 		std::istringstream stream(content);
 		std::string line;
 		while (std::getline(stream, line)) {
-			size_t spacePos = line.find(' ');
-			if (spacePos != std::string::npos) {
-				std::string name = line.substr(0, spacePos);
-				uint32_t code =
-					std::stoul(line.substr(spacePos + 1), &spacePos, 16);
-				_codes[name] = code;
+			const size_t spacePos = line.find(' ');
+			if (spacePos == std::string::npos) {
+				continue;
 			}
+			// Skip a line whose code is not a 32-bit hexadecimal number, as a
+			// line without a space is skipped: std::stoul threw out of the
+			// constructor on it, and truncated codes above 0xFFFFFFFF.
+			const char *first = line.data() + spacePos + 1;
+			const char *last  = line.data() + line.size();
+			while (first != last && (*first == ' ' || *first == '\t')) {
+				++first;
+			}
+			if (last - first > 2 && first[0] == '0'
+				&& (first[1] == 'x' || first[1] == 'X')) {
+				first += 2;
+			}
+			uint32_t code = 0;
+			if (std::from_chars(first, last, code, 16).ec != std::errc()) {
+				continue;
+			}
+			_codes[line.substr(0, spacePos)] = code;
 		}
 	}
 
