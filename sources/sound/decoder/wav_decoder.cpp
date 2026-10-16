@@ -24,6 +24,9 @@
 #define DR_WAV_IMPLEMENTATION
 #include <dr_wav.h>
 
+#include <cstring>
+#include <vector>
+
 #include <utility/logging/default_logger.hpp>
 
 namespace utility::sound
@@ -65,18 +68,25 @@ std::shared_ptr<utility::sound::AudioBuffer>
 		return nullptr;
 	}
 
+	// drwav_read_pcm_frames() would copy each sample in the file's own format,
+	// bitsPerSample / 8 bytes wide. Convert every format to signed 16-bit PCM,
+	// which OpenAL accepts, into a buffer sized in samples of that type, as
+	// MP3Decoder does.
 	decodedAudio.channels	   = wav.channels;
 	decodedAudio.sampleRate	   = wav.sampleRate;
-	decodedAudio.bitsPerSample = wav.bitsPerSample;
-	decodedAudio.samples.resize(
+	decodedAudio.bitsPerSample = 16;
+	std::vector<drwav_int16> pcm(
 		static_cast<size_t>(wav.totalPCMFrameCount * wav.channels));
 
-	size_t framesRead = drwav_read_pcm_frames(&wav, wav.totalPCMFrameCount,
-											  decodedAudio.samples.data());
+	size_t framesRead =
+		drwav_read_pcm_frames_s16(&wav, wav.totalPCMFrameCount, pcm.data());
 	if (framesRead != wav.totalPCMFrameCount) {
 		drwav_uninit(&wav);
 		return nullptr;
 	}
+	decodedAudio.samples.resize(pcm.size() * sizeof(drwav_int16));
+	std::memcpy(decodedAudio.samples.data(), pcm.data(),
+				decodedAudio.samples.size());
 
 	decodedAudio.format =
 		getALFormat(decodedAudio.channels, decodedAudio.bitsPerSample);

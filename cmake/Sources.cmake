@@ -102,6 +102,7 @@ set(UTILITY_TEST_SOURCES
     sources/math/test_matrix.cpp
     sources/math/test_quaternion.cpp
     sources/math/test_vector.cpp
+    sources/sound/test_wav_decoder.cpp
     sources/test_cache.cpp
     sources/test_demangle.cpp
     sources/test_engine.cpp
