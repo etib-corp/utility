@@ -5,6 +5,8 @@
 ** ressource_provider
 */
 
+#include <stdexcept>
+
 #include <utility/ressource_provider.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -128,10 +130,10 @@ namespace utility
 			return it->second;
 		}
 
-		auto id = getNextID();
-
-		auto textureFile =
-			_systemInterface.add(resolvePath("textures/default_texture.png"));
+		// Load the texture before allocating the id: a missing asset throws
+		// and must not leave a half-registered material behind.
+		auto textureFile = loadDefaultTextureAsset();
+		auto id			 = getNextID();
 
 		_materials[id] = std::make_shared<graphic::Material>(
 			*this, std::string("default"), std::vector<File> { *textureFile });
@@ -148,10 +150,10 @@ namespace utility
 			return it->second;
 		}
 
-		auto id = getNextID();
-
-		auto textureFile =
-			_systemInterface.add(resolvePath("textures/default_texture.png"));
+		// Load the texture before allocating the id: a missing asset throws
+		// and must not leave a half-registered material behind.
+		auto textureFile = loadDefaultTextureAsset();
+		auto id			 = getNextID();
 
 		_materials[id] = std::make_shared<graphic::Material>(
 			*this, std::string("mesh"), std::vector<File> { *textureFile });
@@ -844,5 +846,21 @@ namespace utility
 			return _basePath + "/" + path;
 
 		return _basePath + path;
+	}
+
+	std::shared_ptr<utility::File> RessourceProvider::loadDefaultTextureAsset()
+	{
+		const std::string path = resolvePath("textures/default_texture.png");
+		auto textureAsset	   = _systemInterface.add(path);
+
+		if (!textureAsset) {
+			throw std::runtime_error(
+				"Failed to load default texture '" + path
+				+ "'. Resource paths resolve relative to the process working "
+				  "directory unless a base path is set on the "
+				  "RessourceProvider.");
+		}
+
+		return textureAsset;
 	}
 }	 // namespace utility

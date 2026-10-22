@@ -87,6 +87,11 @@ Rendering-friendly data types.
   in the meantime.
 - Assets such as materials, models, shaders, and textures are usually loaded
   through `utility::RessourceProvider` rather than constructed directly.
+- `RessourceProvider` resolves every asset path through an optional base path;
+  without one, paths are relative to the process working directory. Missing
+  required assets (including the built-in `textures/default_texture.png` used
+  by the default and mesh materials) raise `std::runtime_error` carrying the
+  resolved path instead of failing silently.
 - OBJ models are imported via tinyobjloader; images via stb.
 
 ### `utility::event`

@@ -113,6 +113,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `RessourceProvider::getDefaultMaterialID()` and `getMeshMaterialID()` no
+  longer dereference a null asset when `textures/default_texture.png` cannot
+  be loaded (reported downstream as a SIGSEGV in etib-corp/evan#160). Both
+  now throw `std::runtime_error` carrying the resolved path and a hint about
+  the asset root, and register nothing, so a missing asset can no longer
+  crash the process. The provider documentation now states that asset paths
+  resolve relative to the process working directory unless a base path is
+  given.
 - `RessourceProvider::getShaderID()` no longer scans `_elementsIDs`, which made
   `evan::RessourceManager::sync()` O(M·E). Shaders are now resolved through a
   dedicated, shader-only index (`_shaderIDs`), giving O(1) average lookups.

@@ -61,6 +61,13 @@ namespace utility
 		 * when loading resources. This can be used to specify a common
 		 * directory for all resources, allowing for more flexible resource
 		 * management and organization.
+		 *
+		 * @note Every asset path, including the built-in
+		 * `textures/default_texture.png` used by the default and mesh
+		 * materials, is resolved through `resolvePath()`. When `basePath` is
+		 * empty the path is used as-is and is therefore relative to the process
+		 * working directory; set a base path to make asset resolution
+		 * independent of the working directory.
 		 */
 		RessourceProvider(SystemIO &systemInterface,
 						  const std::string &basePath = "");
@@ -178,6 +185,12 @@ namespace utility
 		 * @param materialName The name of the material for which to retrieve
 		 * the ID.
 		 *
+		 * @note `"default_material"` and `"mesh_material"` are created on
+		 * demand from `textures/default_texture.png`, so this method can
+		 * propagate the `std::runtime_error` thrown by
+		 * `getDefaultMaterialID()` / `getMeshMaterialID()` when that asset
+		 * cannot be loaded.
+		 *
 		 * @return The unique material ID associated with the given material
 		 * name, or 0 if the material name is not found.
 		 */
@@ -193,12 +206,23 @@ namespace utility
 		 * application can still render objects even if their intended materials
 		 * are missing or misconfigured.
 		 *
+		 * @throws std::runtime_error if `textures/default_texture.png` cannot
+		 * be loaded. The message carries the resolved path and a hint about the
+		 * asset root, and no material is registered in that case.
+		 *
 		 * @return The unique ID of the default material.
 		 */
 		[[nodiscard]] uint32_t getDefaultMaterialID();
 
 		/**
 		 * @brief Retrieves the unique ID of the mesh material.
+		 *
+		 * The mesh material is built from the same
+		 * `textures/default_texture.png` asset as the default material.
+		 *
+		 * @throws std::runtime_error if `textures/default_texture.png` cannot
+		 * be loaded. The message carries the resolved path and a hint about the
+		 * asset root, and no material is registered in that case.
 		 *
 		 * @return The unique ID of the mesh material.
 		 */
@@ -676,6 +700,21 @@ namespace utility
 		 * is set, or the original path if no base path is set.
 		 */
 		std::string resolvePath(const std::string &path) const;
+
+		/**
+		 * @brief Loads the texture shared by the default and mesh materials.
+		 *
+		 * Resolves `textures/default_texture.png` through the configured base
+		 * path and asks the SystemIO interface for it. Both fallback materials
+		 * are built from this texture, so the lookup and its error reporting
+		 * are centralized here.
+		 *
+		 * @throws std::runtime_error if the texture cannot be loaded; the
+		 * message contains the resolved path and a hint about the asset root.
+		 *
+		 * @return The loaded asset.
+		 */
+		std::shared_ptr<utility::File> loadDefaultTextureAsset();
 
 		using Loggable::getLogger;
 	};

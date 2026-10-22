@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <map>
 #include <type_traits>
@@ -221,5 +222,56 @@ namespace tests::utility
 			EXPECT_NE(byName, 0u) << name;
 			EXPECT_EQ(byName, byPath) << name;
 		}
+	}
+
+	// A missing `textures/default_texture.png` used to be dereferenced without
+	// a null check (SIGSEGV, see issue #129). Both fallback materials must
+	// report the resolved path instead of crashing.
+	TEST_F(TestRessourceProvider, MissingDefaultTextureThrowsWithResolvedPath)
+	{
+		const std::string missingRoot = "/nonexistent-utility-test-assets";
+		DefaultSystemIO systemIO;
+		ExposedRessourceProvider provider(systemIO, missingRoot);
+		std::string message;
+
+		try {
+			(void)provider.getDefaultMaterialID();
+		} catch (const std::runtime_error &error) {
+			message = error.what();
+		}
+
+		EXPECT_FALSE(message.empty())
+			<< "a missing default texture must throw std::runtime_error";
+		EXPECT_NE(message.find(missingRoot + "/textures/default_texture.png"),
+				  std::string::npos)
+			<< "the error must carry the resolved path, got: " << message;
+
+		// Nothing may be registered on failure, so a later call reports the
+		// same error instead of returning a half-initialized material.
+		EXPECT_TRUE(provider.getMaterials().empty());
+		EXPECT_EQ(provider.lookupID("default_material"), 0u);
+	}
+
+	TEST_F(TestRessourceProvider, MissingMeshTextureThrowsWithResolvedPath)
+	{
+		const std::string missingRoot = "/nonexistent-utility-test-assets";
+		DefaultSystemIO systemIO;
+		ExposedRessourceProvider provider(systemIO, missingRoot);
+		std::string message;
+
+		try {
+			(void)provider.getMeshMaterialID();
+		} catch (const std::runtime_error &error) {
+			message = error.what();
+		}
+
+		EXPECT_FALSE(message.empty())
+			<< "a missing mesh texture must throw std::runtime_error";
+		EXPECT_NE(message.find(missingRoot + "/textures/default_texture.png"),
+				  std::string::npos)
+			<< "the error must carry the resolved path, got: " << message;
+
+		EXPECT_TRUE(provider.getMaterials().empty());
+		EXPECT_EQ(provider.lookupID("mesh_material"), 0u);
 	}
 }	 // namespace tests::utility
